@@ -1,0 +1,190 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0b0b0d;
+  --foreground: #f3f1ea;
+  --surface: #131316;
+  --surface-2: #1b1b1f;
+  --border: #2a2a2f;
+  --gold: #c9a24b;
+  --gold-light: #e4c777;
+  --muted: #8b8b93;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-muted: var(--muted);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+::selection {
+  background: var(--gold);
+  color: #0b0b0d;
+}
+
+/*
+ * Sve custom klase ispod stavljene su u @layer components kako bi
+ * Tailwind utility klase (npr. "hidden", "md:inline-flex") uvijek imale
+ * prednost nad njima kada se kombinuju na istom elementu — bez ovoga,
+ * obična CSS pravila mogu neočekivano "pobijediti" utility klase.
+ */
+@layer components {
+  /*
+   * Naslovi koriste elegantan serif font (sistemski, bez eksternog
+   * učitavanja). Ako želite konkretan brend font (npr. Playfair Display
+   * sa Google Fonts), dodajte next/font/google u src/app/layout.tsx — na
+   * Vercelu se učitava bez problema.
+   */
+  .font-display {
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    letter-spacing: 0.01em;
+  }
+
+  .text-gold {
+    color: var(--gold);
+  }
+
+  .bg-gold {
+    background-color: var(--gold);
+  }
+
+  .border-gold {
+    border-color: var(--gold);
+  }
+
+  .gold-gradient {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold) 60%, #8f6f2c);
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.75rem;
+    border-radius: 2px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    background: var(--gold);
+    color: #0b0b0d;
+    transition: all 0.25s ease;
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.7rem;
+    border-radius: 2px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    transition: all 0.25s ease;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  .input-field {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    padding: 0.75rem 1rem;
+    border-radius: 2px;
+    font-size: 0.925rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .input-field:focus {
+    border-color: var(--gold);
+  }
+
+  .input-field::placeholder {
+    color: var(--muted);
+  }
+
+  .disclaimer {
+    color: var(--muted);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    opacity: 0.75;
+  }
+}
+
+/* Splash screen */
+.splash-logo {
+  animation: splash-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes splash-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 0 0 rgba(201, 162, 75, 0));
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+    filter: drop-shadow(0 0 22px rgba(201, 162, 75, 0.55));
+  }
+}
+
+.splash-exit {
+  animation: splash-fade 0.5s ease forwards;
+}
+
+@keyframes splash-fade {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-logo {
+    animation: none;
+  }
+}
