@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0b;
+  --foreground: #f5f5f6;
+  --surface: #17171a;
+  --surface-2: #212124;
+  --border: #333338;
+  --accent: #e7e7ea;
+  --accent-light: #ffffff;
+  --muted: #97979d;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-muted: var(--muted);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--background);
+}
+
+/*
+ * Sve custom klase ispod stavljene su u @layer components kako bi
+ * Tailwind utility klase (npr. "hidden", "md:inline-flex") uvijek imale
+ * prednost nad njima kada se kombinuju na istom elementu — bez ovoga,
+ * obična CSS pravila mogu neočekivano "pobijediti" utility klase.
+ */
+@layer components {
+  /*
+   * Naslovi koriste elegantan serif font (sistemski, bez eksternog
+   * učitavanja). Ako želite konkretan brend font (npr. Playfair Display
+   * sa Google Fonts), dodajte next/font/google u src/app/layout.tsx — na
+   * Vercelu se učitava bez problema.
+   */
+  .font-display {
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    letter-spacing: 0.01em;
+  }
+
+  .text-accent {
+    color: var(--accent);
+  }
+
+  .bg-accent {
+    background-color: var(--accent);
+  }
+
+  .border-accent {
+    border-color: var(--accent);
+  }
+
+  .accent-gradient {
+    background: linear-gradient(135deg, var(--accent-light), var(--accent) 55%, #4a4a4f);
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.75rem;
+    border-radius: 2px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    background: var(--accent);
+    color: var(--background);
+    transition: all 0.25s ease;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-light);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.7rem;
+    border-radius: 2px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    transition: all 0.25s ease;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  .input-field {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    padding: 0.75rem 1rem;
+    border-radius: 2px;
+    font-size: 0.925rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .input-field:focus {
+    border-color: var(--accent);
+  }
+
+  .input-field::placeholder {
+    color: var(--muted);
+  }
+
+  .disclaimer {
+    color: var(--muted);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    opacity: 0.75;
+  }
+}
+
+/* Splash screen */
+.splash-logo {
+  animation: splash-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes splash-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+    filter: drop-shadow(0 0 22px rgba(255, 255, 255, 0.45));
+  }
+}
+
+.splash-exit {
+  animation: splash-fade 0.5s ease forwards;
+}
+
+@keyframes splash-fade {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-logo {
+    animation: none;
+  }
+}
+
+/* Štampa (npr. Cjenovnik) — sakriva navigaciju/footer, bijela pozadina */
+@media print {
+  header,
+  footer {
+    display: none !important;
+  }
+  body {
+    background: #ffffff;
+    color: #000000;
+  }
+}
