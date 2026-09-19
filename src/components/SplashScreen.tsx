@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LogoMark } from "./Logo";
+import { LogoFull } from "./Logo";
 
 /**
  * Personalizovani loading ekran sa logom firme koji pulsira.
@@ -33,9 +33,9 @@ export default function SplashScreen() {
       }`}
       aria-hidden="true"
     >
-      <LogoMark className="splash-logo h-20 w-20" />
+      <LogoFull className="splash-logo h-28 w-auto text-foreground sm:h-32" />
       <p className="mt-6 text-[0.65rem] tracking-[0.5em] text-muted uppercase">
-        Exclusive Auto
+        Prodaja polovnih automobila
       </p>
     </div>
   );

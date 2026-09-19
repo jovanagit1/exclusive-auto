@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import InquiryForm from "@/components/InquiryForm";
-import { vehicles } from "@/lib/vehicles";
+import { getVehicles } from "@/lib/store";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Probna vožnja",
   description: "Zakažite probnu vožnju vozila iz ponude Exclusive Auto.",
 };
 
-export default function ProbnaVoznjaPage() {
+export default async function ProbnaVoznjaPage() {
+  const vehicles = await getVehicles();
   const vehicleOptions = vehicles.map((v) => `${v.marka} ${v.model} (${v.godiste})`);
 
   return (

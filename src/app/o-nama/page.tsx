@@ -57,7 +57,7 @@ export default function ONamaPage() {
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {values.map((v) => (
             <div key={v.title} className="card p-6">
-              <h3 className="font-display text-lg text-gold">{v.title}</h3>
+              <h3 className="font-display text-lg text-accent">{v.title}</h3>
               <p className="mt-3 text-sm text-foreground/70">{v.desc}</p>
             </div>
           ))}

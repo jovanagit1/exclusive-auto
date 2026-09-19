@@ -8,6 +8,7 @@ import Logo from "./Logo";
 const links = [
   { href: "/", label: "Početna" },
   { href: "/vozila", label: "Vozila" },
+  { href: "/cjenovnik", label: "Cjenovnik" },
   { href: "/usluge", label: "Usluge" },
   { href: "/galerija", label: "Galerija" },
   { href: "/o-nama", label: "O nama" },
@@ -22,7 +23,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
         <Link href="/" onClick={() => setOpen(false)}>
-          <Logo />
+          <Logo className="h-14 w-auto text-foreground sm:h-16" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -34,7 +35,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={`text-sm uppercase tracking-wider transition-colors ${
-                  active ? "text-gold" : "text-foreground/80 hover:text-gold"
+                  active ? "text-accent" : "text-foreground/80 hover:text-accent"
                 }`}
               >
                 {link.label}
@@ -78,7 +79,7 @@ export default function Header() {
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="py-3 text-sm uppercase tracking-wider text-foreground/85 hover:text-gold"
+              className="py-3 text-sm uppercase tracking-wider text-foreground/85 hover:text-accent"
             >
               {link.label}
             </Link>

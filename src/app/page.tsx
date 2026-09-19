@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { vehicles } from "@/lib/vehicles";
+import { getVehicles } from "@/lib/store";
 import VehicleCard from "@/components/VehicleCard";
 import PlaceholderImage from "@/components/PlaceholderImage";
+
+export const dynamic = "force-dynamic";
 
 const services = [
   {
@@ -26,14 +28,15 @@ const services = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const vehicles = await getVehicles();
   const featured = vehicles.filter((v) => v.istaknuto);
 
   return (
     <div>
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 gold-gradient opacity-[0.06]" />
+        <div className="absolute inset-0 accent-gradient opacity-[0.06]" />
         <div className="relative mx-auto flex max-w-7xl flex-col gap-10 px-5 py-20 md:flex-row md:items-center md:px-8 md:py-28">
           <div className="max-w-xl">
             <p className="section-label">Exclusive Auto · Banja Luka</p>
@@ -99,9 +102,9 @@ export default function HomePage() {
               <Link
                 key={s.title}
                 href={s.href}
-                className="card group p-6 transition-colors hover:border-gold"
+                className="card group p-6 transition-colors hover:border-accent"
               >
-                <h3 className="font-display text-lg text-foreground group-hover:text-gold">
+                <h3 className="font-display text-lg text-foreground group-hover:text-accent">
                   {s.title}
                 </h3>
                 <p className="mt-3 text-sm text-foreground/70">{s.desc}</p>

@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { Vehicle, formatPrice } from "@/lib/vehicles";
-import PlaceholderImage from "./PlaceholderImage";
+import VehicleImage from "./VehicleImage";
 
 export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
   return (
     <Link
       href={`/vozila/${vehicle.slug}`}
-      className="card group block overflow-hidden transition-colors hover:border-gold"
+      className="card group block overflow-hidden transition-colors hover:border-accent"
     >
-      <PlaceholderImage label={`${vehicle.marka} ${vehicle.model}`} />
+      <VehicleImage slike={vehicle.slike} label={`${vehicle.marka} ${vehicle.model}`} />
       <div className="p-5">
         <p className="text-xs uppercase tracking-widest text-muted">
           {vehicle.godiste} · {vehicle.km.toLocaleString("de-DE")} km · {vehicle.gorivo}
@@ -17,10 +17,10 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
           {vehicle.marka} {vehicle.model}
         </h3>
         <div className="mt-4 flex items-center justify-between">
-          <span className="text-lg font-semibold text-gold">
+          <span className="text-lg font-semibold text-accent">
             {formatPrice(vehicle.cijena, vehicle.valuta)}
           </span>
-          <span className="text-xs uppercase tracking-wider text-foreground/70 group-hover:text-gold">
+          <span className="text-xs uppercase tracking-wider text-foreground/70 group-hover:text-accent">
             Detalji →
           </span>
         </div>

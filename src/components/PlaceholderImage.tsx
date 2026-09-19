@@ -17,10 +17,10 @@ export default function PlaceholderImage({
     <div
       className={`relative flex ${ratio} items-center justify-center overflow-hidden border border-border bg-surface-2 ${className}`}
     >
-      <div className="absolute inset-0 opacity-20 gold-gradient" />
+      <div className="absolute inset-0 opacity-20 accent-gradient" />
       <svg
         viewBox="0 0 64 40"
-        className="relative h-10 w-16 text-gold opacity-70"
+        className="relative h-10 w-16 text-accent opacity-70"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.5"

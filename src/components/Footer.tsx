@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="border-t border-border bg-surface">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 md:grid-cols-4 md:px-8">
         <div>
-          <Logo />
+          <Logo className="h-14 w-auto text-foreground" />
           <p className="mt-4 text-sm leading-relaxed text-muted">
             Uvoz, prodaja i priprema vozila iz Evrope. Povjerenje izgrađeno na
             transparentnosti i kvalitetu.
@@ -16,20 +16,20 @@ export default function Footer() {
         <div>
           <h3 className="section-label mb-4">Navigacija</h3>
           <ul className="space-y-2 text-sm text-foreground/80">
-            <li><Link href="/vozila" className="hover:text-gold">Vozila</Link></li>
-            <li><Link href="/usluge" className="hover:text-gold">Usluge</Link></li>
-            <li><Link href="/galerija" className="hover:text-gold">Galerija</Link></li>
-            <li><Link href="/o-nama" className="hover:text-gold">O nama</Link></li>
+            <li><Link href="/vozila" className="hover:text-accent">Vozila</Link></li>
+            <li><Link href="/usluge" className="hover:text-accent">Usluge</Link></li>
+            <li><Link href="/galerija" className="hover:text-accent">Galerija</Link></li>
+            <li><Link href="/o-nama" className="hover:text-accent">O nama</Link></li>
           </ul>
         </div>
 
         <div>
           <h3 className="section-label mb-4">Usluge</h3>
           <ul className="space-y-2 text-sm text-foreground/80">
-            <li><Link href="/uvoz" className="hover:text-gold">Uvoz vozila</Link></li>
-            <li><Link href="/registracija" className="hover:text-gold">Registracija vozila</Link></li>
-            <li><Link href="/probna-voznja" className="hover:text-gold">Probna vožnja</Link></li>
-            <li><Link href="/usluge" className="hover:text-gold">Detailing i priprema</Link></li>
+            <li><Link href="/uvoz" className="hover:text-accent">Uvoz vozila</Link></li>
+            <li><Link href="/registracija" className="hover:text-accent">Registracija vozila</Link></li>
+            <li><Link href="/probna-voznja" className="hover:text-accent">Probna vožnja</Link></li>
+            <li><Link href="/usluge" className="hover:text-accent">Detailing i priprema</Link></li>
           </ul>
         </div>
 
@@ -38,14 +38,14 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-foreground/80">
             <li>Banja Luka, BiH</li>
             <li>
-              <a href="tel:+38765000000" className="hover:text-gold">
+              <a href="tel:+38765000000" className="hover:text-accent">
                 +387 65 000 000
               </a>
             </li>
             <li>
               <a
                 href="mailto:info@exclusiveautobl.com"
-                className="hover:text-gold"
+                className="hover:text-accent"
               >
                 info@exclusiveautobl.com
               </a>

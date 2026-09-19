@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0b0b0d;
-  --foreground: #f3f1ea;
-  --surface: #131316;
-  --surface-2: #1b1b1f;
-  --border: #2a2a2f;
-  --gold: #c9a24b;
-  --gold-light: #e4c777;
-  --muted: #8b8b93;
+  --background: #0a0a0b;
+  --foreground: #f5f5f6;
+  --surface: #17171a;
+  --surface-2: #212124;
+  --border: #333338;
+  --accent: #e7e7ea;
+  --accent-light: #ffffff;
+  --muted: #97979d;
 }
 
 @theme inline {
@@ -17,8 +17,8 @@
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-border: var(--border);
-  --color-gold: var(--gold);
-  --color-gold-light: var(--gold-light);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
   --color-muted: var(--muted);
 }
 
@@ -33,8 +33,8 @@ body {
 }
 
 ::selection {
-  background: var(--gold);
-  color: #0b0b0d;
+  background: var(--accent);
+  color: var(--background);
 }
 
 /*
@@ -55,20 +55,20 @@ body {
     letter-spacing: 0.01em;
   }
 
-  .text-gold {
-    color: var(--gold);
+  .text-accent {
+    color: var(--accent);
   }
 
-  .bg-gold {
-    background-color: var(--gold);
+  .bg-accent {
+    background-color: var(--accent);
   }
 
-  .border-gold {
-    border-color: var(--gold);
+  .border-accent {
+    border-color: var(--accent);
   }
 
-  .gold-gradient {
-    background: linear-gradient(135deg, var(--gold-light), var(--gold) 60%, #8f6f2c);
+  .accent-gradient {
+    background: linear-gradient(135deg, var(--accent-light), var(--accent) 55%, #4a4a4f);
   }
 
   .btn-primary {
@@ -82,13 +82,13 @@ body {
     letter-spacing: 0.03em;
     text-transform: uppercase;
     font-size: 0.8rem;
-    background: var(--gold);
-    color: #0b0b0d;
+    background: var(--accent);
+    color: var(--background);
     transition: all 0.25s ease;
   }
 
   .btn-primary:hover {
-    background: var(--gold-light);
+    background: var(--accent-light);
     transform: translateY(-1px);
   }
 
@@ -109,15 +109,15 @@ body {
   }
 
   .btn-outline:hover {
-    border-color: var(--gold);
-    color: var(--gold);
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   .section-label {
     font-size: 0.75rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--accent);
     font-weight: 600;
   }
 
@@ -139,7 +139,7 @@ body {
   }
 
   .input-field:focus {
-    border-color: var(--gold);
+    border-color: var(--accent);
   }
 
   .input-field::placeholder {
@@ -163,12 +163,12 @@ body {
   0%, 100% {
     transform: scale(1);
     opacity: 1;
-    filter: drop-shadow(0 0 0 rgba(201, 162, 75, 0));
+    filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
   }
   50% {
     transform: scale(1.08);
     opacity: 0.85;
-    filter: drop-shadow(0 0 22px rgba(201, 162, 75, 0.55));
+    filter: drop-shadow(0 0 22px rgba(255, 255, 255, 0.45));
   }
 }
 
@@ -186,5 +186,17 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .splash-logo {
     animation: none;
+  }
+}
+
+/* Štampa (npr. Cjenovnik) — sakriva navigaciju/footer, bijela pozadina */
+@media print {
+  header,
+  footer {
+    display: none !important;
+  }
+  body {
+    background: #ffffff;
+    color: #000000;
   }
 }

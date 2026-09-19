@@ -82,7 +82,7 @@ export default function UslugePage() {
               </p>
               <Link
                 href={s.href}
-                className="mt-5 text-sm uppercase tracking-wider text-gold hover:text-gold-light"
+                className="mt-5 text-sm uppercase tracking-wider text-accent hover:text-accent-light"
               >
                 {s.cta} →
               </Link>

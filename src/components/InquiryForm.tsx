@@ -49,7 +49,7 @@ export default function InquiryForm({
   if (status === "sent") {
     return (
       <div className="card p-8 text-center">
-        <p className="font-display text-xl text-gold">Hvala vam!</p>
+        <p className="font-display text-xl text-accent">Hvala vam!</p>
         <p className="mt-2 text-sm text-foreground/80">
           Vaš upit je zaprimljen. Javit ćemo vam se u najkraćem mogućem roku.
         </p>
@@ -69,7 +69,7 @@ export default function InquiryForm({
             className="mb-1.5 block text-xs uppercase tracking-wider text-muted"
           >
             {field.label}
-            {field.required && <span className="text-gold"> *</span>}
+            {field.required && <span className="text-accent"> *</span>}
           </label>
 
           {field.type === "textarea" ? (

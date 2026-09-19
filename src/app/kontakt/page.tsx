@@ -28,7 +28,7 @@ export default function KontaktPage() {
             <p className="text-xs uppercase tracking-wider text-muted">
               Telefon
             </p>
-            <a href="tel:+38765000000" className="mt-1 block text-gold">
+            <a href="tel:+38765000000" className="mt-1 block text-accent">
               +387 65 000 000
             </a>
           </div>
@@ -38,7 +38,7 @@ export default function KontaktPage() {
             </p>
             <a
               href="mailto:info@exclusiveautobl.com"
-              className="mt-1 block text-gold"
+              className="mt-1 block text-accent"
             >
               info@exclusiveautobl.com
             </a>

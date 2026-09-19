@@ -13,6 +13,8 @@ export type Vehicle = {
   opis: string;
   oprema: string[];
   istaknuto?: boolean;
+  /** URL-ovi slika (Vercel Blob) — prva slika se koristi kao naslovna. */
+  slike?: string[];
 };
 
 // PRIMJER / PLACEHOLDER PODACI — zamijenite stvarnim vozilima iz vaše ponude.

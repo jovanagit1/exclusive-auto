@@ -26,7 +26,7 @@ export default function GalerijaPage() {
         Ovdje će biti prikazane stvarne fotografije i video snimci
         showroom-a, vozila i procesa pripreme. Trenutno su prikazani
         placeholderi — zamijenite ih dodavanjem slika u{" "}
-        <code className="text-gold">/public/galerija/</code>.
+        <code className="text-accent">/public/galerija/</code>.
       </p>
 
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

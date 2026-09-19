@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
-import { vehicles } from "@/lib/vehicles";
+import { getVehicles } from "@/lib/store";
 import VehicleCard from "@/components/VehicleCard";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Vozila u ponudi",
   description: "Pregledajte trenutnu ponudu vozila Exclusive Auto.",
 };
 
-export default function VozilaPage() {
+export default async function VozilaPage() {
+  const vehicles = await getVehicles();
+
   return (
     <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24">
       <p className="section-label">Ponuda</p>
