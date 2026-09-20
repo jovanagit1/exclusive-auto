@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="border-t border-border bg-surface">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 md:grid-cols-4 md:px-8">
         <div>
-          <Logo className="logo-glow h-14 w-auto text-foreground" />
+          <Logo className="h-14 w-auto text-white" />
           <p className="mt-4 text-sm leading-relaxed text-muted">
             Uvoz, prodaja i priprema vozila iz Evrope. Povjerenje izgrađeno na
             transparentnosti i kvalitetu.

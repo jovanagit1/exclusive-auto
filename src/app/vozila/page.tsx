@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getVehicles } from "@/lib/store";
-import VehicleCard from "@/components/VehicleCard";
+import VozilaGrid from "@/components/VozilaGrid";
 
 export const dynamic = "force-dynamic";
 
@@ -21,10 +21,8 @@ export default async function VozilaPage() {
         pronaći ćemo ga po vašoj želji.
       </p>
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {vehicles.map((v) => (
-          <VehicleCard key={v.slug} vehicle={v} />
-        ))}
+      <div className="mt-10">
+        <VozilaGrid vehicles={vehicles} />
       </div>
     </div>
   );

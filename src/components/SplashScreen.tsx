@@ -33,7 +33,7 @@ export default function SplashScreen() {
       }`}
       aria-hidden="true"
     >
-      <LogoFull className="splash-logo h-28 w-auto text-foreground sm:h-32" />
+      <LogoFull className="splash-logo h-28 w-auto text-white sm:h-32" />
       <p className="mt-6 text-[0.65rem] tracking-[0.5em] text-muted uppercase">
         Prodaja polovnih automobila
       </p>

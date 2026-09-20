@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Vehicle, formatPrice } from "@/lib/vehicles";
 import VehicleImage from "./VehicleImage";
+import FavoriteButton from "./FavoriteButton";
 
 export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
   const naAkciji = Boolean(vehicle.akcija && vehicle.regularnaCijena);
@@ -17,6 +18,11 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
             Akcija
           </span>
         )}
+        <FavoriteButton
+          slug={vehicle.slug}
+          size="sm"
+          className="absolute right-2 top-2"
+        />
       </div>
       <div className="p-5">
         <p className="text-xs uppercase tracking-widest text-muted">

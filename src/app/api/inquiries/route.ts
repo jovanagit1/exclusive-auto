@@ -72,36 +72,46 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, emailSent: false });
     }
 
-    const resend = new Resend(apiKey);
-    const naslov = FORM_NASLOVI[formType] ?? `Novi upit (${formType})`;
-    const fromAdresa =
-      process.env.RESEND_FROM ?? "Exclusive Auto <onboarding@resend.dev>";
+    // Slanje mejla je "best effort" — posjetilac NIKAD ne smije dobiti grešku
+    // na formi samo zato što je slanje mejla zakazalo (npr. Resend je privremeno
+    // nedostupan, domen nije verifikovan, greška u mreži...). Upit je već
+    // zabilježen u log iznad, pa je ovaj try/catch odvojen od spoljašnjeg —
+    // šta god da se ovdje desi, posjetilac vidi da je poruka poslata.
+    try {
+      const resend = new Resend(apiKey);
+      const naslov = FORM_NASLOVI[formType] ?? `Novi upit (${formType})`;
+      const fromAdresa =
+        process.env.RESEND_FROM ?? "Exclusive Auto <onboarding@resend.dev>";
 
-    const { error } = await resend.emails.send({
-      from: fromAdresa,
-      to: ownerEmail,
-      replyTo:
-        typeof data.email === "string" && data.email ? data.email : undefined,
-      subject: `${naslov} — Exclusive Auto sajt`,
-      html: `
-        <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;">
-          <h2 style="margin:0 0 4px;">${naslov}</h2>
-          <p style="color:#6b6b70;font-size:13px;margin:0 0 16px;">
-            Novi upit sa sajta exclusiveautobl.com
-          </p>
-          <table style="width:100%;border-collapse:collapse;background:#f7f7f8;border-radius:6px;">
-            ${formatirajPodatke(data, formType)}
-          </table>
-        </div>
-      `,
-    });
+      const { error } = await resend.emails.send({
+        from: fromAdresa,
+        to: ownerEmail,
+        replyTo:
+          typeof data.email === "string" && data.email ? data.email : undefined,
+        subject: `${naslov} — Exclusive Auto sajt`,
+        html: `
+          <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;">
+            <h2 style="margin:0 0 4px;">${naslov}</h2>
+            <p style="color:#6b6b70;font-size:13px;margin:0 0 16px;">
+              Novi upit sa sajta exclusiveautobl.com
+            </p>
+            <table style="width:100%;border-collapse:collapse;background:#f7f7f8;border-radius:6px;">
+              ${formatirajPodatke(data, formType)}
+            </table>
+          </div>
+        `,
+      });
 
-    if (error) {
-      console.error("[inquiries] Resend greška:", error);
+      if (error) {
+        console.error("[inquiries] Resend greška:", error);
+        return NextResponse.json({ ok: true, emailSent: false });
+      }
+
+      return NextResponse.json({ ok: true, emailSent: true });
+    } catch (mailErr) {
+      console.error("[inquiries] Slanje mejla nije uspjelo:", mailErr);
       return NextResponse.json({ ok: true, emailSent: false });
     }
-
-    return NextResponse.json({ ok: true, emailSent: true });
   } catch (e) {
     console.error("[inquiries] greška:", e);
     return NextResponse.json(

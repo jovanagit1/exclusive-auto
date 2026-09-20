@@ -152,16 +152,26 @@ body {
     line-height: 1.5;
     opacity: 0.75;
   }
+}
 
-  /*
-   * Suptilan, "svijetleći" efekat — koristi se samo na logu i na loading
-   * ekranu (ne na običnom tekstu), da odaje utisak diskretnog sjaja bez
-   * bodenja u oči.
-   */
-  .logo-glow {
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.35))
-      drop-shadow(0 0 16px rgba(255, 255, 255, 0.18));
-  }
+/*
+ * Logo: čista, ravna, jarko bijela (#FFFFFF) boja bez ikakvih vizuelnih
+ * efekata — bez drop-shadow/box-shadow/text-shadow/glow/gradijenta, pune
+ * neprovidnosti i oštrih ivica (Apple / Porsche stil). Boja se postavlja
+ * className="text-white" direktno na <Logo>/<LogoFull> gdje god se koriste.
+ */
+
+/* Uklanja fiddly strelice sa native number inputa (Godište, Cijena, Km...) u
+   admin panelu — admin sad samo upisuje pun broj bez klikanja na strelice. */
+.input-field[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.input-field[type="number"]::-webkit-outer-spin-button,
+.input-field[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Splash screen */
@@ -173,12 +183,10 @@ body {
   0%, 100% {
     transform: scale(1);
     opacity: 1;
-    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
   }
   50% {
     transform: scale(1.08);
-    opacity: 0.9;
-    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.6));
+    opacity: 0.85;
   }
 }
 

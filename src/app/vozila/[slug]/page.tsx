@@ -4,6 +4,21 @@ import { notFound } from "next/navigation";
 import { formatPrice, formatKubikaza, formatSnaga } from "@/lib/vehicles";
 import { getVehicleBySlug } from "@/lib/store";
 import VehicleGallery from "@/components/VehicleGallery";
+import FavoriteButton from "@/components/FavoriteButton";
+
+function KvacicaIkonica() {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      className="h-3.5 w-3.5 shrink-0 text-accent"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 10.5 8 14.5 16 6" />
+    </svg>
+  );
+}
 
 // Vozila se mogu dodati/izmijeniti u svakom trenutku preko admin panela,
 // pa ova stranica uvijek učitava svježe podatke (bez statičkog keširanja).
@@ -73,7 +88,12 @@ export default async function VehicleDetailPage({
     ([, vrijednost]) => vrijednost !== ""
   );
 
-  const dodatnaOprema = vehicle.dodatnaOprema ?? [];
+  // Sva oprema (ručno unijeta + kvačice iz admin panela) prikazuje se
+  // zajedno, u jednoj urednoj, sortiranoj listi — bez razlike za posjetioca
+  // odakle je koja stavka došla.
+  const svaOprema = Array.from(
+    new Set([...vehicle.oprema, ...(vehicle.dodatnaOprema ?? [])])
+  ).sort((a, b) => a.localeCompare(b, "bs"));
 
   const naAkciji = Boolean(vehicle.akcija && vehicle.regularnaCijena);
 
@@ -95,13 +115,16 @@ export default async function VehicleDetailPage({
         </div>
 
         <div>
-          <div className="flex items-center gap-3">
-            <p className="section-label">{vehicle.marka}</p>
-            {naAkciji && (
-              <span className="rounded-sm bg-red-500/15 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-red-400">
-                Akcija
-              </span>
-            )}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <p className="section-label">{vehicle.marka}</p>
+              {naAkciji && (
+                <span className="rounded-sm bg-red-500/15 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-red-400">
+                  Akcija
+                </span>
+              )}
+            </div>
+            <FavoriteButton slug={vehicle.slug} />
           </div>
           <h1 className="font-display mt-2 text-3xl">{vehicle.model}</h1>
           {naAkciji ? (
@@ -134,32 +157,6 @@ export default async function VehicleDetailPage({
             {vehicle.opis}
           </p>
 
-          <ul className="mt-6 space-y-2">
-            {vehicle.oprema.map((item) => (
-              <li
-                key={item}
-                className="flex items-center gap-2 text-sm text-foreground/80"
-              >
-                <span className="h-1 w-1 rounded-full bg-accent" />
-                {item}
-              </li>
-            ))}
-          </ul>
-
-          {dodatnaOprema.length > 0 && (
-            <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-2">
-              {dodatnaOprema.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-center gap-2 text-sm text-foreground/80"
-                >
-                  <span className="h-1 w-1 rounded-full bg-accent" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          )}
-
           <div className="mt-8 flex flex-wrap gap-4">
             <Link href="/probna-voznja" className="btn-primary">
               Zakaži probnu vožnju
@@ -171,17 +168,50 @@ export default async function VehicleDetailPage({
         </div>
       </div>
 
+      {svaOprema.length > 0 && (
+        <div className="mt-14 border-t border-border pt-10">
+          <p className="section-label">Karakteristike</p>
+          <h2 className="font-display mt-2 text-2xl">Oprema</h2>
+          <ul className="mt-6 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+            {svaOprema.map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-2.5 text-sm text-foreground/80"
+              >
+                <KvacicaIkonica />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {dodatneInformacije.length > 0 && (
         <div className="mt-14 border-t border-border pt-10">
           <p className="section-label">Detalji</p>
           <h2 className="font-display mt-2 text-2xl">Dodatne informacije</h2>
-          <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3 md:grid-cols-4">
-            {dodatneInformacije.map(([label, value]) => (
-              <div key={label}>
-                <p className="text-xs uppercase tracking-wider text-muted">
-                  {label}
-                </p>
-                <p className="mt-1 text-sm text-foreground">{value}</p>
+          <div className="mt-6 overflow-hidden rounded-sm border border-border">
+            {Array.from(
+              { length: Math.ceil(dodatneInformacije.length / 2) },
+              (_, red) => dodatneInformacije.slice(red * 2, red * 2 + 2)
+            ).map((red, i) => (
+              <div
+                key={red[0][0]}
+                className={`grid grid-cols-1 sm:grid-cols-2 ${
+                  i > 0 ? "border-t border-border" : ""
+                } ${i % 2 === 0 ? "bg-surface" : "bg-surface-2"}`}
+              >
+                {red.map(([label, value], kolona) => (
+                  <div
+                    key={label}
+                    className={`flex items-center justify-between gap-4 px-5 py-3 text-sm ${
+                      kolona === 1 ? "border-t border-border sm:border-t-0 sm:border-l" : ""
+                    }`}
+                  >
+                    <span className="text-muted">{label}</span>
+                    <span className="text-right font-medium text-foreground">{value}</span>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
