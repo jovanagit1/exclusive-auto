@@ -5,8 +5,9 @@ import VozilaGrid from "@/components/VozilaGrid";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Vozila u ponudi",
-  description: "Pregledajte trenutnu ponudu vozila Exclusive Auto.",
+  title: "Polovna auta u ponudi",
+  description:
+    "Pregledajte trenutnu ponudu polovnih auta i automobila Exclusive Auto u Banjoj Luci — sortiranje po cijeni i godištu.",
 };
 
 export default async function VozilaPage() {

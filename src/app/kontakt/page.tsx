@@ -52,7 +52,8 @@ export default function KontaktPage() {
             <p className="text-xs uppercase tracking-wider text-muted">
               Radno vrijeme
             </p>
-            <p className="mt-1 text-foreground">Pon – Sub: 09:00 – 18:00</p>
+            <p className="mt-1 text-foreground">Pon – Pet: 09:00 – 17:00</p>
+            <p className="text-foreground">Subota: 09:00 – 15:00</p>
           </div>
         </div>
 

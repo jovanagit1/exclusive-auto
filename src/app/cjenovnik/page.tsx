@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getVehicles } from "@/lib/store";
-import { formatPrice } from "@/lib/vehicles";
 import PrintButton from "@/components/PrintButton";
+import PriceTag from "@/components/PriceTag";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Cjenovnik",
-  description: "Kompletna sveska ponude — sva vozila Exclusive Auto na jednom mjestu.",
+  description:
+    "Cjenovnik polovnih vozila Exclusive Auto Banja Luka — sva vozila i cijene na jednom mjestu.",
 };
 
 export default async function CjenovnikPage() {
@@ -66,7 +67,7 @@ export default async function CjenovnikPage() {
                   {v.gorivo} · {v.mjenjac}
                 </td>
                 <td className="px-4 py-3 text-right font-semibold text-accent print:text-black">
-                  {formatPrice(v.cijena, v.valuta)}
+                  <PriceTag cijena={v.cijena} valuta={v.valuta} />
                 </td>
               </tr>
             ))}

@@ -21,12 +21,42 @@ import { vehicles as seedVehicles, type Vehicle } from "./vehicles";
 
 const VEHICLES_PATH = "data/vehicles.json";
 const SUBSCRIBERS_PATH = "data/subscribers.json";
+const OTKUP_PATH = "data/otkup-zahtjevi.json";
 
 export type Subscriber = {
   email: string;
   ime?: string;
   napomena?: string;
   dodano: string;
+};
+
+/**
+ * Zahtjev poslat preko javne stranice "/prodaj-vozilo" — posjetilac (često
+ * neko ko ne živi u Banjoj Luci) nudi svoje vozilo na prodaju, ili traži
+ * zamjenu za jedno od vozila iz naše ponude. Admin ih pregleda u
+ * Admin panel → Otkup/zamjena (dok mejl obavještenja nije uključeno preko
+ * Resend-a, ovo je JEDINI način da admin vidi ove zahtjeve).
+ */
+export type OtkupZahtjev = {
+  id: string;
+  tip: "prodaja" | "zamjena";
+  /** Slug vozila iz naše ponude za koje posjetilac želi zamjenu (ako tip === "zamjena"). */
+  zamjenaZaSlug?: string;
+  ime: string;
+  telefon: string;
+  email?: string;
+  marka: string;
+  model: string;
+  godiste: string;
+  kilometraza: string;
+  gorivo?: string;
+  mjenjac?: string;
+  boja?: string;
+  opis?: string;
+  procijenjenaCijena?: string;
+  slike: string[];
+  poslato: string;
+  status: "novo" | "pregledano" | "zavrseno";
 };
 
 function getToken() {
@@ -107,4 +137,35 @@ export async function saveSubscribers(
 
 export function isBlobConfigured(): boolean {
   return Boolean(getToken());
+}
+
+export async function getOtkupZahtjevi(): Promise<OtkupZahtjev[]> {
+  return readBlobJSON<OtkupZahtjev[]>(OTKUP_PATH, []);
+}
+
+export async function saveOtkupZahtjevi(zahtjevi: OtkupZahtjev[]): Promise<void> {
+  await writeBlobJSON(OTKUP_PATH, zahtjevi);
+}
+
+export async function addOtkupZahtjev(zahtjev: OtkupZahtjev): Promise<void> {
+  const all = await getOtkupZahtjevi();
+  all.unshift(zahtjev);
+  await saveOtkupZahtjevi(all);
+}
+
+export async function updateOtkupZahtjevStatus(
+  id: string,
+  status: OtkupZahtjev["status"]
+): Promise<void> {
+  const all = await getOtkupZahtjevi();
+  const idx = all.findIndex((z) => z.id === id);
+  if (idx !== -1) {
+    all[idx] = { ...all[idx], status };
+    await saveOtkupZahtjevi(all);
+  }
+}
+
+export async function deleteOtkupZahtjev(id: string): Promise<void> {
+  const all = await getOtkupZahtjevi();
+  await saveOtkupZahtjevi(all.filter((z) => z.id !== id));
 }

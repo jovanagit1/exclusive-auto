@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatPrice, formatKubikaza, formatSnaga } from "@/lib/vehicles";
+import { formatKubikaza, formatSnaga } from "@/lib/vehicles";
 import { getVehicleBySlug } from "@/lib/store";
 import VehicleGallery from "@/components/VehicleGallery";
 import FavoriteButton from "@/components/FavoriteButton";
+import PriceTag from "@/components/PriceTag";
 
 function KvacicaIkonica() {
   return (
@@ -129,17 +130,23 @@ export default async function VehicleDetailPage({
           <h1 className="font-display mt-2 text-3xl">{vehicle.model}</h1>
           {naAkciji ? (
             <div className="mt-4 flex flex-wrap items-baseline gap-3">
-              <p className="text-lg text-muted line-through">
-                {formatPrice(vehicle.regularnaCijena!, vehicle.valuta)}
-              </p>
-              <p className="rounded-sm bg-red-500/10 px-3 py-1 text-2xl font-semibold text-red-400">
-                {formatPrice(vehicle.cijena, vehicle.valuta)}
-              </p>
+              <PriceTag
+                cijena={vehicle.regularnaCijena!}
+                valuta={vehicle.valuta}
+                className="text-lg text-muted line-through"
+              />
+              <PriceTag
+                cijena={vehicle.cijena}
+                valuta={vehicle.valuta}
+                className="rounded-sm bg-red-500/10 px-3 py-1 text-2xl font-semibold text-red-400"
+              />
             </div>
           ) : (
-            <p className="mt-4 text-2xl font-semibold text-accent">
-              {formatPrice(vehicle.cijena, vehicle.valuta)}
-            </p>
+            <PriceTag
+              cijena={vehicle.cijena}
+              valuta={vehicle.valuta}
+              className="mt-4 block text-2xl font-semibold text-accent"
+            />
           )}
 
           <div className="mt-6 grid grid-cols-2 gap-4 border-y border-border py-6">

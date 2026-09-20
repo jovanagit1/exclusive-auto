@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Logo from "./Logo";
+import CurrencyToggle from "./CurrencyToggle";
 
 const links = [
   { href: "/", label: "Početna" },
@@ -55,6 +56,8 @@ export default function Header() {
             );
           })}
         </nav>
+
+        <CurrencyToggle className="hidden md:flex" />
 
         <Link
           href="/sacuvana-vozila"
@@ -117,6 +120,12 @@ export default function Header() {
             <SrceIkonica className="h-4 w-4" />
             Sačuvana vozila
           </Link>
+          <div className="flex items-center justify-between py-3">
+            <span className="text-sm uppercase tracking-wider text-foreground/85">
+              Prikaz cijena
+            </span>
+            <CurrencyToggle />
+          </div>
           <Link
             href="/probna-voznja"
             onClick={() => setOpen(false)}

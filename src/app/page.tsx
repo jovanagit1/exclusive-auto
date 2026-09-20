@@ -120,6 +120,52 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* PRODAJ/ZAMIJENI VOZILO */}
+      <section className="border-t border-border bg-surface">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 py-16 md:flex-row md:items-center md:justify-between md:px-8">
+          <div className="max-w-xl">
+            <p className="section-label">Za vlasnike vozila</p>
+            <h2 className="font-display mt-2 text-3xl">
+              Prodaj ili zamijeni svoje vozilo
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-foreground/70">
+              Ne živite u Banjoj Luci? Nije problem — pošaljite nam podatke i
+              fotografije vašeg vozila, mi vam se javljamo sa procjenom, a vi
+              birate da li vam više odgovara prodaja ili zamjena za neko od
+              vozila iz naše ponude.
+            </p>
+          </div>
+          <Link href="/prodaj-vozilo" className="btn-primary shrink-0">
+            Prodaj ili zamijeni vozilo
+          </Link>
+        </div>
+      </section>
+
+      {/* SEO — prirodan tekst o ponudi, pomaže Google-u da poveže sajt sa
+          pretragama poput "polovna auta banja luka", "prodaja auta banja
+          luka" i sličnim, bez neprirodnog nabijanja ključnih riječi. */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-4xl px-5 py-16 md:px-8">
+          <p className="section-label">Prodaja polovnih vozila u Banjoj Luci</p>
+          <h2 className="font-display mt-2 text-2xl">
+            Vaš izbor za polovna auta u Banjoj Luci
+          </h2>
+          <p className="mt-5 text-sm leading-relaxed text-foreground/70">
+            Exclusive Auto je adresa za prodaju polovnih automobila u Banjoj
+            Luci — od reprezentativnih limuzina do porodičnih i poslovnih
+            vozila. Svako vozilo iz naše ponude prolazi provjeru tehničkog
+            stanja i porijekla prije nego što uđe u prodaju, tako da kupovinu
+            polovnog auta u Banjoj Luci možete obaviti sigurno i bez brige.
+          </p>
+          <p className="mt-4 text-sm leading-relaxed text-foreground/70">
+            Osim prodaje automobila iz vlastite ponude, bavimo se i uvozom
+            vozila po narudžbi iz Njemačke, Austrije i Švicarske, kompletnom
+            registracijom i pripremom vozila. Posjetite nas u Banjoj Luci ili
+            pregledajte ponudu polovnih auta online, u svakom trenutku.
+          </p>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-5 py-20 text-center md:px-8">
         <p className="section-label">Test vožnja</p>

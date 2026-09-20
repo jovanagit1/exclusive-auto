@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { upload } from "@vercel/blob/client";
 import type { Vehicle } from "@/lib/vehicles";
 import { slugify } from "@/lib/slug";
+import { pripremiSlikuZaUpload } from "@/lib/image-prep";
 
 const GORIVO_OPCIJE = ["Dizel", "Benzin", "Hibrid", "Električni", "Plin (LPG/CNG)"];
 const VALUTA_OPCIJE = ["KM", "EUR"];
@@ -93,42 +94,6 @@ const DODATNA_OPREMA_OPCIJE = [
   "Naslon za ruku",
 ];
 
-/**
- * Smanjuje i kompresuje fotografiju u browseru PRIJE otpremanja.
- * Fotografije sa telefona znaju biti ogromne (i preko 100-200MB u punoj
- * rezoluciji), što je i suvišno za prikaz na sajtu i predugo se učitava
- * posjetiocima. Svodimo na max 1920px po dužoj strani i JPEG kvalitet ~0.85
- * (obično ispod 500KB po slici), uz poštovanje EXIF rotacije sa telefona.
- * Ako iz nekog razloga obrada ne uspije, vraća originalni fajl.
- */
-async function pripremiSlikuZaUpload(file: File, maxDimenzija = 1920, kvalitet = 0.85): Promise<File> {
-  try {
-    const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
-    const razmjera = Math.min(1, maxDimenzija / Math.max(bitmap.width, bitmap.height));
-    const sirina = Math.max(1, Math.round(bitmap.width * razmjera));
-    const visina = Math.max(1, Math.round(bitmap.height * razmjera));
-
-    const canvas = document.createElement("canvas");
-    canvas.width = sirina;
-    canvas.height = visina;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return file;
-    ctx.drawImage(bitmap, 0, 0, sirina, visina);
-    bitmap.close();
-
-    const blob: Blob | null = await new Promise((resolve) =>
-      canvas.toBlob((b) => resolve(b), "image/jpeg", kvalitet)
-    );
-    if (!blob) return file;
-
-    const novoIme = file.name.replace(/\.[^./\\]+$/, "") + ".jpg";
-    return new File([blob], novoIme, { type: "image/jpeg" });
-  } catch (err) {
-    console.warn("Obrada slike nije uspjela, šaljem original:", err);
-    return file;
-  }
-}
-
 const OSTALO = "__ostalo__";
 
 /**
@@ -214,12 +179,22 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
   const [model, setModel] = useState(initial?.model ?? "");
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [slugRucno, setSlugRucno] = useState(false);
-  const [godiste, setGodiste] = useState(initial?.godiste ?? new Date().getFullYear());
-  const [cijena, setCijena] = useState(initial?.cijena ?? 0);
+  // Godište/Cijena/Km/Regularna cijena se čuvaju kao TEKST (ne broj) dok se
+  // unose — da bi polje moglo biti prazno dok admin kuca (broj kao početna
+  // vrijednost bi se prikazivao kao npr. "0" koje se ne može obrisati). U
+  // broj se pretvaraju tek pri čuvanju (handleSubmit ispod).
+  const [godiste, setGodiste] = useState(
+    initial?.godiste !== undefined ? String(initial.godiste) : ""
+  );
+  const [cijena, setCijena] = useState(
+    initial?.cijena !== undefined ? String(initial.cijena) : ""
+  );
   const [valuta, setValuta] = useState(initial?.valuta ?? "KM");
   const [akcija, setAkcija] = useState(Boolean(initial?.akcija));
-  const [regularnaCijena, setRegularnaCijena] = useState(initial?.regularnaCijena ?? 0);
-  const [km, setKm] = useState(initial?.km ?? 0);
+  const [regularnaCijena, setRegularnaCijena] = useState(
+    initial?.regularnaCijena !== undefined ? String(initial.regularnaCijena) : ""
+  );
+  const [km, setKm] = useState(initial?.km !== undefined ? String(initial.km) : "");
   const [gorivo, setGorivo] = useState(initial?.gorivo ?? GORIVO_OPCIJE[0]);
   const [mjenjac, setMjenjac] = useState(initial?.mjenjac ?? "Automatik");
   const [kubikaza, setKubikaza] = useState(initial?.kubikaza ?? "");
@@ -347,6 +322,12 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
 
     if (!slug) {
       setError("Slug (dio adrese) je obavezan.");
+      setSaving(false);
+      return;
+    }
+
+    if (!godiste.trim() || !cijena.trim() || !km.trim()) {
+      setError("Godište, cijena i kilometraža su obavezni.");
       setSaving(false);
       return;
     }
@@ -486,7 +467,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
             required
             type="number"
             value={godiste}
-            onChange={(e) => setGodiste(Number(e.target.value))}
+            onChange={(e) => setGodiste(e.target.value)}
             className="input-field"
           />
         </div>
@@ -500,7 +481,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
               required
               type="number"
               value={cijena}
-              onChange={(e) => setCijena(Number(e.target.value))}
+              onChange={(e) => setCijena(e.target.value)}
               className="input-field"
             />
           </div>
@@ -547,7 +528,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
               <input
                 type="number"
                 value={regularnaCijena}
-                onChange={(e) => setRegularnaCijena(Number(e.target.value))}
+                onChange={(e) => setRegularnaCijena(e.target.value)}
                 placeholder="npr. 45000"
                 className="input-field"
               />
@@ -567,7 +548,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
             required
             type="number"
             value={km}
-            onChange={(e) => setKm(Number(e.target.value))}
+            onChange={(e) => setKm(e.target.value)}
             className="input-field"
           />
         </div>

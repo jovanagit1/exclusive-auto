@@ -20,6 +20,7 @@ export default function Footer() {
             <li><Link href="/vozila" className="hover:text-accent">Vozila</Link></li>
             <li><Link href="/usluge" className="hover:text-accent">Usluge</Link></li>
             <li><Link href="/galerija" className="hover:text-accent">Galerija</Link></li>
+            <li><Link href="/prodaj-vozilo" className="hover:text-accent">Prodaj vozilo</Link></li>
             <li><Link href="/o-nama" className="hover:text-accent">O nama</Link></li>
           </ul>
         </div>
@@ -53,6 +54,9 @@ export default function Footer() {
               >
                 aleksandar.maric@exclusiveautobl.com
               </a>
+            </li>
+            <li className="pt-1 text-xs text-muted">
+              Pon – Pet: 09:00 – 17:00 · Sub: 09:00 – 15:00
             </li>
           </ul>
         </div>

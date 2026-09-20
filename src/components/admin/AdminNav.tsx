@@ -7,6 +7,7 @@ const links = [
   { href: "/admin", label: "Vozila" },
   { href: "/admin/vozila/novo", label: "+ Dodaj vozilo" },
   { href: "/admin/newsletter", label: "Newsletter" },
+  { href: "/admin/otkup", label: "Otkup/zamjena" },
 ];
 
 export default function AdminNav() {

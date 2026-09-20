@@ -4,7 +4,7 @@ import PlaceholderImage from "@/components/PlaceholderImage";
 export const metadata: Metadata = {
   title: "O nama",
   description:
-    "Upoznajte Exclusive Auto — ko smo, kako radimo i zašto nam klijenti vjeruju.",
+    "Upoznajte Exclusive Auto — prodavca polovnih vozila u Banjoj Luci. Ko smo, kako radimo i zašto nam klijenti vjeruju.",
 };
 
 const values = [

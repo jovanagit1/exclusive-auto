@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Vehicle, formatPrice } from "@/lib/vehicles";
+import type { Vehicle } from "@/lib/vehicles";
 import VehicleImage from "./VehicleImage";
 import FavoriteButton from "./FavoriteButton";
+import PriceTag from "./PriceTag";
 
 export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
   const naAkciji = Boolean(vehicle.akcija && vehicle.regularnaCijena);
@@ -34,17 +35,23 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
         <div className="mt-4 flex items-center justify-between">
           {naAkciji ? (
             <span className="flex flex-wrap items-baseline gap-2">
-              <span className="text-xs text-muted line-through">
-                {formatPrice(vehicle.regularnaCijena!, vehicle.valuta)}
-              </span>
-              <span className="text-lg font-semibold text-red-400">
-                {formatPrice(vehicle.cijena, vehicle.valuta)}
-              </span>
+              <PriceTag
+                cijena={vehicle.regularnaCijena!}
+                valuta={vehicle.valuta}
+                className="text-xs text-muted line-through"
+              />
+              <PriceTag
+                cijena={vehicle.cijena}
+                valuta={vehicle.valuta}
+                className="text-lg font-semibold text-red-400"
+              />
             </span>
           ) : (
-            <span className="text-lg font-semibold text-accent">
-              {formatPrice(vehicle.cijena, vehicle.valuta)}
-            </span>
+            <PriceTag
+              cijena={vehicle.cijena}
+              valuta={vehicle.valuta}
+              className="text-lg font-semibold text-accent"
+            />
           )}
           <span className="text-xs uppercase tracking-wider text-foreground/70 group-hover:text-accent">
             Detalji →
