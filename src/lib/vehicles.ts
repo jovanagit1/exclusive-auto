@@ -8,13 +8,51 @@ export type Vehicle = {
   km: number;
   gorivo: string;
   mjenjac: string;
+  /** Snaga motora u konjskim snagama, npr. "194 KS" — postojeće polje. */
   snaga: string;
+  /** Snaga motora u kilovatima (kW) — samo broj, npr. "143". */
+  snagaKw?: string;
+  /** Kubikaža motora u cm³, npr. "1998". */
+  kubikaza?: string;
+  /** Tip karoserije, npr. "Limuzina", "SUV/Terensko"... */
+  tipKaroserije?: string;
+  /** Pogon: prednji / zadnji / 4x4. */
+  pogon?: string;
+  /** Broj vrata. */
+  brojVrata?: string;
   boja: string;
   opis: string;
   oprema: string[];
   istaknuto?: boolean;
   /** URL-ovi slika (Vercel Blob) — prva slika se koristi kao naslovna. */
   slike?: string[];
+
+  // --- Dodatne informacije (padajući meniji admin panela) ---
+  tipOvjesa?: string;
+  /** Masa/težina vozila u kg. */
+  masa?: string;
+  garancija?: string;
+  svjetla?: string;
+  /** Broj sjedećih mjesta. */
+  brojSjedista?: string;
+  zastitaBlokada?: string;
+  brojStepeniPrijenosa?: string;
+  posjedujeGume?: string;
+  emisioniStandard?: string;
+  brojPrethodnihVlasnika?: string;
+  velicinaFelgi?: string;
+  klimatizacija?: string;
+  muzikaOzvucenje?: string;
+  parkingSenzori?: string;
+  parkingKamera?: string;
+  vrstaEnterijera?: string;
+  roloZavjese?: string;
+  kupiNaLeasing?: string;
+  godinaPrveRegistracije?: string;
+  registrovanDo?: string;
+
+  /** Dodatna oprema/karakteristike označene kvačicom u admin panelu. */
+  dodatnaOprema?: string[];
 };
 
 // PRIMJER / PLACEHOLDER PODACI — zamijenite stvarnim vozilima iz vaše ponude.

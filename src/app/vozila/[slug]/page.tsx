@@ -37,9 +37,43 @@ export default async function VehicleDetailPage({
     ["Kilometraža", `${vehicle.km.toLocaleString("de-DE")} km`],
     ["Gorivo", vehicle.gorivo],
     ["Mjenjač", vehicle.mjenjac],
-    ["Snaga", vehicle.snaga],
+    ...(vehicle.kubikaza ? ([["Kubikaža", `${vehicle.kubikaza} cm³`]] as [string, string][]) : []),
+    ["Snaga", vehicle.snagaKw ? `${vehicle.snaga} (${vehicle.snagaKw} kW)` : vehicle.snaga],
+    ...(vehicle.tipKaroserije ? ([["Tip", vehicle.tipKaroserije]] as [string, string][]) : []),
+    ...(vehicle.pogon ? ([["Pogon", vehicle.pogon]] as [string, string][]) : []),
+    ...(vehicle.brojVrata ? ([["Broj vrata", vehicle.brojVrata]] as [string, string][]) : []),
     ["Boja", vehicle.boja],
   ];
+
+  // Sve popunjene "Dodatne informacije" (padajući meniji iz admin panela) —
+  // prikazuju se samo one stavke koje su za ovo vozilo unijete.
+  const sveDodatneInformacije: [string, string][] = [
+    ["Tip ovjesa", vehicle.tipOvjesa ?? ""],
+    ["Masa/Težina", vehicle.masa ? `${vehicle.masa} kg` : ""],
+    ["Garancija", vehicle.garancija ?? ""],
+    ["Svjetla", vehicle.svjetla ?? ""],
+    ["Sjedećih mjesta", vehicle.brojSjedista ?? ""],
+    ["Zaštita/Blokada", vehicle.zastitaBlokada ?? ""],
+    ["Broj stepeni prijenosa", vehicle.brojStepeniPrijenosa ?? ""],
+    ["Posjeduje gume", vehicle.posjedujeGume ?? ""],
+    ["Emisioni standard", vehicle.emisioniStandard ?? ""],
+    ["Broj prethodnih vlasnika", vehicle.brojPrethodnihVlasnika ?? ""],
+    ["Veličina felgi", vehicle.velicinaFelgi ?? ""],
+    ["Klimatizacija", vehicle.klimatizacija ?? ""],
+    ["Muzika/ozvučenje", vehicle.muzikaOzvucenje ?? ""],
+    ["Parking senzori", vehicle.parkingSenzori ?? ""],
+    ["Parking kamera", vehicle.parkingKamera ?? ""],
+    ["Vrsta enterijera", vehicle.vrstaEnterijera ?? ""],
+    ["Rolo zavjese", vehicle.roloZavjese ?? ""],
+    ["Kupi na leasing", vehicle.kupiNaLeasing ?? ""],
+    ["Godina prve registracije", vehicle.godinaPrveRegistracije ?? ""],
+    ["Registrovan do", vehicle.registrovanDo ?? ""],
+  ];
+  const dodatneInformacije = sveDodatneInformacije.filter(
+    ([, vrijednost]) => vrijednost !== ""
+  );
+
+  const dodatnaOprema = vehicle.dodatnaOprema ?? [];
 
   const dodatneSlike = (vehicle.slike ?? []).slice(1);
 
@@ -109,6 +143,20 @@ export default async function VehicleDetailPage({
             ))}
           </ul>
 
+          {dodatnaOprema.length > 0 && (
+            <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-2">
+              {dodatnaOprema.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-center gap-2 text-sm text-foreground/80"
+                >
+                  <span className="h-1 w-1 rounded-full bg-accent" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+
           <div className="mt-8 flex flex-wrap gap-4">
             <Link href="/probna-voznja" className="btn-primary">
               Zakaži probnu vožnju
@@ -119,6 +167,23 @@ export default async function VehicleDetailPage({
           </div>
         </div>
       </div>
+
+      {dodatneInformacije.length > 0 && (
+        <div className="mt-14 border-t border-border pt-10">
+          <p className="section-label">Detalji</p>
+          <h2 className="font-display mt-2 text-2xl">Dodatne informacije</h2>
+          <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3 md:grid-cols-4">
+            {dodatneInformacije.map(([label, value]) => (
+              <div key={label}>
+                <p className="text-xs uppercase tracking-wider text-muted">
+                  {label}
+                </p>
+                <p className="mt-1 text-sm text-foreground">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

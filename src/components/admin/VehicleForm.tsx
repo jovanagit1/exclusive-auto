@@ -8,6 +8,203 @@ import { slugify } from "@/lib/slug";
 
 const GORIVO_OPCIJE = ["Dizel", "Benzin", "Hibrid", "Električni", "Plin (LPG/CNG)"];
 const VALUTA_OPCIJE = ["KM", "EUR"];
+const MJENJAC_OPCIJE = ["Automatik", "Manuelni"];
+
+const MARKE_LISTA = [
+  "Abarth", "Alfa Romeo", "Aston Martin", "Audi", "Bentley", "BMW", "BYD",
+  "Cadillac", "Chevrolet", "Chrysler", "Citroën", "Cupra", "Dacia", "Daewoo",
+  "Daihatsu", "Dodge", "DS", "Ferrari", "Fiat", "Ford", "Honda", "Hyundai",
+  "Infiniti", "Isuzu", "Iveco", "Jaguar", "Jeep", "Kia", "Lada", "Lamborghini",
+  "Lancia", "Land Rover", "Lexus", "Maserati", "Mazda", "Mercedes-Benz", "MG",
+  "Mini", "Mitsubishi", "Nissan", "Opel", "Peugeot", "Polestar", "Porsche",
+  "Renault", "Rover", "Saab", "Seat", "Škoda", "Smart", "SsangYong", "Subaru",
+  "Suzuki", "Tesla", "Toyota", "Volkswagen", "Volvo",
+];
+
+const TIP_KAROSERIJE_OPCIJE = [
+  "Limuzina", "Karavan (Combi)", "Hečbek", "SUV/Terensko", "Kupe",
+  "Kabriolet/Roadster", "Monovolumen (Van)", "Pickup",
+];
+const POGON_OPCIJE = ["Prednji", "Zadnji", "4x4 (AWD)"];
+const BROJ_VRATA_OPCIJE = ["2", "3", "4", "5"];
+const KUBIKAZA_OPCIJE = [
+  "900", "999", "1000", "1100", "1150", "1200", "1242", "1248", "1298",
+  "1332", "1360", "1398", "1461", "1499", "1560", "1598", "1600", "1700",
+  "1795", "1798", "1900", "1968", "1995", "1997", "1998", "1999", "2000",
+  "2143", "2179", "2198", "2200", "2295", "2300", "2400", "2497", "2500",
+  "2700", "2800", "2925", "2967", "2993", "2996", "2998", "3000", "3200",
+  "3498", "3500", "3600", "3982", "3996", "4000", "4200", "4400", "4600",
+  "5000", "5461", "5935", "6000",
+];
+const TIP_OVJESA_OPCIJE = [
+  "Standardno (opružno)", "Sportsko", "Pneumatsko (Air suspension)",
+  "Podesivo/adaptivno",
+];
+const GARANCIJA_OPCIJE = [
+  "Bez garancije", "Garancija do 6 mjeseci", "Garancija do 12 mjeseci",
+  "Garancija do 24 mjeseca", "Fabrička garancija (u toku)",
+];
+const SVJETLA_OPCIJE = ["Halogena", "Ksenon (Xenon)", "LED", "Full LED", "Matrix LED", "Laser"];
+const BROJ_SJEDISTA_OPCIJE = ["2", "4", "5", "6", "7", "8", "9"];
+const ZASTITA_BLOKADA_OPCIJE = [
+  "Alarm", "Imobilajzer", "Blokada mjenjača", "Blokada volana", "GPS lokator", "Nema",
+];
+const BROJ_STEPENI_OPCIJE = ["4", "5", "6", "7", "8", "9", "10", "CVT (bestepeni)"];
+const POSJEDUJE_GUME_OPCIJE = [
+  "Ljetne", "Zimske", "Cjelogodišnje (4 sezone)", "Ljetne i zimske (dva seta)",
+];
+const EMISIONI_STANDARD_OPCIJE = ["Euro 3", "Euro 4", "Euro 5", "Euro 6", "Euro 6d"];
+const BROJ_VLASNIKA_OPCIJE = ["1", "2", "3", "4", "5 i više"];
+const VELICINA_FELGI_OPCIJE = ['14"', '15"', '16"', '17"', '18"', '19"', '20"', '21"', '22"'];
+const KLIMATIZACIJA_OPCIJE = [
+  "Nema", "Manuelna", "Automatska (1 zona)", "Automatska (2 zone)",
+  "Automatska (3 zone)", "Automatska (4 zone)",
+];
+const MUZIKA_OPCIJE = [
+  "Standardno ozvučenje", "Premium ozvučenje (npr. Bose, Harman Kardon, B&O)", "Bez radija",
+];
+const PARKING_SENZORI_OPCIJE = ["Nema", "Prednji", "Zadnji", "Prednji i zadnji"];
+const PARKING_KAMERA_OPCIJE = ["Nema", "Zadnja", "Prednja i zadnja", "360°"];
+const VRSTA_ENTERIJERA_OPCIJE = ["Tkanina", "Koža", "Kombinovano (koža/tkanina)", "Alcantara"];
+const ROLO_ZAVJESE_OPCIJE = ["Nema", "Zadnja bočna stakla", "Zadnje staklo", "Sva zadnja stakla"];
+const DA_NE_OPCIJE = ["Da", "Ne"];
+
+const TEKUCA_GODINA = new Date().getFullYear();
+const GODINA_REGISTRACIJE_OPCIJE = Array.from({ length: 40 }, (_, i) =>
+  String(TEKUCA_GODINA - i)
+);
+const REGISTROVAN_DO_OPCIJE = [
+  "Nije registrovan",
+  ...Array.from({ length: 3 }, (_, i) => String(TEKUCA_GODINA + i)),
+];
+
+// Sve stavke koje admin može jednostavno označiti kvačicom (checkbox).
+const DODATNA_OPREMA_OPCIJE = [
+  "Servisna knjiga", "Registrovan", "Ocarinjen", "Strane tablice", "Na lizingu",
+  "Auto kuka", "Udaren", "Prilagođen invalidima", "Oldtimer",
+  "Metalik", "Alu felge", "Digitalna klima", "Komande na volanu",
+  "Tempomat", "Start-Stop sistem", "Hill assist",
+  "Navigacija", "Touch screen (ekran)", "Head up display", "USB port",
+  "Bluetooth", "Car play",
+  "Alarm", "Senzor kiše", "Senzor auto. svjetla", "Senzor mrtvog ugla", "Park assist",
+  "Panorama krov", "Šiber", "Maglenke", "Električni retrovizori",
+  "El. podizači stakala", "El. pomjeranje sjedišta",
+  "Memorija sjedišta", "Masaža sjedišta", "Grijanje sjedišta", "Hlađenje sjedišta",
+  "Naslon za ruku",
+];
+
+/**
+ * Smanjuje i kompresuje fotografiju u browseru PRIJE otpremanja.
+ * Fotografije sa telefona znaju biti ogromne (i preko 100-200MB u punoj
+ * rezoluciji), što je i suvišno za prikaz na sajtu i predugo se učitava
+ * posjetiocima. Svodimo na max 1920px po dužoj strani i JPEG kvalitet ~0.85
+ * (obično ispod 500KB po slici), uz poštovanje EXIF rotacije sa telefona.
+ * Ako iz nekog razloga obrada ne uspije, vraća originalni fajl.
+ */
+async function pripremiSlikuZaUpload(file: File, maxDimenzija = 1920, kvalitet = 0.85): Promise<File> {
+  try {
+    const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    const razmjera = Math.min(1, maxDimenzija / Math.max(bitmap.width, bitmap.height));
+    const sirina = Math.max(1, Math.round(bitmap.width * razmjera));
+    const visina = Math.max(1, Math.round(bitmap.height * razmjera));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = sirina;
+    canvas.height = visina;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, sirina, visina);
+    bitmap.close();
+
+    const blob: Blob | null = await new Promise((resolve) =>
+      canvas.toBlob((b) => resolve(b), "image/jpeg", kvalitet)
+    );
+    if (!blob) return file;
+
+    const novoIme = file.name.replace(/\.[^./\\]+$/, "") + ".jpg";
+    return new File([blob], novoIme, { type: "image/jpeg" });
+  } catch (err) {
+    console.warn("Obrada slike nije uspjela, šaljem original:", err);
+    return file;
+  }
+}
+
+const OSTALO = "__ostalo__";
+
+/**
+ * Padajući meni sa unaprijed pripremljenim opcijama, uz mogućnost da admin
+ * odabere "Ostalo" i sam upiše vrijednost koje nema na listi. Ako vozilo već
+ * ima neku vrijednost koja nije na listi (npr. stari upisani podatak), polje
+ * se automatski otvara u režimu ručnog unosa da se taj podatak ne izgubi.
+ */
+function IzborSaListe({
+  label,
+  value,
+  onChange,
+  opcije,
+  required,
+  placeholderRucno,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  opcije: string[];
+  required?: boolean;
+  placeholderRucno?: string;
+}) {
+  const [rucniUnos, setRucniUnos] = useState(value !== "" && !opcije.includes(value));
+
+  return (
+    <div>
+      <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
+        {label}
+      </label>
+      {rucniUnos ? (
+        <div className="flex gap-2">
+          <input
+            required={required}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={placeholderRucno ?? "Upišite vrijednost"}
+            className="input-field"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              setRucniUnos(false);
+              onChange("");
+            }}
+            className="btn-outline whitespace-nowrap px-3 text-xs"
+          >
+            Lista
+          </button>
+        </div>
+      ) : (
+        <select
+          required={required}
+          value={value}
+          onChange={(e) => {
+            if (e.target.value === OSTALO) {
+              setRucniUnos(true);
+              onChange("");
+            } else {
+              onChange(e.target.value);
+            }
+          }}
+          className="input-field"
+        >
+          <option value="">— izaberite —</option>
+          {opcije.map((o) => (
+            <option key={o} value={o}>
+              {o}
+            </option>
+          ))}
+          <option value={OSTALO}>Ostalo (upiši ručno)...</option>
+        </select>
+      )}
+    </div>
+  );
+}
 
 export default function VehicleForm({ initial }: { initial?: Vehicle }) {
   const router = useRouter();
@@ -23,13 +220,49 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
   const [km, setKm] = useState(initial?.km ?? 0);
   const [gorivo, setGorivo] = useState(initial?.gorivo ?? GORIVO_OPCIJE[0]);
   const [mjenjac, setMjenjac] = useState(initial?.mjenjac ?? "Automatik");
+  const [kubikaza, setKubikaza] = useState(initial?.kubikaza ?? "");
   const [snaga, setSnaga] = useState(initial?.snaga ?? "");
+  const [snagaKw, setSnagaKw] = useState(initial?.snagaKw ?? "");
+  const [tipKaroserije, setTipKaroserije] = useState(initial?.tipKaroserije ?? "");
+  const [pogon, setPogon] = useState(initial?.pogon ?? "");
+  const [brojVrata, setBrojVrata] = useState(initial?.brojVrata ?? "");
   const [boja, setBoja] = useState(initial?.boja ?? "");
   const [opis, setOpis] = useState(initial?.opis ?? "");
   const [oprema, setOprema] = useState((initial?.oprema ?? []).join("\n"));
   const [istaknuto, setIstaknuto] = useState(Boolean(initial?.istaknuto));
   const [slike, setSlike] = useState<string[]>(initial?.slike ?? []);
   const [posaljiNewsletter, setPosaljiNewsletter] = useState(false);
+
+  // Dodatne informacije (padajući meniji)
+  const [tipOvjesa, setTipOvjesa] = useState(initial?.tipOvjesa ?? "");
+  const [masa, setMasa] = useState(initial?.masa ?? "");
+  const [garancija, setGarancija] = useState(initial?.garancija ?? "");
+  const [svjetla, setSvjetla] = useState(initial?.svjetla ?? "");
+  const [brojSjedista, setBrojSjedista] = useState(initial?.brojSjedista ?? "");
+  const [zastitaBlokada, setZastitaBlokada] = useState(initial?.zastitaBlokada ?? "");
+  const [brojStepeniPrijenosa, setBrojStepeniPrijenosa] = useState(
+    initial?.brojStepeniPrijenosa ?? ""
+  );
+  const [posjedujeGume, setPosjedujeGume] = useState(initial?.posjedujeGume ?? "");
+  const [emisioniStandard, setEmisioniStandard] = useState(initial?.emisioniStandard ?? "");
+  const [brojPrethodnihVlasnika, setBrojPrethodnihVlasnika] = useState(
+    initial?.brojPrethodnihVlasnika ?? ""
+  );
+  const [velicinaFelgi, setVelicinaFelgi] = useState(initial?.velicinaFelgi ?? "");
+  const [klimatizacija, setKlimatizacija] = useState(initial?.klimatizacija ?? "");
+  const [muzikaOzvucenje, setMuzikaOzvucenje] = useState(initial?.muzikaOzvucenje ?? "");
+  const [parkingSenzori, setParkingSenzori] = useState(initial?.parkingSenzori ?? "");
+  const [parkingKamera, setParkingKamera] = useState(initial?.parkingKamera ?? "");
+  const [vrstaEnterijera, setVrstaEnterijera] = useState(initial?.vrstaEnterijera ?? "");
+  const [roloZavjese, setRoloZavjese] = useState(initial?.roloZavjese ?? "");
+  const [kupiNaLeasing, setKupiNaLeasing] = useState(initial?.kupiNaLeasing ?? "");
+  const [godinaPrveRegistracije, setGodinaPrveRegistracije] = useState(
+    initial?.godinaPrveRegistracije ?? ""
+  );
+  const [registrovanDo, setRegistrovanDo] = useState(initial?.registrovanDo ?? "");
+
+  // Dodatna oprema (kvačice)
+  const [dodatnaOprema, setDodatnaOprema] = useState<string[]>(initial?.dodatnaOprema ?? []);
 
   const [uploading, setUploading] = useState(false);
   const [uploadProgres, setUploadProgres] = useState("");
@@ -45,6 +278,12 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
     }
   }
 
+  function prekidaciDodatnaOprema(stavka: string, cekirano: boolean) {
+    setDodatnaOprema((prev) =>
+      cekirano ? [...prev, stavka] : prev.filter((s) => s !== stavka)
+    );
+  }
+
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
     if (files.length === 0) return;
@@ -57,11 +296,13 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
     const nove: string[] = [];
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      setUploadProgres(`Otpremam sliku ${i + 1} od ${files.length}...`);
       try {
+        setUploadProgres(`Obrađujem sliku ${i + 1} od ${files.length}...`);
+        const spremnaSlika = await pripremiSlikuZaUpload(file);
+        setUploadProgres(`Otpremam sliku ${i + 1} od ${files.length}...`);
         const blob = await upload(
-          `vozila/${slug}/${Date.now()}-${i}-${file.name}`,
-          file,
+          `vozila/${slug}/${Date.now()}-${i}-${spremnaSlika.name}`,
+          spremnaSlika,
           {
             access: "public",
             handleUploadUrl: "/api/admin/blob-upload",
@@ -118,7 +359,12 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
       km: Number(km),
       gorivo,
       mjenjac,
+      kubikaza: kubikaza || undefined,
       snaga,
+      snagaKw: snagaKw || undefined,
+      tipKaroserije: tipKaroserije || undefined,
+      pogon: pogon || undefined,
+      brojVrata: brojVrata || undefined,
       boja,
       opis,
       oprema: oprema
@@ -127,6 +373,29 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
         .filter(Boolean),
       istaknuto,
       slike,
+
+      tipOvjesa: tipOvjesa || undefined,
+      masa: masa || undefined,
+      garancija: garancija || undefined,
+      svjetla: svjetla || undefined,
+      brojSjedista: brojSjedista || undefined,
+      zastitaBlokada: zastitaBlokada || undefined,
+      brojStepeniPrijenosa: brojStepeniPrijenosa || undefined,
+      posjedujeGume: posjedujeGume || undefined,
+      emisioniStandard: emisioniStandard || undefined,
+      brojPrethodnihVlasnika: brojPrethodnihVlasnika || undefined,
+      velicinaFelgi: velicinaFelgi || undefined,
+      klimatizacija: klimatizacija || undefined,
+      muzikaOzvucenje: muzikaOzvucenje || undefined,
+      parkingSenzori: parkingSenzori || undefined,
+      parkingKamera: parkingKamera || undefined,
+      vrstaEnterijera: vrstaEnterijera || undefined,
+      roloZavjese: roloZavjese || undefined,
+      kupiNaLeasing: kupiNaLeasing || undefined,
+      godinaPrveRegistracije: godinaPrveRegistracije || undefined,
+      registrovanDo: registrovanDo || undefined,
+
+      dodatnaOprema,
     };
 
     try {
@@ -154,7 +423,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-10">
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
@@ -162,10 +431,17 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
           </label>
           <input
             required
+            list="lista-marki"
             value={marka}
             onChange={(e) => handleMarkaModelChange(e.target.value, model)}
             className="input-field"
+            placeholder="Počnite kucati ili izaberite sa liste"
           />
+          <datalist id="lista-marki">
+            {MARKE_LISTA.map((m) => (
+              <option key={m} value={m} />
+            ))}
+          </datalist>
         </div>
         <div>
           <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
@@ -272,20 +548,24 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
           </select>
         </div>
 
-        <div>
-          <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
-            Mjenjač
-          </label>
-          <input
-            value={mjenjac}
-            onChange={(e) => setMjenjac(e.target.value)}
-            className="input-field"
-          />
-        </div>
+        <IzborSaListe
+          label="Mjenjač"
+          value={mjenjac}
+          onChange={setMjenjac}
+          opcije={MJENJAC_OPCIJE}
+        />
+
+        <IzborSaListe
+          label="Kubikaža (cm³)"
+          value={kubikaza}
+          onChange={setKubikaza}
+          opcije={KUBIKAZA_OPCIJE}
+          placeholderRucno="npr. 1998"
+        />
 
         <div>
           <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
-            Snaga
+            Snaga (KS)
           </label>
           <input
             value={snaga}
@@ -294,6 +574,39 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
             className="input-field"
           />
         </div>
+
+        <div>
+          <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
+            Snaga (kW)
+          </label>
+          <input
+            value={snagaKw}
+            onChange={(e) => setSnagaKw(e.target.value)}
+            placeholder="npr. 143"
+            className="input-field"
+          />
+        </div>
+
+        <IzborSaListe
+          label="Tip (karoserija)"
+          value={tipKaroserije}
+          onChange={setTipKaroserije}
+          opcije={TIP_KAROSERIJE_OPCIJE}
+        />
+
+        <IzborSaListe
+          label="Pogon"
+          value={pogon}
+          onChange={setPogon}
+          opcije={POGON_OPCIJE}
+        />
+
+        <IzborSaListe
+          label="Broj vrata"
+          value={brojVrata}
+          onChange={setBrojVrata}
+          opcije={BROJ_VRATA_OPCIJE}
+        />
 
         <div>
           <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
@@ -338,6 +651,68 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
           />
           Prikaži kao izdvojeno vozilo na naslovnoj
         </label>
+      </div>
+
+      <div className="border-t border-border pt-6">
+        <h2 className="font-display text-lg text-foreground">Dodatne informacije</h2>
+        <p className="mt-1 text-xs text-muted">
+          Popunite samo ono što je poznato za ovo vozilo — ostalo ostavite prazno.
+        </p>
+
+        <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <IzborSaListe label="Tip ovjesa" value={tipOvjesa} onChange={setTipOvjesa} opcije={TIP_OVJESA_OPCIJE} />
+
+          <div>
+            <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
+              Masa/Težina (kg)
+            </label>
+            <input
+              type="number"
+              value={masa}
+              onChange={(e) => setMasa(e.target.value)}
+              className="input-field"
+            />
+          </div>
+
+          <IzborSaListe label="Garancija" value={garancija} onChange={setGarancija} opcije={GARANCIJA_OPCIJE} />
+          <IzborSaListe label="Svjetla" value={svjetla} onChange={setSvjetla} opcije={SVJETLA_OPCIJE} />
+          <IzborSaListe label="Sjedećih mjesta" value={brojSjedista} onChange={setBrojSjedista} opcije={BROJ_SJEDISTA_OPCIJE} />
+          <IzborSaListe label="Zaštita/Blokada" value={zastitaBlokada} onChange={setZastitaBlokada} opcije={ZASTITA_BLOKADA_OPCIJE} />
+          <IzborSaListe label="Broj stepeni prijenosa" value={brojStepeniPrijenosa} onChange={setBrojStepeniPrijenosa} opcije={BROJ_STEPENI_OPCIJE} />
+          <IzborSaListe label="Posjeduje gume" value={posjedujeGume} onChange={setPosjedujeGume} opcije={POSJEDUJE_GUME_OPCIJE} />
+          <IzborSaListe label="Emisioni standard" value={emisioniStandard} onChange={setEmisioniStandard} opcije={EMISIONI_STANDARD_OPCIJE} />
+          <IzborSaListe label="Broj prethodnih vlasnika" value={brojPrethodnihVlasnika} onChange={setBrojPrethodnihVlasnika} opcije={BROJ_VLASNIKA_OPCIJE} />
+          <IzborSaListe label="Veličina felgi" value={velicinaFelgi} onChange={setVelicinaFelgi} opcije={VELICINA_FELGI_OPCIJE} />
+          <IzborSaListe label="Klimatizacija" value={klimatizacija} onChange={setKlimatizacija} opcije={KLIMATIZACIJA_OPCIJE} />
+          <IzborSaListe label="Muzika/ozvučenje" value={muzikaOzvucenje} onChange={setMuzikaOzvucenje} opcije={MUZIKA_OPCIJE} />
+          <IzborSaListe label="Parking senzori" value={parkingSenzori} onChange={setParkingSenzori} opcije={PARKING_SENZORI_OPCIJE} />
+          <IzborSaListe label="Parking kamera" value={parkingKamera} onChange={setParkingKamera} opcije={PARKING_KAMERA_OPCIJE} />
+          <IzborSaListe label="Vrsta enterijera" value={vrstaEnterijera} onChange={setVrstaEnterijera} opcije={VRSTA_ENTERIJERA_OPCIJE} />
+          <IzborSaListe label="Rolo zavjese" value={roloZavjese} onChange={setRoloZavjese} opcije={ROLO_ZAVJESE_OPCIJE} />
+          <IzborSaListe label="Kupi na leasing" value={kupiNaLeasing} onChange={setKupiNaLeasing} opcije={DA_NE_OPCIJE} />
+          <IzborSaListe label="Godina prve registracije" value={godinaPrveRegistracije} onChange={setGodinaPrveRegistracije} opcije={GODINA_REGISTRACIJE_OPCIJE} />
+          <IzborSaListe label="Registrovan do" value={registrovanDo} onChange={setRegistrovanDo} opcije={REGISTROVAN_DO_OPCIJE} />
+        </div>
+      </div>
+
+      <div className="border-t border-border pt-6">
+        <h2 className="font-display text-lg text-foreground">Dodatna oprema</h2>
+        <p className="mt-1 text-xs text-muted">
+          Označite kvačicom sve što vozilo posjeduje.
+        </p>
+
+        <div className="mt-5 grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+          {DODATNA_OPREMA_OPCIJE.map((stavka) => (
+            <label key={stavka} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={dodatnaOprema.includes(stavka)}
+                onChange={(e) => prekidaciDodatnaOprema(stavka, e.target.checked)}
+              />
+              {stavka}
+            </label>
+          ))}
+        </div>
       </div>
 
       <div className="border-t border-border pt-6">

@@ -25,7 +25,7 @@ export async function POST(request: Request): Promise<NextResponse> {
             "image/avif",
           ],
           addRandomSuffix: true,
-          maximumSizeInBytes: 15 * 1024 * 1024, // 15MB po slici
+          maximumSizeInBytes: 25 * 1024 * 1024, // 25MB po slici (sigurnosna margina — slike se prije ovoga smanjuju u browseru)
         };
       },
       onUploadCompleted: async ({ blob }) => {
