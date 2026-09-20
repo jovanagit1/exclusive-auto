@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatPrice } from "@/lib/vehicles";
+import { formatPrice, formatKubikaza, formatSnaga } from "@/lib/vehicles";
 import { getVehicleBySlug } from "@/lib/store";
-import VehicleImage from "@/components/VehicleImage";
+import VehicleGallery from "@/components/VehicleGallery";
 
 // Vozila se mogu dodati/izmijeniti u svakom trenutku preko admin panela,
 // pa ova stranica uvijek učitava svježe podatke (bez statičkog keširanja).
@@ -37,8 +37,8 @@ export default async function VehicleDetailPage({
     ["Kilometraža", `${vehicle.km.toLocaleString("de-DE")} km`],
     ["Gorivo", vehicle.gorivo],
     ["Mjenjač", vehicle.mjenjac],
-    ...(vehicle.kubikaza ? ([["Kubikaža", `${vehicle.kubikaza} cm³`]] as [string, string][]) : []),
-    ["Snaga", vehicle.snagaKw ? `${vehicle.snaga} (${vehicle.snagaKw} kW)` : vehicle.snaga],
+    ...(vehicle.kubikaza ? ([["Kubikaža", formatKubikaza(vehicle.kubikaza)]] as [string, string][]) : []),
+    ["Snaga", formatSnaga(vehicle.snaga, vehicle.snagaKw)],
     ...(vehicle.tipKaroserije ? ([["Tip", vehicle.tipKaroserije]] as [string, string][]) : []),
     ...(vehicle.pogon ? ([["Pogon", vehicle.pogon]] as [string, string][]) : []),
     ...(vehicle.brojVrata ? ([["Broj vrata", vehicle.brojVrata]] as [string, string][]) : []),
@@ -75,7 +75,7 @@ export default async function VehicleDetailPage({
 
   const dodatnaOprema = vehicle.dodatnaOprema ?? [];
 
-  const dodatneSlike = (vehicle.slike ?? []).slice(1);
+  const naAkciji = Boolean(vehicle.akcija && vehicle.regularnaCijena);
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
@@ -88,33 +88,36 @@ export default async function VehicleDetailPage({
 
       <div className="mt-6 grid gap-10 md:grid-cols-2">
         <div>
-          <VehicleImage
+          <VehicleGallery
             slike={vehicle.slike}
             label={`${vehicle.marka} ${vehicle.model}`}
-            ratio="aspect-[4/3]"
           />
-          {dodatneSlike.length > 0 && (
-            <div className="mt-3 grid grid-cols-4 gap-2">
-              {dodatneSlike.slice(0, 8).map((src, i) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  key={src + i}
-                  src={src}
-                  alt={`${vehicle.marka} ${vehicle.model} — slika ${i + 2}`}
-                  className="aspect-square w-full rounded-sm border border-border object-cover"
-                  loading="lazy"
-                />
-              ))}
-            </div>
-          )}
         </div>
 
         <div>
-          <p className="section-label">{vehicle.marka}</p>
+          <div className="flex items-center gap-3">
+            <p className="section-label">{vehicle.marka}</p>
+            {naAkciji && (
+              <span className="rounded-sm bg-red-500/15 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-red-400">
+                Akcija
+              </span>
+            )}
+          </div>
           <h1 className="font-display mt-2 text-3xl">{vehicle.model}</h1>
-          <p className="mt-4 text-2xl font-semibold text-accent">
-            {formatPrice(vehicle.cijena, vehicle.valuta)}
-          </p>
+          {naAkciji ? (
+            <div className="mt-4 flex flex-wrap items-baseline gap-3">
+              <p className="text-lg text-muted line-through">
+                {formatPrice(vehicle.regularnaCijena!, vehicle.valuta)}
+              </p>
+              <p className="rounded-sm bg-red-500/10 px-3 py-1 text-2xl font-semibold text-red-400">
+                {formatPrice(vehicle.cijena, vehicle.valuta)}
+              </p>
+            </div>
+          ) : (
+            <p className="mt-4 text-2xl font-semibold text-accent">
+              {formatPrice(vehicle.cijena, vehicle.valuta)}
+            </p>
+          )}
 
           <div className="mt-6 grid grid-cols-2 gap-4 border-y border-border py-6">
             {specs.map(([label, value]) => (

@@ -22,14 +22,19 @@ export default function KontaktPage() {
             <p className="text-xs uppercase tracking-wider text-muted">
               Adresa
             </p>
-            <p className="mt-1 text-foreground">Banja Luka, BiH</p>
+            <p className="mt-1 text-foreground">
+              Jaroslava Plecitija 17, Banja Luka, BiH
+            </p>
           </div>
           <div>
             <p className="text-xs uppercase tracking-wider text-muted">
               Telefon
             </p>
-            <a href="tel:+38765000000" className="mt-1 block text-accent">
-              +387 65 000 000
+            <a href="tel:+38765063063" className="mt-1 block text-accent">
+              065 063 063
+            </a>
+            <a href="tel:+38766888555" className="mt-1 block text-accent">
+              066 888 555
             </a>
           </div>
           <div>
@@ -37,10 +42,10 @@ export default function KontaktPage() {
               Email
             </p>
             <a
-              href="mailto:info@exclusiveautobl.com"
+              href="mailto:aleksandar.maric@exclusiveautobl.com"
               className="mt-1 block text-accent"
             >
-              info@exclusiveautobl.com
+              aleksandar.maric@exclusiveautobl.com
             </a>
           </div>
           <div>
@@ -68,6 +73,22 @@ export default function KontaktPage() {
             },
           ]}
         />
+      </div>
+
+      <div className="mt-16">
+        <p className="text-xs uppercase tracking-wider text-muted">
+          Lokacija
+        </p>
+        <div className="mt-3 aspect-[16/7] w-full overflow-hidden rounded-sm border border-border">
+          <iframe
+            src="https://www.google.com/maps?q=Jaroslava+Plecitija+17%2C+Banja+Luka&output=embed"
+            className="h-full w-full"
+            style={{ border: 0 }}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Lokacija — Exclusive Auto, Jaroslava Plecitija 17, Banja Luka"
+          />
+        </div>
       </div>
     </div>
   );

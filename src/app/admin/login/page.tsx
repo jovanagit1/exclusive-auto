@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
     <div className="flex min-h-[70vh] items-center justify-center px-5">
       <div className="card w-full max-w-sm p-8">
         <div className="flex justify-center">
-          <Logo withWordmark={false} className="h-12 w-auto text-foreground" />
+          <Logo withWordmark={false} className="logo-glow h-12 w-auto text-foreground" />
         </div>
         <h1 className="font-display mt-6 text-center text-xl">Admin panel</h1>
         <p className="mt-1 text-center text-xs text-muted">

@@ -23,7 +23,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
         <Link href="/" onClick={() => setOpen(false)}>
-          <Logo className="h-14 w-auto text-foreground sm:h-16" />
+          <Logo className="logo-glow h-14 w-auto text-foreground sm:h-16" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

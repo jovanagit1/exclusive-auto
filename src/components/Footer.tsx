@@ -1,12 +1,13 @@
 import Link from "next/link";
 import Logo from "./Logo";
+import PremiumSignupForm from "./PremiumSignupForm";
 
 export default function Footer() {
   return (
     <footer className="border-t border-border bg-surface">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 md:grid-cols-4 md:px-8">
         <div>
-          <Logo className="h-14 w-auto text-foreground" />
+          <Logo className="logo-glow h-14 w-auto text-foreground" />
           <p className="mt-4 text-sm leading-relaxed text-muted">
             Uvoz, prodaja i priprema vozila iz Evrope. Povjerenje izgrađeno na
             transparentnosti i kvalitetu.
@@ -36,21 +37,35 @@ export default function Footer() {
         <div>
           <h3 className="section-label mb-4">Kontakt</h3>
           <ul className="space-y-2 text-sm text-foreground/80">
-            <li>Banja Luka, BiH</li>
+            <li>Jaroslava Plecitija 17, Banja Luka</li>
             <li>
-              <a href="tel:+38765000000" className="hover:text-accent">
-                +387 65 000 000
+              <a href="tel:+38765063063" className="block hover:text-accent">
+                065 063 063
+              </a>
+              <a href="tel:+38766888555" className="block hover:text-accent">
+                066 888 555
               </a>
             </li>
             <li>
               <a
-                href="mailto:info@exclusiveautobl.com"
+                href="mailto:aleksandar.maric@exclusiveautobl.com"
                 className="hover:text-accent"
               >
-                info@exclusiveautobl.com
+                aleksandar.maric@exclusiveautobl.com
               </a>
             </li>
           </ul>
+        </div>
+      </div>
+
+      <div className="border-t border-border px-5 py-8 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <h3 className="section-label mb-1">Premium ponuda</h3>
+          <p className="mb-4 text-sm text-muted">
+            Prijavite se i budite prvi obaviješteni mejlom kada stigne novo
+            vozilo.
+          </p>
+          <PremiumSignupForm />
         </div>
       </div>
 

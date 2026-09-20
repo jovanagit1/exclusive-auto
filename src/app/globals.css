@@ -6,7 +6,7 @@
   --surface: #17171a;
   --surface-2: #212124;
   --border: #333338;
-  --accent: #e7e7ea;
+  --accent: #ffffff;
   --accent-light: #ffffff;
   --muted: #97979d;
 }
@@ -152,6 +152,16 @@ body {
     line-height: 1.5;
     opacity: 0.75;
   }
+
+  /*
+   * Suptilan, "svijetleći" efekat — koristi se samo na logu i na loading
+   * ekranu (ne na običnom tekstu), da odaje utisak diskretnog sjaja bez
+   * bodenja u oči.
+   */
+  .logo-glow {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.35))
+      drop-shadow(0 0 16px rgba(255, 255, 255, 0.18));
+  }
 }
 
 /* Splash screen */
@@ -163,12 +173,12 @@ body {
   0%, 100% {
     transform: scale(1);
     opacity: 1;
-    filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
   }
   50% {
     transform: scale(1.08);
-    opacity: 0.85;
-    filter: drop-shadow(0 0 22px rgba(255, 255, 255, 0.45));
+    opacity: 0.9;
+    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.6));
   }
 }
 

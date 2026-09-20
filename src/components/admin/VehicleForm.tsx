@@ -217,6 +217,8 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
   const [godiste, setGodiste] = useState(initial?.godiste ?? new Date().getFullYear());
   const [cijena, setCijena] = useState(initial?.cijena ?? 0);
   const [valuta, setValuta] = useState(initial?.valuta ?? "KM");
+  const [akcija, setAkcija] = useState(Boolean(initial?.akcija));
+  const [regularnaCijena, setRegularnaCijena] = useState(initial?.regularnaCijena ?? 0);
   const [km, setKm] = useState(initial?.km ?? 0);
   const [gorivo, setGorivo] = useState(initial?.gorivo ?? GORIVO_OPCIJE[0]);
   const [mjenjac, setMjenjac] = useState(initial?.mjenjac ?? "Automatik");
@@ -356,6 +358,8 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
       godiste: Number(godiste),
       cijena: Number(cijena),
       valuta,
+      akcija,
+      regularnaCijena: akcija && regularnaCijena ? Number(regularnaCijena) : undefined,
       km: Number(km),
       gorivo,
       mjenjac,
@@ -518,6 +522,43 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
           </div>
         </div>
 
+        <div className="sm:col-span-2">
+          <label
+            className={`inline-flex cursor-pointer items-center gap-2 rounded-sm border px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${
+              akcija
+                ? "border-red-500 bg-red-500/15 text-red-400"
+                : "border-border text-muted hover:border-red-500/50"
+            }`}
+          >
+            <input
+              type="checkbox"
+              checked={akcija}
+              onChange={(e) => setAkcija(e.target.checked)}
+              className="accent-red-500"
+            />
+            Akcija
+          </label>
+
+          {akcija && (
+            <div className="mt-3 max-w-xs">
+              <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
+                Regularna cijena (prije akcije)
+              </label>
+              <input
+                type="number"
+                value={regularnaCijena}
+                onChange={(e) => setRegularnaCijena(Number(e.target.value))}
+                placeholder="npr. 45000"
+                className="input-field"
+              />
+              <p className="mt-1 text-xs text-muted">
+                Na sajtu će ova cijena biti precrtana, a iznos iz polja
+                &quot;Cijena&quot; gore prikazan kao akcijska cijena.
+              </p>
+            </div>
+          )}
+        </div>
+
         <div>
           <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
             Kilometraža (km) *
@@ -570,7 +611,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
           <input
             value={snaga}
             onChange={(e) => setSnaga(e.target.value)}
-            placeholder="npr. 194 KS"
+            placeholder="npr. 200 (samo broj)"
             className="input-field"
           />
         </div>

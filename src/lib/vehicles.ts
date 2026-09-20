@@ -5,6 +5,10 @@ export type Vehicle = {
   godiste: number;
   cijena: number;
   valuta: string;
+  /** Da li je vozilo trenutno na akciji (popustu). */
+  akcija?: boolean;
+  /** Regularna (redovna) cijena prije akcije — prikazuje se precrtano. */
+  regularnaCijena?: number;
   km: number;
   gorivo: string;
   mjenjac: string;
@@ -155,4 +159,33 @@ export function getVehicle(slug: string) {
 
 export function formatPrice(cijena: number, valuta: string) {
   return `${cijena.toLocaleString("de-DE")} ${valuta}`;
+}
+
+/**
+ * Prikazuje kubikažu kao litre sa jednom decimalom (npr. "1998" cm³ → "2.0"),
+ * onako kako to rade auto-saloni — a ne kao sirovi broj kubnih centimetara.
+ */
+export function formatKubikaza(kubikaza?: string): string {
+  if (!kubikaza) return "";
+  const broj = Number(kubikaza.replace(",", "."));
+  if (!Number.isFinite(broj) || broj <= 0) return kubikaza;
+  // Ako je neko ipak upisao vrijednost već u litrama (npr. "2.0"), ne dijelimo je ponovo.
+  const uCm3 = broj > 30 ? broj : broj * 1000;
+  return (uCm3 / 1000).toFixed(1);
+}
+
+/**
+ * Formatira snagu motora tako da UVIJEK ispravno prikazuje jedinice (KS / kW),
+ * bez obzira da li je admin upisao samo broj (npr. "200") ili cijeli tekst
+ * (npr. "200 KS") — izvlači broj i sam dodaje jedinicu.
+ */
+export function formatSnaga(snaga?: string, snagaKw?: string): string {
+  if (!snaga) return "";
+  const izvuciBroj = (v: string) => {
+    const m = v.match(/[\d.,]+/);
+    return m ? m[0].replace(",", ".") : v.trim();
+  };
+  const ks = izvuciBroj(snaga);
+  const kw = snagaKw ? izvuciBroj(snagaKw) : "";
+  return kw ? `${ks} KS (${kw} kW)` : `${ks} KS`;
 }
