@@ -1,72 +1,73 @@
-import { Resend } from "resend";
-import { formatPrice, type Vehicle } from "./vehicles";
+import { formatPrice, formatKubikaza, formatSnaga, type Vehicle } from "./vehicles";
 import { getSubscribers } from "./store";
+import {
+  OWNER_EMAIL,
+  SITE_URL,
+  posaljiMejl,
+  sablonMejla,
+  tabelaPodataka,
+  paragraf,
+  dugme,
+  escapeHtml,
+  mailKonfigurisan,
+} from "./mailer";
 
 /**
- * Šalje obavještenje o novom vozilu svim premium pretplatnicima
- * (korisnicima koji su kupili 2+ vozila kod Exclusive Auto — Aco ih ručno
- * dodaje u Admin panel → Newsletter).
+ * Šalje obavještenje o novom vozilu svim Premium pretplatnicima.
+ * Poziva se iz admin panela kad se doda novo vozilo uz uključenu opciju
+ * "Pošalji obavještenje premium korisnicima".
  */
 export async function posaljiObavjestenjeONovomVozilu(vehicle: Vehicle) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    throw new Error(
-      "RESEND_API_KEY nije podešen — newsletter mejlovi se ne mogu poslati."
-    );
-  }
-
   const subscribers = await getSubscribers();
-  if (subscribers.length === 0) {
-    return { poslato: 0, ukupno: 0 };
+  if (subscribers.length === 0 || !mailKonfigurisan()) {
+    return { poslato: 0, ukupno: subscribers.length };
   }
 
-  const resend = new Resend(apiKey);
-  const fromAdresa =
-    process.env.RESEND_FROM ?? "Exclusive Auto <onboarding@resend.dev>";
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.exclusiveautobl.com";
-  const link = `${siteUrl}/vozila/${vehicle.slug}`;
+  const link = `${SITE_URL}/vozila/${vehicle.slug}`;
   const slika = vehicle.slike?.[0];
+  const naAkciji = Boolean(vehicle.akcija && vehicle.regularnaCijena);
+  const cijenaHtml = naAkciji
+    ? `<p style="margin:0 0 14px;"><span style="color:#999;text-decoration:line-through;font-size:15px;">${escapeHtml(
+        formatPrice(vehicle.regularnaCijena!, vehicle.valuta)
+      )}</span> &nbsp;<span style="color:#c0392b;font-size:22px;font-weight:bold;">${escapeHtml(
+        formatPrice(vehicle.cijena, vehicle.valuta)
+      )}</span></p>`
+    : `<p style="margin:0 0 14px;font-size:22px;font-weight:bold;color:#111;">${escapeHtml(
+        formatPrice(vehicle.cijena, vehicle.valuta)
+      )}</p>`;
+
+  const html = (ime?: string) =>
+    sablonMejla(
+      `${vehicle.marka} ${vehicle.model}`,
+      paragraf(
+        `${ime ? `Poštovani/a ${escapeHtml(ime.split(" ")[0])}, ` : ""}u našu ponudu upravo je stiglo novo vozilo — prvi saznajete kao Premium korisnik.`
+      ) +
+        (slika
+          ? `<a href="${link}"><img src="${escapeHtml(slika)}" alt="" style="width:100%;border-radius:6px;margin:0 0 14px;display:block;"></a>`
+          : "") +
+        cijenaHtml +
+        tabelaPodataka([
+          ["Godište", String(vehicle.godiste)],
+          ["Kilometraža", `${vehicle.km.toLocaleString("de-DE")} km`],
+          ["Gorivo", vehicle.gorivo],
+          ["Mjenjač", vehicle.mjenjac],
+          ["Kubikaža", formatKubikaza(vehicle.kubikaza)],
+          ["Snaga", formatSnaga(vehicle.snaga, vehicle.snagaKw)],
+        ]) +
+        "<br>" +
+        dugme("Pogledaj vozilo", link) +
+        `<p style="margin:22px 0 0;color:#9a9a9a;font-size:11px;">Ovaj mejl ste dobili jer ste prijavljeni na Exclusive Auto Premium listu. Za odjavu samo odgovorite na ovaj mejl.</p>`
+    );
 
   let poslato = 0;
   for (const sub of subscribers) {
-    try {
-      const { error } = await resend.emails.send({
-        from: fromAdresa,
-        to: sub.email,
-        subject: `Novo vozilo za vas: ${vehicle.marka} ${vehicle.model}`,
-        html: `
-          <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;">
-            <p style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#8a8a8a;margin:0 0 6px;">
-              Exclusive Auto · Premium obavještenje
-            </p>
-            <h2 style="margin:0 0 10px;">${vehicle.marka} ${vehicle.model}</h2>
-            ${
-              slika
-                ? `<img src="${slika}" alt="" style="width:100%;border-radius:6px;margin-bottom:14px;display:block;" />`
-                : ""
-            }
-            <p style="font-size:20px;font-weight:700;margin:0 0 10px;">${formatPrice(
-              vehicle.cijena,
-              vehicle.valuta
-            )}</p>
-            <p style="color:#444;font-size:14px;line-height:1.55;margin:0 0 18px;">${
-              vehicle.opis
-            }</p>
-            <a href="${link}" style="background:#111;color:#fff;padding:11px 20px;text-decoration:none;border-radius:4px;font-size:13px;display:inline-block;">
-              Pogledaj vozilo
-            </a>
-            <p style="margin-top:24px;color:#9a9a9a;font-size:11px;">
-              Ovaj mejl ste dobili jer ste premium korisnik Exclusive Auto.
-            </p>
-          </div>
-        `,
-      });
-      if (!error) poslato++;
-      else console.error(`[newsletter] Greška za ${sub.email}:`, error);
-    } catch (err) {
-      console.error(`[newsletter] Greška za ${sub.email}:`, err);
-    }
+    const ok = await posaljiMejl({
+      to: sub.email,
+      replyTo: OWNER_EMAIL,
+      subject: `Novo vozilo: ${vehicle.marka} ${vehicle.model}`,
+      html: html(sub.ime),
+    });
+    if (ok) poslato++;
   }
 
   return { poslato, ukupno: subscribers.length };

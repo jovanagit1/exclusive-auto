@@ -1,6 +1,15 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
-import { addOtkupZahtjev, type OtkupZahtjev } from "@/lib/store";
+import { addOtkupZahtjev, getVehicleBySlug, type OtkupZahtjev } from "@/lib/store";
+import {
+  OWNER_EMAIL,
+  SITE_URL,
+  posaljiMejl,
+  sablonMejla,
+  tabelaPodataka,
+  paragraf,
+  dugme,
+  escapeHtml,
+} from "@/lib/mailer";
 
 /**
  * Prima zahtjeve sa javne stranice "/prodaj-vozilo" — posjetilac nudi svoje
@@ -64,41 +73,77 @@ export async function POST(request: Request) {
       console.error("[prodaj-vozilo] čuvanje u skladište nije uspjelo:", storeErr);
     }
 
-    // Mejl obavještenje vlasniku — "best effort", isto kao kod ostalih formi.
-    // Dok RESEND_API_KEY nije podešen (dogovoreno da se to radi kasnije),
-    // ovo se samo preskače bez greške — zahtjev je ipak sačuvan iznad.
-    const apiKey = process.env.RESEND_API_KEY;
-    const ownerEmail = process.env.OWNER_EMAIL ?? "aleksandar.maric@exclusiveautobl.com";
-    if (apiKey) {
-      try {
-        const resend = new Resend(apiKey);
-        const fromAdresa =
-          process.env.RESEND_FROM ?? "Exclusive Auto <onboarding@resend.dev>";
-        const naslovTipa =
-          zahtjev.tip === "zamjena" ? "Zahtjev za zamjenu vozila" : "Ponuda za otkup vozila";
-        await resend.emails.send({
-          from: fromAdresa,
-          to: ownerEmail,
-          replyTo: zahtjev.email,
-          subject: `${naslovTipa} — ${zahtjev.marka} ${zahtjev.model}`,
-          html: `
-            <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;">
-              <h2 style="margin:0 0 4px;">${naslovTipa}</h2>
-              <p style="color:#6b6b70;font-size:13px;margin:0 0 16px;">
-                Novi zahtjev sa stranice /prodaj-vozilo — pregledajte ga i u Admin panel → Otkup/zamjena.
-              </p>
-              <table style="width:100%;border-collapse:collapse;background:#f7f7f8;border-radius:6px;">
-                <tr><td style="padding:6px 12px;color:#6b6b70;font-size:13px;">Ime</td><td style="padding:6px 12px;font-size:14px;">${zahtjev.ime}</td></tr>
-                <tr><td style="padding:6px 12px;color:#6b6b70;font-size:13px;">Telefon</td><td style="padding:6px 12px;font-size:14px;">${zahtjev.telefon}</td></tr>
-                <tr><td style="padding:6px 12px;color:#6b6b70;font-size:13px;">Vozilo</td><td style="padding:6px 12px;font-size:14px;">${zahtjev.marka} ${zahtjev.model}, ${zahtjev.godiste}, ${zahtjev.kilometraza} km</td></tr>
-                ${zahtjev.procijenjenaCijena ? `<tr><td style="padding:6px 12px;color:#6b6b70;font-size:13px;">Procijenjena cijena</td><td style="padding:6px 12px;font-size:14px;">${zahtjev.procijenjenaCijena}</td></tr>` : ""}
-              </table>
-            </div>
-          `,
-        });
-      } catch (mailErr) {
-        console.error("[prodaj-vozilo] slanje mejla nije uspjelo:", mailErr);
-      }
+    // Mejlovi: vlasniku kompletan zahtjev, a posjetiocu potvrda sa sažetkom.
+    let zamjenaNaziv = "";
+    if (zahtjev.zamjenaZaSlug) {
+      const v = await getVehicleBySlug(zahtjev.zamjenaZaSlug).catch(() => undefined);
+      zamjenaNaziv = v ? `${v.marka} ${v.model} (${v.godiste})` : zahtjev.zamjenaZaSlug;
+    }
+    const tipTekst = zahtjev.tip === "zamjena" ? "Zamjena za vozilo iz ponude" : "Prodaja vozila";
+    const redovi: [string, unknown][] = [
+      ["Zahtjev", tipTekst],
+      ["Željeno vozilo iz ponude", zamjenaNaziv],
+      ["Marka i model", `${zahtjev.marka} ${zahtjev.model}`],
+      ["Godište", zahtjev.godiste],
+      ["Kilometraža", `${zahtjev.kilometraza} km`],
+      ["Gorivo", zahtjev.gorivo ?? ""],
+      ["Mjenjač", zahtjev.mjenjac ?? ""],
+      ["Boja", zahtjev.boja ?? ""],
+      ["Procijenjena cijena", zahtjev.procijenjenaCijena ?? ""],
+      ["Stanje / napomena", zahtjev.opis ?? ""],
+      ["Broj fotografija", String(zahtjev.slike.length)],
+    ];
+    const kontakt: [string, unknown][] = [
+      ["Ime i prezime", zahtjev.ime],
+      ["Telefon", zahtjev.telefon],
+      ["Email", zahtjev.email ?? ""],
+    ];
+    const slikeHtml = zahtjev.slike.length
+      ? '<div style="margin-top:16px;">' +
+        zahtjev.slike
+          .map(
+            (src) =>
+              `<a href="${escapeHtml(src)}"><img src="${escapeHtml(src)}" alt="" style="width:120px;height:90px;object-fit:cover;border-radius:4px;margin:0 6px 6px 0;border:1px solid #ddd;"></a>`
+          )
+          .join("") +
+        "</div>"
+      : "";
+
+    await posaljiMejl({
+      to: OWNER_EMAIL,
+      replyTo: zahtjev.email,
+      subject: `${tipTekst}: ${zahtjev.marka} ${zahtjev.model} — ${zahtjev.ime}`,
+      html: sablonMejla(
+        tipTekst,
+        paragraf("Novi zahtjev sa stranice „Prodaj ili zamijeni vozilo“.") +
+          tabelaPodataka(kontakt) +
+          "<br>" +
+          tabelaPodataka(redovi) +
+          slikeHtml +
+          "<br>" +
+          dugme("Otvori u admin panelu", `${SITE_URL}/admin/otkup`)
+      ),
+    });
+
+    if (zahtjev.email?.includes("@")) {
+      await posaljiMejl({
+        to: zahtjev.email,
+        replyTo: OWNER_EMAIL,
+        subject: "Potvrda: primili smo vaš zahtjev — Exclusive Auto",
+        html: sablonMejla(
+          `Hvala, ${zahtjev.ime.split(" ")[0]}!`,
+          paragraf(
+            zahtjev.tip === "zamjena"
+              ? "Primili smo vaš zahtjev za zamjenu vozila. Pregledaćemo podatke i javiti vam se sa procjenom i prijedlogom zamjene."
+              : "Primili smo vašu ponudu za prodaju vozila. Pregledaćemo podatke i javiti vam se sa procjenom."
+          ) +
+            paragraf("Sažetak vašeg zahtjeva:") +
+            tabelaPodataka([...kontakt, ...redovi]) +
+            paragraf(
+              '<br>Za sva pitanja pozovite nas na <a href="tel:+38765063063">065 063 063</a>.'
+            )
+        ),
+      });
     }
 
     return NextResponse.json({ ok: true });

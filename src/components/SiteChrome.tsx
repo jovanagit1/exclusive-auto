@@ -12,8 +12,11 @@ import SplashScreen from "./SplashScreen";
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  // Stranica za štampu odabranih vozila iz cjenovnika prikazuje se kao
+  // "čist papir" — bez menija, footera i loading ekrana.
+  const isStampa = pathname?.startsWith("/cjenovnik/stampa");
 
-  if (isAdmin) {
+  if (isAdmin || isStampa) {
     return <>{children}</>;
   }
 

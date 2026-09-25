@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function KontaktPage() {
   return (
-    <div className="mx-auto max-w-5xl px-5 py-20 md:px-8 md:py-24">
+    <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24">
       <p className="section-label">Kontakt</p>
       <h1 className="font-display mt-3 text-4xl">Javite nam se</h1>
       <p className="mt-4 max-w-xl text-sm text-foreground/70">

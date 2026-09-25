@@ -35,7 +35,7 @@ export default async function ProdajVoziloPage() {
   return (
     <div>
       <section className="border-b border-border">
-        <div className="mx-auto max-w-4xl px-5 py-20 md:px-8 md:py-24">
+        <div className="mx-auto max-w-7xl *:max-w-4xl px-5 py-20 md:px-8 md:py-24">
           <p className="section-label">Otkup i zamjena vozila</p>
           <h1 className="font-display mt-3 text-4xl leading-tight">
             Prodaj ili zamijeni svoje vozilo — gdje god se nalazili
@@ -50,7 +50,7 @@ export default async function ProdajVoziloPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-5 py-16 md:px-8">
+      <section className="mx-auto max-w-7xl *:max-w-4xl px-5 py-16 md:px-8">
         <div className="grid gap-6 sm:grid-cols-3">
           {prednosti.map((p) => (
             <div key={p.naslov} className="card p-5">
@@ -61,7 +61,7 @@ export default async function ProdajVoziloPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-5 pb-24 md:px-8">
+      <section className="mx-auto max-w-7xl *:max-w-4xl px-5 pb-24 md:px-8">
         <div className="card p-6 md:p-10">
           <ProdajVoziloForm vozilaZaZamjenu={vozilaZaZamjenu} />
         </div>

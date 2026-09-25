@@ -26,6 +26,8 @@ export type Vehicle = {
   brojVrata?: string;
   boja: string;
   opis: string;
+  /** Broj šasije (VIN) — prikazuje se odvojeno od opisa, na posebnom mjestu. */
+  brojSasije?: string;
   oprema: string[];
   istaknuto?: boolean;
   /** URL-ovi slika (Vercel Blob) — prva slika se koristi kao naslovna. */
@@ -188,4 +190,36 @@ export function formatSnaga(snaga?: string, snagaKw?: string): string {
   const ks = izvuciBroj(snaga);
   const kw = snagaKw ? izvuciBroj(snagaKw) : "";
   return kw ? `${ks} KS (${kw} kW)` : `${ks} KS`;
+}
+
+/**
+ * Standardni opis koji se automatski upisuje pri dodavanju NOVOG vozila u
+ * admin panelu (80% vozila ima isti opis) — admin ga slobodno mijenja.
+ */
+export const STANDARDNI_OPIS =
+  "Cijena do registracije. Uvoz iz Francuske — vozilo kao novo, bez tragova korištenja. " +
+  "Uredno održavano i servisirano u ovlaštenom servisu, sa servisnom istorijom održavanja. " +
+  "Izvanredno stanje, bez oštećenja, kao što se vidi na slikama. Dozvoljene sve provjere.";
+
+const VIN_REGEX = /(?:broj\s*(?:š|s)asije|vin)\s*[:.\-]?\s*([A-HJ-NPR-Z0-9]{11,17})\b/i;
+
+/**
+ * Starija vozila imaju broj šasije upisan unutar opisa ("... BROJ ŠASIJE:
+ * TMAJD81AGMJ017934"). Ova funkcija ga izvlači iz teksta, da bi se na
+ * sajtu prikazao na svom posebnom mjestu, a opis ostao čist.
+ */
+export function razdvojiBrojSasije(vehicle: Pick<Vehicle, "opis" | "brojSasije">): {
+  opis: string;
+  brojSasije: string;
+} {
+  const opis = vehicle.opis ?? "";
+  if (vehicle.brojSasije) {
+    return { opis: opis.replace(VIN_REGEX, "").trim(), brojSasije: vehicle.brojSasije };
+  }
+  const m = opis.match(VIN_REGEX);
+  if (!m) return { opis, brojSasije: "" };
+  return {
+    opis: opis.replace(m[0], "").replace(/[\s,;:.\-]+$/, "").trim(),
+    brojSasije: m[1].toUpperCase(),
+  };
 }

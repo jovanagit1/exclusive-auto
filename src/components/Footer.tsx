@@ -62,8 +62,8 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-border px-5 py-8 md:px-8">
-        <div className="mx-auto max-w-7xl">
+      <div className="border-t border-border">
+        <div className="mx-auto max-w-7xl px-5 py-8 md:px-8">
           <h3 className="section-label mb-1">Premium ponuda</h3>
           <p className="mb-4 text-sm text-muted">
             Prijavite se i budite prvi obaviješteni mejlom kada stigne novo
@@ -73,8 +73,9 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-border px-5 py-6 md:px-8">
-        <p className="disclaimer mx-auto max-w-7xl">
+      <div className="border-t border-border">
+        <div className="mx-auto max-w-7xl px-5 py-6 md:px-8">
+        <p className="disclaimer">
           Usluge zatamnjenja stakala (tzv. „folija“) izvodimo isključivo u
           skladu sa važećim propisima o dozvoljenoj svjetlopropusnosti za
           vozila u saobraćaju. Poliranje i detailing vozila su kozmetičke
@@ -85,6 +86,7 @@ export default function Footer() {
         <p className="mt-4 text-xs text-muted">
           © {new Date().getFullYear()} Exclusive Auto. Sva prava zadržana.
         </p>
+        </div>
       </div>
     </footer>
   );

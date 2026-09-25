@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatKubikaza, formatSnaga } from "@/lib/vehicles";
+import { formatKubikaza, formatSnaga, razdvojiBrojSasije } from "@/lib/vehicles";
+import BrojSasije from "@/components/BrojSasije";
+import { grupisiOpremu } from "@/lib/oprema";
 import { getVehicleBySlug } from "@/lib/store";
 import VehicleGallery from "@/components/VehicleGallery";
 import FavoriteButton from "@/components/FavoriteButton";
@@ -97,6 +99,7 @@ export default async function VehicleDetailPage({
   ).sort((a, b) => a.localeCompare(b, "bs"));
 
   const naAkciji = Boolean(vehicle.akcija && vehicle.regularnaCijena);
+  const { opis: opisBezVin, brojSasije } = razdvojiBrojSasije(vehicle);
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
@@ -160,9 +163,13 @@ export default async function VehicleDetailPage({
             ))}
           </div>
 
-          <p className="mt-6 text-sm leading-relaxed text-foreground/75">
-            {vehicle.opis}
-          </p>
+          {opisBezVin && (
+            <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-foreground/75">
+              {opisBezVin}
+            </p>
+          )}
+
+          {brojSasije && <BrojSasije vin={brojSasije} />}
 
           <div className="mt-8 flex flex-wrap gap-4">
             <Link href="/probna-voznja" className="btn-primary">
@@ -179,17 +186,26 @@ export default async function VehicleDetailPage({
         <div className="mt-14 border-t border-border pt-10">
           <p className="section-label">Karakteristike</p>
           <h2 className="font-display mt-2 text-2xl">Oprema</h2>
-          <ul className="mt-6 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
-            {svaOprema.map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-2.5 text-sm text-foreground/80"
-              >
-                <KvacicaIkonica />
-                <span>{item}</span>
-              </li>
+          <div className="mt-6 space-y-8">
+            {grupisiOpremu(svaOprema, vehicle.marka).map((grupa) => (
+              <div key={grupa.naziv}>
+                <p className="mb-3 text-xs uppercase tracking-wider text-muted">
+                  {grupa.naziv}
+                </p>
+                <ul className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {grupa.stavke.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-2.5 text-sm text-foreground/80"
+                    >
+                      <KvacicaIkonica />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
 

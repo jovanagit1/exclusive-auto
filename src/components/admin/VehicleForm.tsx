@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { upload } from "@vercel/blob/client";
-import type { Vehicle } from "@/lib/vehicles";
+import { STANDARDNI_OPIS, razdvojiBrojSasije, type Vehicle } from "@/lib/vehicles";
 import { slugify } from "@/lib/slug";
 import { pripremiSlikuZaUpload } from "@/lib/image-prep";
+import { OPREMA_KATEGORIJE, OPREMA_PO_MARKI, kljucMarkeOpreme } from "@/lib/oprema";
 
 const GORIVO_OPCIJE = ["Dizel", "Benzin", "Hibrid", "Električni", "Plin (LPG/CNG)"];
 const VALUTA_OPCIJE = ["KM", "EUR"];
@@ -77,21 +78,6 @@ const GODINA_REGISTRACIJE_OPCIJE = Array.from({ length: 40 }, (_, i) =>
 const REGISTROVAN_DO_OPCIJE = [
   "Nije registrovan",
   ...Array.from({ length: 3 }, (_, i) => String(TEKUCA_GODINA + i)),
-];
-
-// Sve stavke koje admin može jednostavno označiti kvačicom (checkbox).
-const DODATNA_OPREMA_OPCIJE = [
-  "Servisna knjiga", "Registrovan", "Ocarinjen", "Strane tablice", "Na lizingu",
-  "Auto kuka", "Udaren", "Prilagođen invalidima", "Oldtimer",
-  "Metalik", "Alu felge", "Digitalna klima", "Komande na volanu",
-  "Tempomat", "Start-Stop sistem", "Hill assist",
-  "Navigacija", "Touch screen (ekran)", "Head up display", "USB port",
-  "Bluetooth", "Car play",
-  "Alarm", "Senzor kiše", "Senzor auto. svjetla", "Senzor mrtvog ugla", "Park assist",
-  "Panorama krov", "Šiber", "Maglenke", "Električni retrovizori",
-  "El. podizači stakala", "El. pomjeranje sjedišta",
-  "Memorija sjedišta", "Masaža sjedišta", "Grijanje sjedišta", "Hlađenje sjedišta",
-  "Naslon za ruku",
 ];
 
 const OSTALO = "__ostalo__";
@@ -204,7 +190,12 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
   const [pogon, setPogon] = useState(initial?.pogon ?? "");
   const [brojVrata, setBrojVrata] = useState(initial?.brojVrata ?? "");
   const [boja, setBoja] = useState(initial?.boja ?? "");
-  const [opis, setOpis] = useState(initial?.opis ?? "");
+  // Novo vozilo dobija automatski standardni opis (može se mijenjati).
+  // Kod postojećih vozila broj šasije se izvlači iz starog opisa, ako je
+  // tamo bio upisan, i prebacuje u posebno polje.
+  const razdvojeno = initial ? razdvojiBrojSasije(initial) : null;
+  const [opis, setOpis] = useState(razdvojeno ? razdvojeno.opis : STANDARDNI_OPIS);
+  const [brojSasije, setBrojSasije] = useState(razdvojeno?.brojSasije ?? "");
   const [oprema, setOprema] = useState((initial?.oprema ?? []).join("\n"));
   const [istaknuto, setIstaknuto] = useState(Boolean(initial?.istaknuto));
   const [slike, setSlike] = useState<string[]>(initial?.slike ?? []);
@@ -254,6 +245,13 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
       setSlug(slugify(`${novaMarka}-${noviModel}-${godiste}`));
     }
   }
+
+  const kljucOpremeMarke = kljucMarkeOpreme(marka);
+  const sveNaListi = new Set([
+    ...OPREMA_KATEGORIJE.flatMap((k) => k.stavke),
+    ...(kljucOpremeMarke ? OPREMA_PO_MARKI[kljucOpremeMarke].stavke : []),
+  ]);
+  const ostaleOznacene = dodatnaOprema.filter((s) => !sveNaListi.has(s));
 
   function prekidaciDodatnaOprema(stavka: string, cekirano: boolean) {
     setDodatnaOprema((prev) =>
@@ -352,6 +350,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
       brojVrata: brojVrata || undefined,
       boja,
       opis,
+      brojSasije: brojSasije.trim().toUpperCase() || undefined,
       oprema: oprema
         .split("\n")
         .map((s) => s.trim())
@@ -642,27 +641,49 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
         </div>
 
         <div className="sm:col-span-2">
-          <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
-            Opis
-          </label>
+          <div className="mb-1.5 flex items-center justify-between gap-3">
+            <label className="block text-xs uppercase tracking-wider text-muted">
+              Opis
+            </label>
+            {opis !== STANDARDNI_OPIS && (
+              <button
+                type="button"
+                onClick={() => setOpis(STANDARDNI_OPIS)}
+                className="text-xs uppercase tracking-wider text-muted hover:text-accent"
+              >
+                Vrati standardni opis
+              </button>
+            )}
+          </div>
           <textarea
             value={opis}
             onChange={(e) => setOpis(e.target.value)}
-            rows={4}
-            className="input-field resize-none"
+            rows={5}
+            className="input-field resize-y"
           />
+          <p className="mt-1 text-xs text-muted">
+            Standardni opis se upisuje automatski — izmijenite ga po potrebi
+            (npr. zemlju uvoza). Broj šasije NE upisujte ovdje, nego u polje ispod.
+          </p>
         </div>
 
         <div className="sm:col-span-2">
           <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
-            Oprema (jedna stavka po redu)
+            Broj šasije (VIN)
           </label>
-          <textarea
-            value={oprema}
-            onChange={(e) => setOprema(e.target.value)}
-            rows={5}
-            className="input-field resize-none"
+          <input
+            value={brojSasije}
+            onChange={(e) => setBrojSasije(e.target.value.toUpperCase().replace(/\s/g, ""))}
+            maxLength={17}
+            placeholder="npr. TMAJD81AGMJ017934"
+            className="input-field font-mono tracking-[0.12em]"
           />
+          <p className="mt-1 text-xs text-muted">
+            Na sajtu se prikazuje na posebnom, istaknutom mjestu ispod opisa.
+            {brojSasije && brojSasije.length !== 17 && (
+              <span className="text-red-400"> Standardni VIN ima 17 znakova (sada: {brojSasije.length}).</span>
+            )}
+          </p>
         </div>
 
         <label className="flex items-center gap-2 text-sm sm:col-span-2">
@@ -718,22 +739,86 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
       </div>
 
       <div className="border-t border-border pt-6">
-        <h2 className="font-display text-lg text-foreground">Dodatna oprema</h2>
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <h2 className="font-display text-lg text-foreground">Oprema</h2>
+          <p className="text-xs text-muted">Označeno stavki: {dodatnaOprema.length}</p>
+        </div>
         <p className="mt-1 text-xs text-muted">
-          Označite kvačicom sve što vozilo posjeduje.
+          Označite kvačicom sve što vozilo posjeduje. Kad izaberete marku
+          (npr. BMW, Audi, Škoda...), ispod se pojavljuje i oprema specifična za tu marku.
         </p>
 
-        <div className="mt-5 grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
-          {DODATNA_OPREMA_OPCIJE.map((stavka) => (
-            <label key={stavka} className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={dodatnaOprema.includes(stavka)}
-                onChange={(e) => prekidaciDodatnaOprema(stavka, e.target.checked)}
-              />
-              {stavka}
-            </label>
-          ))}
+        {kljucOpremeMarke && (
+          <fieldset className="mt-6 border border-border p-4">
+            <legend className="px-2 text-xs font-semibold uppercase tracking-wider text-accent">
+              Paketi i oprema — {OPREMA_PO_MARKI[kljucOpremeMarke].naziv}
+            </legend>
+            <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+              {OPREMA_PO_MARKI[kljucOpremeMarke].stavke.map((stavka) => (
+                <label key={stavka} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={dodatnaOprema.includes(stavka)}
+                    onChange={(e) => prekidaciDodatnaOprema(stavka, e.target.checked)}
+                  />
+                  {stavka}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
+
+        {OPREMA_KATEGORIJE.map((kat) => (
+          <div key={kat.naziv} className="mt-6">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
+              {kat.naziv}
+            </p>
+            <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+              {kat.stavke.map((stavka) => (
+                <label key={stavka} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={dodatnaOprema.includes(stavka)}
+                    onChange={(e) => prekidaciDodatnaOprema(stavka, e.target.checked)}
+                  />
+                  {stavka}
+                </label>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {ostaleOznacene.length > 0 && (
+          <div className="mt-6">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
+              Označeno ranije (nije na trenutnoj listi)
+            </p>
+            <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+              {ostaleOznacene.map((stavka) => (
+                <label key={stavka} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked
+                    onChange={() => prekidaciDodatnaOprema(stavka, false)}
+                  />
+                  {stavka}
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="mt-6">
+          <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
+            Ostala oprema — ručni unos (opciono, jedna stavka po redu)
+          </label>
+          <textarea
+            value={oprema}
+            onChange={(e) => setOprema(e.target.value)}
+            rows={3}
+            placeholder="Samo ono čega nema na listi iznad"
+            className="input-field resize-y"
+          />
         </div>
       </div>
 

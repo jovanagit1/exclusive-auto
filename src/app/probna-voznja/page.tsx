@@ -14,7 +14,7 @@ export default async function ProbnaVoznjaPage() {
   const vehicleOptions = vehicles.map((v) => `${v.marka} ${v.model} (${v.godiste})`);
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-20 md:px-8 md:py-24">
+    <div className="mx-auto max-w-7xl *:max-w-3xl px-5 py-20 md:px-8 md:py-24">
       <p className="section-label">Probna vožnja</p>
       <h1 className="font-display mt-3 text-4xl">Rezervišite termin</h1>
       <p className="mt-4 text-sm text-foreground/70">

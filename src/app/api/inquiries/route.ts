@@ -1,24 +1,18 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
+import {
+  OWNER_EMAIL,
+  posaljiMejl,
+  sablonMejla,
+  tabelaPodataka,
+  paragraf,
+  escapeHtml,
+} from "@/lib/mailer";
 
 /**
- * Prima sve upite sa sajta (kontakt, probna vožnja, uvoz, registracija) i
- * šalje ih direktno na email vlasnika preko Resend-a (https://resend.com).
- *
- * PODEŠAVANJE (obavezno prije lansiranja):
- *   1. Napravite besplatan nalog na https://resend.com
- *   2. U Vercel projektu → Settings → Environment Variables dodajte:
- *        RESEND_API_KEY  = vaš Resend API ključ
- *        OWNER_EMAIL     = mejl na koji upiti treba da stižu
- *                          (npr. aleksandar.maric@exclusiveautobl.com)
- *      Opcionalno:
- *        RESEND_FROM     = adresa "šalje se sa" (podrazumijevano je
- *                          Resend-ova test adresa dok ne verifikujete svoj
- *                          domen kod Resend-a — vidi README za detalje)
- *   3. Redeploy na Vercelu (izmjena env varijabli traži novi deploy).
- *
- * Dok RESEND_API_KEY nije podešen, upit se samo loguje u server log
- * (Vercel → Logs) — sajt i dalje radi, samo mejl ne stiže.
+ * Prima sve upite sa sajta (kontakt, probna vožnja, uvoz, registracija):
+ *   1. šalje obavještenje vlasniku (OWNER_EMAIL) sa svim podacima,
+ *   2. šalje POTVRDU posjetiocu (ako je ostavio email) sa kopijom upita.
+ * Podešavanje slanja mejlova: vidi src/lib/mailer.ts.
  */
 
 const FORM_NASLOVI: Record<string, string> = {
@@ -28,22 +22,28 @@ const FORM_NASLOVI: Record<string, string> = {
   registracija: "Upit za registraciju vozila",
 };
 
-const FORM_LABELI: Record<string, Record<string, string>> = {};
+const POTVRDA_TEKST: Record<string, string> = {
+  kontakt: "Primili smo vašu poruku i javićemo vam se u najkraćem roku.",
+  "probna-voznja":
+    "Primili smo vaš zahtjev za probnu vožnju. Tačan termin ćemo potvrditi telefonom ili mejlom.",
+  uvoz: "Primili smo vaš upit za uvoz vozila. Krećemo u potragu i javljamo vam se sa ponudama.",
+  registracija: "Primili smo vaš upit za registraciju vozila i uskoro vam se javljamo.",
+};
 
-function formatirajPodatke(data: Record<string, unknown>, formType: string) {
-  const labeli = FORM_LABELI[formType] ?? {};
-  return Object.entries(data)
-    .filter(([, vrijednost]) => String(vrijednost ?? "").trim() !== "")
-    .map(
-      ([kljuc, vrijednost]) =>
-        `<tr><td style="padding:6px 12px;color:#6b6b70;font-size:13px;white-space:nowrap;vertical-align:top;">${
-          labeli[kljuc] ?? kljuc
-        }</td><td style="padding:6px 12px;font-size:14px;">${String(
-          vrijednost
-        )}</td></tr>`
-    )
-    .join("");
-}
+const LABELI: Record<string, string> = {
+  ime: "Ime i prezime",
+  telefon: "Telefon",
+  email: "Email",
+  poruka: "Poruka",
+  vozilo: "Vozilo",
+  datum: "Željeni datum",
+  napomena: "Napomena",
+  markaModel: "Marka i model",
+  odakle: "Uvoz iz",
+  budzet: "Budžet",
+  godiste: "Godište",
+  status: "Status vozila",
+};
 
 export async function POST(request: Request) {
   try {
@@ -62,56 +62,43 @@ export async function POST(request: Request) {
 
     console.log(`[Upit: ${formType}]`, JSON.stringify(data, null, 2));
 
-    const apiKey = process.env.RESEND_API_KEY;
-    const ownerEmail = process.env.OWNER_EMAIL;
+    const naslov = FORM_NASLOVI[formType] ?? `Novi upit (${formType})`;
+    const redovi = Object.entries(data).map(
+      ([k, v]) => [LABELI[k] ?? k, v] as [string, unknown]
+    );
+    const email = typeof data.email === "string" ? data.email.trim() : "";
+    const ime = typeof data.ime === "string" ? data.ime.trim().split(" ")[0] : "";
 
-    if (!apiKey || !ownerEmail) {
-      console.log(
-        "[inquiries] RESEND_API_KEY ili OWNER_EMAIL nisu podešeni — mejl NIJE poslat, upit je samo zabilježen u log."
-      );
-      return NextResponse.json({ ok: true, emailSent: false });
-    }
+    // 1. Vlasniku
+    await posaljiMejl({
+      to: OWNER_EMAIL,
+      replyTo: email || undefined,
+      subject: `${naslov} — ${String(data.ime ?? "")}`.trim(),
+      html: sablonMejla(
+        naslov,
+        paragraf("Novi upit sa sajta exclusiveautobl.com:") + tabelaPodataka(redovi)
+      ),
+    });
 
-    // Slanje mejla je "best effort" — posjetilac NIKAD ne smije dobiti grešku
-    // na formi samo zato što je slanje mejla zakazalo (npr. Resend je privremeno
-    // nedostupan, domen nije verifikovan, greška u mreži...). Upit je već
-    // zabilježen u log iznad, pa je ovaj try/catch odvojen od spoljašnjeg —
-    // šta god da se ovdje desi, posjetilac vidi da je poruka poslata.
-    try {
-      const resend = new Resend(apiKey);
-      const naslov = FORM_NASLOVI[formType] ?? `Novi upit (${formType})`;
-      const fromAdresa =
-        process.env.RESEND_FROM ?? "Exclusive Auto <onboarding@resend.dev>";
-
-      const { error } = await resend.emails.send({
-        from: fromAdresa,
-        to: ownerEmail,
-        replyTo:
-          typeof data.email === "string" && data.email ? data.email : undefined,
-        subject: `${naslov} — Exclusive Auto sajt`,
-        html: `
-          <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;">
-            <h2 style="margin:0 0 4px;">${naslov}</h2>
-            <p style="color:#6b6b70;font-size:13px;margin:0 0 16px;">
-              Novi upit sa sajta exclusiveautobl.com
-            </p>
-            <table style="width:100%;border-collapse:collapse;background:#f7f7f8;border-radius:6px;">
-              ${formatirajPodatke(data, formType)}
-            </table>
-          </div>
-        `,
+    // 2. Potvrda posjetiocu
+    if (email.includes("@")) {
+      await posaljiMejl({
+        to: email,
+        replyTo: OWNER_EMAIL,
+        subject: `Potvrda: ${naslov} — Exclusive Auto`,
+        html: sablonMejla(
+          ime ? `Hvala, ${ime}!` : "Hvala vam!",
+          paragraf(escapeHtml(POTVRDA_TEKST[formType] ?? "Primili smo vaš upit.")) +
+            paragraf("Kopija podataka koje ste poslali:") +
+            tabelaPodataka(redovi) +
+            paragraf(
+              '<br>Za hitna pitanja pozovite nas na <a href="tel:+38765063063">065 063 063</a>.'
+            )
+        ),
       });
-
-      if (error) {
-        console.error("[inquiries] Resend greška:", error);
-        return NextResponse.json({ ok: true, emailSent: false });
-      }
-
-      return NextResponse.json({ ok: true, emailSent: true });
-    } catch (mailErr) {
-      console.error("[inquiries] Slanje mejla nije uspjelo:", mailErr);
-      return NextResponse.json({ ok: true, emailSent: false });
     }
+
+    return NextResponse.json({ ok: true });
   } catch (e) {
     console.error("[inquiries] greška:", e);
     return NextResponse.json(

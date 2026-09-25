@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
 import { autoDealerJsonLd, SITE_URL } from "@/lib/structured-data";
+import { Analytics } from "@vercel/analytics/next";
 
 // Naslov i opis su namjerno formulisani tako da prirodno sadrže fraze koje
 // ljudi kucaju na Google-u kad traže polovna vozila u Banjoj Luci (polovna
@@ -60,6 +61,8 @@ export default function RootLayout({
           }}
         />
         <SiteChrome>{children}</SiteChrome>
+        {/* Posjećenost sajta — statistika u Vercel → projekat → Analytics */}
+        <Analytics />
       </body>
     </html>
   );

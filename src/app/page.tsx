@@ -145,7 +145,7 @@ export default async function HomePage() {
           pretragama poput "polovna auta banja luka", "prodaja auta banja
           luka" i sličnim, bez neprirodnog nabijanja ključnih riječi. */}
       <section className="border-t border-border">
-        <div className="mx-auto max-w-4xl px-5 py-16 md:px-8">
+        <div className="mx-auto max-w-7xl *:max-w-3xl px-5 py-16 md:px-8">
           <p className="section-label">Prodaja polovnih vozila u Banjoj Luci</p>
           <h2 className="font-display mt-2 text-2xl">
             Vaš izbor za polovna auta u Banjoj Luci

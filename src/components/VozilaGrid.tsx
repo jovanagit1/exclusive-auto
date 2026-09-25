@@ -24,11 +24,40 @@ const OPCIJE_SORTIRANJA: { value: Sortiranje; label: string }[] = [
  * omogućava posjetiocu sortiranje po cijeni ili godištu, bez dodatnog
  * pozivanja servera — cijela lista je već tu, samo je preslažemo.
  */
+const kljucMarke = (m: string) => m.trim().toLowerCase();
+
 export default function VozilaGrid({ vehicles }: { vehicles: Vehicle[] }) {
   const [sortiranje, setSortiranje] = useState<Sortiranje>("podrazumijevano");
+  const [odabraneMarke, setOdabraneMarke] = useState<string[]>([]);
+
+  // Filter marki se pravi AUTOMATSKI samo od marki koje trenutno imamo u
+  // ponudi (sa brojem vozila) — kad se doda/obriše vozilo, filter se sam
+  // ažurira, isto kao i cjenovnik.
+  const marke = useMemo(() => {
+    const mapa = new Map<string, { naziv: string; broj: number }>();
+    for (const v of vehicles) {
+      const k = kljucMarke(v.marka);
+      if (!k) continue;
+      const postojeca = mapa.get(k);
+      if (postojeca) postojeca.broj++;
+      else mapa.set(k, { naziv: v.marka.trim(), broj: 1 });
+    }
+    return [...mapa.entries()]
+      .map(([kljuc, x]) => ({ kljuc, ...x }))
+      .sort((a, b) => a.naziv.localeCompare(b.naziv, "bs"));
+  }, [vehicles]);
+
+  function preklopiMarku(k: string) {
+    setOdabraneMarke((prev) =>
+      prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k]
+    );
+  }
 
   const sortirana = useMemo(() => {
-    const kopija = [...vehicles];
+    const kopija =
+      odabraneMarke.length === 0
+        ? [...vehicles]
+        : vehicles.filter((v) => odabraneMarke.includes(kljucMarke(v.marka)));
     switch (sortiranje) {
       case "cijena-rastuce":
         return kopija.sort((a, b) => a.cijena - b.cijena);
@@ -41,13 +70,52 @@ export default function VozilaGrid({ vehicles }: { vehicles: Vehicle[] }) {
       default:
         return kopija;
     }
-  }, [vehicles, sortiranje]);
+  }, [vehicles, sortiranje, odabraneMarke]);
 
   return (
     <div>
+      {marke.length > 1 && (
+        <div className="mb-6">
+          <p className="mb-3 text-xs uppercase tracking-wider text-muted">Marka</p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setOdabraneMarke([])}
+              className={`rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition-colors ${
+                odabraneMarke.length === 0
+                  ? "border-accent bg-accent text-background"
+                  : "border-border text-foreground/80 hover:border-accent"
+              }`}
+            >
+              Sve marke <span className="opacity-60">({vehicles.length})</span>
+            </button>
+            {marke.map((m) => {
+              const aktivna = odabraneMarke.includes(m.kljuc);
+              return (
+                <button
+                  key={m.kljuc}
+                  type="button"
+                  aria-pressed={aktivna}
+                  onClick={() => preklopiMarku(m.kljuc)}
+                  className={`rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition-colors ${
+                    aktivna
+                      ? "border-accent bg-accent text-background"
+                      : "border-border text-foreground/80 hover:border-accent"
+                  }`}
+                >
+                  {m.naziv} <span className="opacity-60">({m.broj})</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-5">
         <p className="text-xs text-muted">
-          {vehicles.length} {vehicles.length === 1 ? "vozilo" : "vozila"} u ponudi
+          {sortirana.length === vehicles.length
+            ? `${vehicles.length} ${vehicles.length === 1 ? "vozilo" : "vozila"} u ponudi`
+            : `Prikazano ${sortirana.length} od ${vehicles.length} vozila`}
         </p>
         <label className="flex items-center gap-2 text-xs">
           <span className="uppercase tracking-wider text-muted">Sortiraj:</span>

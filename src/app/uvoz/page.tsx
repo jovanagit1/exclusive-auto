@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function UvozPage() {
   return (
-    <div className="mx-auto max-w-3xl px-5 py-20 md:px-8 md:py-24">
+    <div className="mx-auto max-w-7xl *:max-w-3xl px-5 py-20 md:px-8 md:py-24">
       <p className="section-label">Uvoz vozila</p>
       <h1 className="font-display mt-3 text-4xl">
         Pronaći ćemo vozilo po vašoj želji
