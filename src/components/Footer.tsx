@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Logo from "./Logo";
 import PremiumSignupForm from "./PremiumSignupForm";
+import VipZnak from "./VipZnak";
 
 export default function Footer() {
   return (
@@ -66,7 +67,7 @@ export default function Footer() {
 
       <div className="border-t border-border">
         <div className="mx-auto max-w-7xl px-5 py-8 md:px-8">
-          <h3 className="section-label mb-1">Privatni salon</h3>
+          <h3 className="mb-1 text-xs text-accent"><VipZnak /></h3>
           <p className="mb-4 text-sm text-muted">
             Besplatna prijava: pristup odjeljku{" "}
             <Link href="/vozila-u-dolasku" className="text-foreground/80 underline underline-offset-4 hover:text-accent">

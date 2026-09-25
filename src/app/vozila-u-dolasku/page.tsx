@@ -5,13 +5,14 @@ import { imaPristupSalonu } from "@/lib/salon";
 import VozilaGrid from "@/components/VozilaGrid";
 import VozilaTabs from "@/components/VozilaTabs";
 import PremiumSignupForm from "@/components/PremiumSignupForm";
+import VipZnak from "@/components/VipZnak";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Vozila u dolasku — privatni salon",
+  title: "Vozila u dolasku — Exclusive Auto VIP",
   description:
-    "Vozila koja uskoro stižu u Exclusive Auto — dostupno samo članovima privatnog salona.",
+    "Vozila koja uskoro stižu u Exclusive Auto — dostupno samo članovima Exclusive Auto VIP.",
   robots: { index: false, follow: false },
 };
 
@@ -21,11 +22,11 @@ export default async function VozilaUDolaskuPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24">
-      <p className="section-label">Privatni salon</p>
+      <p className="text-xs text-accent"><VipZnak /></p>
       <h1 className="font-display mt-3 text-4xl">Vozila u dolasku</h1>
       <p className="mt-4 max-w-2xl text-sm text-foreground/70">
         Vozila koja su na putu do nas — prije nego što se pojave u javnoj
-        ponudi. Ovaj odjeljak vide samo članovi privatnog salona.
+        ponudi. Ovaj odjeljak vide samo članovi EXCLUSIVE AUTO VIP.
       </p>
 
       <VozilaTabs aktivna="dolazak" vozila={vehicles} otkljucano={otkljucano} />
@@ -50,6 +51,7 @@ export default async function VozilaUDolaskuPage() {
                 <path d="M8 11V7a4 4 0 0 1 8 0v4" strokeLinecap="round" />
               </svg>
               <p className="text-xs font-semibold uppercase tracking-[0.25em]">Samo za članove</p>
+              <VipZnak className="text-xs" />
             </div>
             <h2 className="font-display mt-4 text-2xl">
               {lista.length > 0
@@ -57,7 +59,7 @@ export default async function VozilaUDolaskuPage() {
                 : "Budite prvi koji saznaju"}
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-foreground/70">
-              Prijavite se besplatno u privatni salon Exclusive Auto: odmah
+              Postanite besplatno član EXCLUSIVE AUTO VIP: odmah
               dobijate pristup vozilima u dolasku, a o svakom novom vozilu
               obavještavamo vas mejlom prije svih ostalih.
             </p>

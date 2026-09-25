@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { formatKubikaza, formatSnaga, razdvojiBrojSasije, kategorijaVozila } from "@/lib/vehicles";
 import { imaPristupSalonu } from "@/lib/salon";
 import PremiumSignupForm from "@/components/PremiumSignupForm";
+import VipZnak from "@/components/VipZnak";
 import BrojSasije from "@/components/BrojSasije";
 import KalkulatorRate from "@/components/KalkulatorRate";
 import { grupisiOpremu } from "@/lib/oprema";
@@ -39,7 +40,7 @@ export async function generateMetadata({
   const vehicle = await getVehicleBySlug(slug);
   if (!vehicle) return {};
   if (kategorijaVozila(vehicle) === "dolazak") {
-    return { title: "Vozilo u dolasku — privatni salon", robots: { index: false, follow: false } };
+    return { title: "Vozilo u dolasku — Exclusive Auto VIP", robots: { index: false, follow: false } };
   }
   return {
     title: `${vehicle.marka} ${vehicle.model}`,
@@ -63,11 +64,11 @@ export default async function VehicleDetailPage({
       <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24">
         <div className="card grid max-w-4xl gap-8 p-8 md:grid-cols-[1.2fr_1fr] md:p-10">
           <div>
-            <p className="section-label">Privatni salon</p>
+            <p className="text-xs text-accent"><VipZnak /></p>
             <h1 className="font-display mt-3 text-3xl">Ovo vozilo je u dolasku</h1>
             <p className="mt-3 text-sm leading-relaxed text-foreground/70">
-              Detalje o vozilima u dolasku vide samo članovi privatnog
-              salona. Prijava je besplatna i pristup se otključava odmah.
+              Detalje o vozilima u dolasku vide samo članovi EXCLUSIVE AUTO
+              VIP. Prijava je besplatna i pristup se otključava odmah.
             </p>
           </div>
           <div className="self-center">

@@ -43,8 +43,8 @@ export async function posaljiObavjestenjeONovomVozilu(vehicle: Vehicle) {
       paragraf(
         `${ime ? `Poštovani/a ${escapeHtml(ime.split(" ")[0])}, ` : ""}${
           uDolasku
-            ? "ekskluzivno za članove privatnog salona: ovo vozilo je na putu do nas i još nije u javnoj ponudi."
-            : "u našu ponudu upravo je stiglo novo vozilo — prvi saznajete kao član privatnog salona."
+            ? "ekskluzivno za članove EXCLUSIVE AUTO VIP: ovo vozilo je na putu do nas i još nije u javnoj ponudi."
+            : "u našu ponudu upravo je stiglo novo vozilo — prvi saznajete kao član EXCLUSIVE AUTO VIP."
         }`
       ) +
         (slika
@@ -61,7 +61,7 @@ export async function posaljiObavjestenjeONovomVozilu(vehicle: Vehicle) {
         ]) +
         "<br>" +
         dugme("Pogledaj vozilo", link) +
-        `<p style="margin:22px 0 0;color:#9a9a9a;font-size:11px;">Ovaj mejl ste dobili jer ste član privatnog salona Exclusive Auto. Za odjavu samo odgovorite na ovaj mejl.</p>`
+        `<p style="margin:22px 0 0;color:#9a9a9a;font-size:11px;">Ovaj mejl ste dobili jer ste član EXCLUSIVE AUTO VIP. Za odjavu samo odgovorite na ovaj mejl.</p>`
     );
 
   let poslato = 0;

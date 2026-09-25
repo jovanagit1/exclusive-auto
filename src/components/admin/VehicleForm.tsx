@@ -696,7 +696,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
             {(
               [
                 ["ponuda", "Salonska ponuda"],
-                ["dolazak", "U dolasku (samo privatni salon)"],
+                ["dolazak", "U dolasku (samo VIP)"],
                 ["posredovanje", "Posredovanje (nije salonsko)"],
               ] as [KategorijaVozila, string][]
             ).map(([k, naziv]) => (
@@ -716,7 +716,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
           </div>
           <p className="mt-1 text-xs text-muted">
             {kategorija === "dolazak"
-              ? "Vide ga samo članovi privatnog salona (prijavljeni na newsletter). Kad vozilo stigne, samo prebacite na „Salonska ponuda“."
+              ? "Vide ga samo VIP članovi (prijavljeni na newsletter). Kad vozilo stigne, samo prebacite na „Salonska ponuda“."
               : kategorija === "posredovanje"
                 ? "Prikazuje se na posebnoj stranici „Vozila u posredovanju“, odvojeno od salonske ponude."
                 : "Standardno — vozilo je u javnoj ponudi na stranici Vozila."}
@@ -927,7 +927,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
             checked={posaljiNewsletter}
             onChange={(e) => setPosaljiNewsletter(e.target.checked)}
           />
-          Pošalji obavještenje članovima privatnog salona (newsletter) o ovom vozilu
+          Pošalji obavještenje VIP članovima (newsletter) o ovom vozilu
         </label>
       )}
 

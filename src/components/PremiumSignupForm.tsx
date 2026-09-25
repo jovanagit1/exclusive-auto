@@ -46,8 +46,8 @@ export default function PremiumSignupForm() {
     return (
       <p className="text-sm text-accent">
         {vecPrijavljen
-          ? "Već ste član privatnog salona — pristup je otključan na ovom uređaju. "
-          : "Hvala! Dobrodošli u privatni salon — potvrda vam stiže na mejl. "}
+          ? "Već ste član EXCLUSIVE AUTO VIP — pristup je otključan na ovom uređaju. "
+          : "Hvala! Dobrodošli u EXCLUSIVE AUTO VIP — potvrda vam stiže na mejl. "}
         <Link href="/vozila-u-dolasku" className="underline underline-offset-4">
           Pogledajte vozila u dolasku →
         </Link>

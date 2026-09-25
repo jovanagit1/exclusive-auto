@@ -50,17 +50,17 @@ export async function POST(request: Request) {
     await posaljiMejl({
       to: novi.email,
       replyTo: OWNER_EMAIL,
-      subject: "Dobrodošli u privatni salon Exclusive Auto",
+      subject: "Dobrodošli u EXCLUSIVE AUTO VIP",
       html: sablonMejla(
-        ime ? `Dobrodošli, ${ime}!` : "Dobrodošli u privatni salon!",
+        ime ? `Dobrodošli, ${ime}!` : "Dobrodošli u EXCLUSIVE AUTO VIP!",
         paragraf(
-          "Hvala što ste se prijavili u privatni salon Exclusive Auto. Od sada ćete prvi saznati kada nova vozila stignu u našu ponudu."
+          "Hvala što ste se postali član EXCLUSIVE AUTO VIP. Od sada ćete prvi saznati kada nova vozila stignu u našu ponudu."
         ) +
           paragraf(
             "Šta to znači za vas:<br>• rane najave novih vozila, direktno na mejl<br>• kompletni podaci o vozilu i cijeni odmah u mejlu<br>• prilika da rezervišete vozilo prije redovne prodaje"
           ) +
           paragraf(
-            "<b>Vaš pristup privatnom salonu:</b> kao član sada vidite i odjeljak <b>Vozila u dolasku</b> — vozila koja stižu u našu ponudu, prije nego što ih vide ostali posjetioci. Na ovom uređaju je pristup već otključan, a na telefonu ili drugom računaru ga otključavate klikom na dugme ispod."
+            "<b>Vaš VIP pristup:</b> kao član sada vidite i odjeljak <b>Vozila u dolasku</b> — vozila koja stižu u našu ponudu, prije nego što ih vide ostali posjetioci. Na ovom uređaju je pristup već otključan, a na telefonu ili drugom računaru ga otključavate klikom na dugme ispod."
           ) +
           dugme("Otvori Vozila u dolasku", await linkZaPristup(SITE_URL, novi.email)) +
           "&nbsp; " +
@@ -74,10 +74,10 @@ export async function POST(request: Request) {
     await posaljiMejl({
       to: OWNER_EMAIL,
       replyTo: novi.email,
-      subject: `Nova Premium prijava — ${novi.email}`,
+      subject: `Novi VIP član — ${novi.email}`,
       html: sablonMejla(
-        "Nova prijava na Premium listu",
-        paragraf("Neko se upravo prijavio na Premium listu (newsletter o novim vozilima):") +
+        "Novi član EXCLUSIVE AUTO VIP",
+        paragraf("Neko se upravo prijavio u EXCLUSIVE AUTO VIP (newsletter o novim vozilima):") +
           tabelaPodataka([
             ["Email", novi.email],
             ["Ime", novi.ime ?? ""],
