@@ -20,7 +20,7 @@ function KvacicaIkonica() {
       fill="none"
       stroke="currentColor"
       strokeWidth={2}
-      className="h-3.5 w-3.5 shrink-0 text-accent"
+      className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent"
     >
       <path strokeLinecap="round" strokeLinejoin="round" d="M4 10.5 8 14.5 16 6" />
     </svg>
@@ -227,30 +227,24 @@ export default async function VehicleDetailPage({
         </div>
       </div>
 
-      <div className="mt-14">
-        <KalkulatorRate
-          cijena={vehicle.cijena}
-          valuta={vehicle.valuta}
-          vozilo={`${vehicle.marka} ${vehicle.model} (${vehicle.godiste})`}
-          godiste={vehicle.godiste}
-        />
-      </div>
 
       {svaOprema.length > 0 && (
         <div className="mt-14 border-t border-border pt-10">
           <p className="section-label">Karakteristike</p>
           <h2 className="font-display mt-2 text-2xl">Oprema</h2>
-          <div className="mt-6 space-y-8">
+          {/* Grupe opreme teku jedna za drugom kroz kolone (kao u novinama),
+              bez praznih mjesta između grupa. */}
+          <div className="mt-6 columns-1 gap-x-8 sm:columns-2 lg:columns-3 xl:columns-4">
             {grupisiOpremu(svaOprema, vehicle.marka).map((grupa) => (
-              <div key={grupa.naziv}>
-                <p className="mb-3 text-xs uppercase tracking-wider text-muted">
+              <div key={grupa.naziv} className="mb-6">
+                <p className="mb-2 break-after-avoid text-xs uppercase tracking-wider text-muted">
                   {grupa.naziv}
                 </p>
-                <ul className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+                <ul className="space-y-1.5">
                   {grupa.stavke.map((item) => (
                     <li
                       key={item}
-                      className="flex items-start gap-2.5 text-sm text-foreground/80"
+                      className="flex break-inside-avoid items-start gap-2 text-sm leading-snug text-foreground/80"
                     >
                       <KvacicaIkonica />
                       <span>{item}</span>
@@ -294,6 +288,15 @@ export default async function VehicleDetailPage({
           </div>
         </div>
       )}
+
+      <div className="mt-14">
+        <KalkulatorRate
+          cijena={vehicle.cijena}
+          valuta={vehicle.valuta}
+          vozilo={`${vehicle.marka} ${vehicle.model} (${vehicle.godiste})`}
+          godiste={vehicle.godiste}
+        />
+      </div>
     </div>
   );
 }
