@@ -55,10 +55,10 @@ export default function ONamaPage() {
             Exclusive Auto ima visoku reputaciju na domaćem tržištu i{" "}
             <b className="text-foreground">zvaničnu bonitetnu ocjenu A+</b>, što salon
             pozicionira kao visoko pouzdanog partnera za uvoz i prodaju novih i
-            korištenih auta iz Evrope.
+            korištenih automobila iz Evrope.
           </p>
           <p>
-            Za auta se izdaju pismene garancije koje Exclusive Auto daje na
+            Za automobile se izdaju pismene garancije koje Exclusive Auto daje na
             porijeklo vozila, tačnost pređenih kilometara, kao i na motor i
             mjenjač.
           </p>
