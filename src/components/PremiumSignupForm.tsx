@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 /**
  * Javna forma (u Footer-u, vidljiva na svakoj stranici) preko koje se
@@ -9,6 +11,8 @@ import { useState } from "react";
  * korisnicima", ovi ljudi dobijaju mejl o novom vozilu.
  */
 export default function PremiumSignupForm() {
+  const router = useRouter();
+  const [vecPrijavljen, setVecPrijavljen] = useState(false);
   const [email, setEmail] = useState("");
   const [ime, setIme] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -26,9 +30,12 @@ export default function PremiumSignupForm() {
       });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? "Greška pri prijavi.");
+      setVecPrijavljen(Boolean(json.vecPrijavljen));
       setStatus("sent");
       setEmail("");
       setIme("");
+      // Osvježi stranicu da se odmah otključa "Vozila u dolasku" (kolačić je postavljen).
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Greška pri prijavi.");
       setStatus("error");
@@ -38,7 +45,12 @@ export default function PremiumSignupForm() {
   if (status === "sent") {
     return (
       <p className="text-sm text-accent">
-        Hvala! Prijavljeni ste — javit ćemo vam se mejlom čim stigne novo vozilo.
+        {vecPrijavljen
+          ? "Već ste član privatnog salona — pristup je otključan na ovom uređaju. "
+          : "Hvala! Dobrodošli u privatni salon — potvrda vam stiže na mejl. "}
+        <Link href="/vozila-u-dolasku" className="underline underline-offset-4">
+          Pogledajte vozila u dolasku →
+        </Link>
       </p>
     );
   }

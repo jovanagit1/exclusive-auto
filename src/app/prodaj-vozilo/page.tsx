@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getVehicles } from "@/lib/store";
+import { kategorijaVozila } from "@/lib/vehicles";
 import ProdajVoziloForm from "@/components/ProdajVoziloForm";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +28,7 @@ const prednosti = [
 
 export default async function ProdajVoziloPage() {
   const vehicles = await getVehicles();
-  const vozilaZaZamjenu = vehicles.map((v) => ({
+  const vozilaZaZamjenu = vehicles.filter((v) => kategorijaVozila(v) === "ponuda").map((v) => ({
     slug: v.slug,
     naziv: `${v.marka} ${v.model} (${v.godiste})`,
   }));

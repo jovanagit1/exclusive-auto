@@ -29,7 +29,11 @@ export default function InquiryForm({
     e.preventDefault();
     setStatus("sending");
 
-    const formData = new FormData(e.currentTarget);
+    // Formu pamtimo odmah — nakon "await" React više ne drži e.currentTarget,
+    // pa je raniji poziv e.currentTarget.reset() pucao i prikazivao grešku
+    // iako je upit uspješno poslat.
+    const forma = e.currentTarget;
+    const formData = new FormData(forma);
     const data = Object.fromEntries(formData.entries());
 
     try {
@@ -39,8 +43,8 @@ export default function InquiryForm({
         body: JSON.stringify({ formType, data }),
       });
       if (!res.ok) throw new Error("Slanje nije uspjelo");
+      forma.reset();
       setStatus("sent");
-      e.currentTarget.reset();
     } catch {
       setStatus("error");
     }

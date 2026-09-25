@@ -10,6 +10,7 @@ import {
   dugme,
   escapeHtml,
 } from "@/lib/mailer";
+import { SALON_COOKIE, opcijeKolacica, vrijednostKolacica, linkZaPristup } from "@/lib/salon";
 
 /**
  * Javna ruta (BEZ admin prijave) — posjetioci se prijavljuju na Premium
@@ -30,10 +31,10 @@ export async function POST(request: Request) {
 
     const subscribers = await getSubscribers();
     if (subscribers.some((s) => s.email === email)) {
-      return NextResponse.json(
-        { ok: false, error: "Ova email adresa je već prijavljena." },
-        { status: 400 }
-      );
+      // Već je na listi — samo mu otključamo privatni salon u ovom browseru.
+      const res = NextResponse.json({ ok: true, vecPrijavljen: true });
+      res.cookies.set(SALON_COOKIE, await vrijednostKolacica(email), opcijeKolacica);
+      return res;
     }
 
     const novi: Subscriber = {
@@ -49,16 +50,21 @@ export async function POST(request: Request) {
     await posaljiMejl({
       to: novi.email,
       replyTo: OWNER_EMAIL,
-      subject: "Dobrodošli u Exclusive Auto Premium",
+      subject: "Dobrodošli u privatni salon Exclusive Auto",
       html: sablonMejla(
-        ime ? `Dobrodošli, ${ime}!` : "Dobrodošli u Exclusive Auto Premium!",
+        ime ? `Dobrodošli, ${ime}!` : "Dobrodošli u privatni salon!",
         paragraf(
-          "Hvala što ste se prijavili na Exclusive Auto Premium listu. Od sada ćete prvi saznati kada nova vozila stignu u našu ponudu."
+          "Hvala što ste se prijavili u privatni salon Exclusive Auto. Od sada ćete prvi saznati kada nova vozila stignu u našu ponudu."
         ) +
           paragraf(
             "Šta to znači za vas:<br>• rane najave novih vozila, direktno na mejl<br>• kompletni podaci o vozilu i cijeni odmah u mejlu<br>• prilika da rezervišete vozilo prije redovne prodaje"
           ) +
-          dugme("Pogledajte trenutnu ponudu", `${SITE_URL}/vozila`) +
+          paragraf(
+            "<b>Vaš pristup privatnom salonu:</b> kao član sada vidite i odjeljak <b>Vozila u dolasku</b> — vozila koja stižu u našu ponudu, prije nego što ih vide ostali posjetioci. Na ovom uređaju je pristup već otključan, a na telefonu ili drugom računaru ga otključavate klikom na dugme ispod."
+          ) +
+          dugme("Otvori Vozila u dolasku", await linkZaPristup(SITE_URL, novi.email)) +
+          "&nbsp; " +
+          dugme("Trenutna ponuda", `${SITE_URL}/vozila`) +
           `<p style="margin:22px 0 0;color:#9a9a9a;font-size:11px;line-height:1.6;">Prijavljeni ste sa adresom ${escapeHtml(
             novi.email
           )}. Ako ne želite više da primate obavještenja, samo odgovorite na ovaj mejl i uklonićemo vas sa liste.</p>`
@@ -80,7 +86,9 @@ export async function POST(request: Request) {
       ),
     });
 
-    return NextResponse.json({ ok: true });
+    const res = NextResponse.json({ ok: true });
+    res.cookies.set(SALON_COOKIE, await vrijednostKolacica(novi.email), opcijeKolacica);
+    return res;
   } catch (err) {
     console.error("[premium] greška:", err);
     const message = err instanceof Error ? err.message : "Nepoznata greška.";

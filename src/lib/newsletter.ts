@@ -1,4 +1,5 @@
-import { formatPrice, formatKubikaza, formatSnaga, type Vehicle } from "./vehicles";
+import { formatPrice, formatKubikaza, formatSnaga, kategorijaVozila, type Vehicle } from "./vehicles";
+import { linkZaPristup } from "./salon";
 import { getSubscribers } from "./store";
 import {
   OWNER_EMAIL,
@@ -23,7 +24,7 @@ export async function posaljiObavjestenjeONovomVozilu(vehicle: Vehicle) {
     return { poslato: 0, ukupno: subscribers.length };
   }
 
-  const link = `${SITE_URL}/vozila/${vehicle.slug}`;
+  const uDolasku = kategorijaVozila(vehicle) === "dolazak";
   const slika = vehicle.slike?.[0];
   const naAkciji = Boolean(vehicle.akcija && vehicle.regularnaCijena);
   const cijenaHtml = naAkciji
@@ -36,11 +37,15 @@ export async function posaljiObavjestenjeONovomVozilu(vehicle: Vehicle) {
         formatPrice(vehicle.cijena, vehicle.valuta)
       )}</p>`;
 
-  const html = (ime?: string) =>
+  const html = (ime: string | undefined, link: string) =>
     sablonMejla(
       `${vehicle.marka} ${vehicle.model}`,
       paragraf(
-        `${ime ? `Poštovani/a ${escapeHtml(ime.split(" ")[0])}, ` : ""}u našu ponudu upravo je stiglo novo vozilo — prvi saznajete kao Premium korisnik.`
+        `${ime ? `Poštovani/a ${escapeHtml(ime.split(" ")[0])}, ` : ""}${
+          uDolasku
+            ? "ekskluzivno za članove privatnog salona: ovo vozilo je na putu do nas i još nije u javnoj ponudi."
+            : "u našu ponudu upravo je stiglo novo vozilo — prvi saznajete kao član privatnog salona."
+        }`
       ) +
         (slika
           ? `<a href="${link}"><img src="${escapeHtml(slika)}" alt="" style="width:100%;border-radius:6px;margin:0 0 14px;display:block;"></a>`
@@ -56,16 +61,20 @@ export async function posaljiObavjestenjeONovomVozilu(vehicle: Vehicle) {
         ]) +
         "<br>" +
         dugme("Pogledaj vozilo", link) +
-        `<p style="margin:22px 0 0;color:#9a9a9a;font-size:11px;">Ovaj mejl ste dobili jer ste prijavljeni na Exclusive Auto Premium listu. Za odjavu samo odgovorite na ovaj mejl.</p>`
+        `<p style="margin:22px 0 0;color:#9a9a9a;font-size:11px;">Ovaj mejl ste dobili jer ste član privatnog salona Exclusive Auto. Za odjavu samo odgovorite na ovaj mejl.</p>`
     );
 
   let poslato = 0;
   for (const sub of subscribers) {
+    // Lični link otključava privatni salon i na uređaju sa kojeg se otvori mejl.
+    const link = await linkZaPristup(SITE_URL, sub.email, `/vozila/${vehicle.slug}`);
     const ok = await posaljiMejl({
       to: sub.email,
       replyTo: OWNER_EMAIL,
-      subject: `Novo vozilo: ${vehicle.marka} ${vehicle.model}`,
-      html: html(sub.ime),
+      subject: uDolasku
+        ? `Stiže uskoro: ${vehicle.marka} ${vehicle.model}`
+        : `Novo vozilo: ${vehicle.marka} ${vehicle.model}`,
+      html: html(sub.ime, link),
     });
     if (ok) poslato++;
   }

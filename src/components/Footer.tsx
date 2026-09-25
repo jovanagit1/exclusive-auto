@@ -18,6 +18,8 @@ export default function Footer() {
           <h3 className="section-label mb-4">Navigacija</h3>
           <ul className="space-y-2 text-sm text-foreground/80">
             <li><Link href="/vozila" className="hover:text-accent">Vozila</Link></li>
+            <li><Link href="/vozila-u-dolasku" className="hover:text-accent">Vozila u dolasku</Link></li>
+            <li><Link href="/posredovanje" className="hover:text-accent">Posredovanje</Link></li>
             <li><Link href="/usluge" className="hover:text-accent">Usluge</Link></li>
             <li><Link href="/galerija" className="hover:text-accent">Galerija</Link></li>
             <li><Link href="/prodaj-vozilo" className="hover:text-accent">Prodaj vozilo</Link></li>
@@ -64,10 +66,13 @@ export default function Footer() {
 
       <div className="border-t border-border">
         <div className="mx-auto max-w-7xl px-5 py-8 md:px-8">
-          <h3 className="section-label mb-1">Premium ponuda</h3>
+          <h3 className="section-label mb-1">Privatni salon</h3>
           <p className="mb-4 text-sm text-muted">
-            Prijavite se i budite prvi obaviješteni mejlom kada stigne novo
-            vozilo.
+            Besplatna prijava: pristup odjeljku{" "}
+            <Link href="/vozila-u-dolasku" className="text-foreground/80 underline underline-offset-4 hover:text-accent">
+              Vozila u dolasku
+            </Link>{" "}
+            i obavještenje mejlom o svakom novom vozilu, prije svih ostalih.
           </p>
           <PremiumSignupForm />
         </div>

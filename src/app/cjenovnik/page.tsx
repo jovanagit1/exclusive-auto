@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getVehicles } from "@/lib/store";
+import { kategorijaVozila } from "@/lib/vehicles";
 import PrintButton from "@/components/PrintButton";
 import CjenovnikTabela from "@/components/CjenovnikTabela";
 
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CjenovnikPage() {
-  const vehicles = await getVehicles();
+  const vehicles = (await getVehicles()).filter((v) => kategorijaVozila(v) !== "dolazak");
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">

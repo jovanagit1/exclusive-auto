@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { getVehicles } from "@/lib/store";
+import { kategorijaVozila } from "@/lib/vehicles";
+import { imaPristupSalonu } from "@/lib/salon";
 import VozilaGrid from "@/components/VozilaGrid";
+import VozilaTabs from "@/components/VozilaTabs";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +14,8 @@ export const metadata: Metadata = {
 };
 
 export default async function VozilaPage() {
-  const vehicles = await getVehicles();
+  const [vehicles, otkljucano] = await Promise.all([getVehicles(), imaPristupSalonu()]);
+  const ponuda = vehicles.filter((v) => kategorijaVozila(v) === "ponuda");
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24">
@@ -22,8 +26,10 @@ export default async function VozilaPage() {
         pronaći ćemo ga po vašoj želji.
       </p>
 
-      <div className="mt-10">
-        <VozilaGrid vehicles={vehicles} />
+      <VozilaTabs aktivna="ponuda" vozila={vehicles} otkljucano={otkljucano} />
+
+      <div className="mt-8">
+        <VozilaGrid vehicles={ponuda} />
       </div>
     </div>
   );

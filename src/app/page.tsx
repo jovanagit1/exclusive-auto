@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getVehicles } from "@/lib/store";
+import { kategorijaVozila } from "@/lib/vehicles";
 import VehicleCard from "@/components/VehicleCard";
 import PlaceholderImage from "@/components/PlaceholderImage";
 
@@ -29,7 +30,7 @@ const services = [
 ];
 
 export default async function HomePage() {
-  const vehicles = await getVehicles();
+  const vehicles = (await getVehicles()).filter((v) => kategorijaVozila(v) === "ponuda");
   const featured = vehicles.filter((v) => v.istaknuto);
 
   return (
@@ -117,6 +118,24 @@ export default async function HomePage() {
             usluge pripreme i dorade vozila i izvode se u skladu sa važećim
             zakonskim propisima o dozvoljenoj svjetlopropusnosti stakala.
           </p>
+        </div>
+      </section>
+
+      {/* PRIVATNI SALON — vozila u dolasku */}
+      <section className="border-t border-border">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 py-16 md:flex-row md:items-center md:justify-between md:px-8">
+          <div className="max-w-xl">
+            <p className="section-label">Privatni salon</p>
+            <h2 className="font-display mt-2 text-3xl">Vozila u dolasku — samo za članove</h2>
+            <p className="mt-4 text-sm leading-relaxed text-foreground/70">
+              Prijavite se besplatno u privatni salon i vidite vozila koja su
+              na putu do nas, prije nego što se pojave u javnoj ponudi. O
+              svakom novom vozilu javljamo vam mejlom — prvima.
+            </p>
+          </div>
+          <Link href="/vozila-u-dolasku" className="btn-outline shrink-0">
+            Uđi u privatni salon
+          </Link>
         </div>
       </section>
 

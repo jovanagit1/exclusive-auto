@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { upload } from "@vercel/blob/client";
-import { STANDARDNI_OPIS, razdvojiBrojSasije, type Vehicle } from "@/lib/vehicles";
+import { STANDARDNI_OPIS, razdvojiBrojSasije, type Vehicle, type KategorijaVozila } from "@/lib/vehicles";
 import { slugify } from "@/lib/slug";
 import { pripremiSlikuZaUpload } from "@/lib/image-prep";
 import { OPREMA_KATEGORIJE, OPREMA_PO_MARKI, kljucMarkeOpreme } from "@/lib/oprema";
@@ -198,6 +198,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
   const [brojSasije, setBrojSasije] = useState(razdvojeno?.brojSasije ?? "");
   const [oprema, setOprema] = useState((initial?.oprema ?? []).join("\n"));
   const [istaknuto, setIstaknuto] = useState(Boolean(initial?.istaknuto));
+  const [kategorija, setKategorija] = useState<KategorijaVozila>(initial?.kategorija ?? "ponuda");
   const [slike, setSlike] = useState<string[]>(initial?.slike ?? []);
   const [posaljiNewsletter, setPosaljiNewsletter] = useState(false);
 
@@ -356,6 +357,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
         .map((s) => s.trim())
         .filter(Boolean),
       istaknuto,
+      kategorija,
       slike,
 
       tipOvjesa: tipOvjesa || undefined,
@@ -686,6 +688,41 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
           </p>
         </div>
 
+        <div className="sm:col-span-2">
+          <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
+            Gdje se vozilo prikazuje
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {(
+              [
+                ["ponuda", "Salonska ponuda"],
+                ["dolazak", "U dolasku (samo privatni salon)"],
+                ["posredovanje", "Posredovanje (nije salonsko)"],
+              ] as [KategorijaVozila, string][]
+            ).map(([k, naziv]) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setKategorija(k)}
+                className={`rounded-sm border px-3 py-2 text-xs uppercase tracking-wider transition-colors ${
+                  kategorija === k
+                    ? "border-accent bg-accent text-background"
+                    : "border-border text-foreground/80 hover:border-accent"
+                }`}
+              >
+                {naziv}
+              </button>
+            ))}
+          </div>
+          <p className="mt-1 text-xs text-muted">
+            {kategorija === "dolazak"
+              ? "Vide ga samo članovi privatnog salona (prijavljeni na newsletter). Kad vozilo stigne, samo prebacite na „Salonska ponuda“."
+              : kategorija === "posredovanje"
+                ? "Prikazuje se na posebnoj stranici „Vozila u posredovanju“, odvojeno od salonske ponude."
+                : "Standardno — vozilo je u javnoj ponudi na stranici Vozila."}
+          </p>
+        </div>
+
         <label className="flex items-center gap-2 text-sm sm:col-span-2">
           <input
             type="checkbox"
@@ -890,7 +927,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
             checked={posaljiNewsletter}
             onChange={(e) => setPosaljiNewsletter(e.target.checked)}
           />
-          Pošalji obavještenje premium korisnicima o ovom vozilu
+          Pošalji obavještenje članovima privatnog salona (newsletter) o ovom vozilu
         </label>
       )}
 

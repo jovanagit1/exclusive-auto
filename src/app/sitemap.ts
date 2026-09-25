@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getVehicles } from "@/lib/store";
+import { kategorijaVozila } from "@/lib/vehicles";
 import { SITE_URL } from "@/lib/structured-data";
 
 // Bez ovoga, Next.js pokušava da mapu sajta učita "statično" (jednom, pri
@@ -19,6 +20,7 @@ const STATICNE_STRANICE = [
   { path: "/cjenovnik", priority: 0.7, ucestalost: "weekly" as const },
   { path: "/usluge", priority: 0.7, ucestalost: "monthly" as const },
   { path: "/uvoz", priority: 0.6, ucestalost: "monthly" as const },
+  { path: "/posredovanje", priority: 0.6, ucestalost: "weekly" as const },
   { path: "/prodaj-vozilo", priority: 0.7, ucestalost: "monthly" as const },
   { path: "/registracija", priority: 0.5, ucestalost: "monthly" as const },
   { path: "/probna-voznja", priority: 0.5, ucestalost: "monthly" as const },
@@ -28,7 +30,7 @@ const STATICNE_STRANICE = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const vehicles = await getVehicles();
+  const vehicles = (await getVehicles()).filter((v) => kategorijaVozila(v) !== "dolazak");
   const sada = new Date();
 
   return [

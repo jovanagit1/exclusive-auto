@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatKubikaza, formatSnaga, razdvojiBrojSasije } from "@/lib/vehicles";
+import { formatKubikaza, formatSnaga, razdvojiBrojSasije, kategorijaVozila } from "@/lib/vehicles";
+import { imaPristupSalonu } from "@/lib/salon";
+import PremiumSignupForm from "@/components/PremiumSignupForm";
 import BrojSasije from "@/components/BrojSasije";
 import { grupisiOpremu } from "@/lib/oprema";
 import { getVehicleBySlug } from "@/lib/store";
@@ -35,6 +37,9 @@ export async function generateMetadata({
   const { slug } = await params;
   const vehicle = await getVehicleBySlug(slug);
   if (!vehicle) return {};
+  if (kategorijaVozila(vehicle) === "dolazak") {
+    return { title: "Vozilo u dolasku — privatni salon", robots: { index: false, follow: false } };
+  }
   return {
     title: `${vehicle.marka} ${vehicle.model}`,
     description: vehicle.opis,
@@ -49,6 +54,28 @@ export default async function VehicleDetailPage({
   const { slug } = await params;
   const vehicle = await getVehicleBySlug(slug);
   if (!vehicle) notFound();
+
+  const kategorija = kategorijaVozila(vehicle);
+  // Vozila u dolasku vide samo članovi privatnog salona.
+  if (kategorija === "dolazak" && !(await imaPristupSalonu())) {
+    return (
+      <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24">
+        <div className="card grid max-w-4xl gap-8 p-8 md:grid-cols-[1.2fr_1fr] md:p-10">
+          <div>
+            <p className="section-label">Privatni salon</p>
+            <h1 className="font-display mt-3 text-3xl">Ovo vozilo je u dolasku</h1>
+            <p className="mt-3 text-sm leading-relaxed text-foreground/70">
+              Detalje o vozilima u dolasku vide samo članovi privatnog
+              salona. Prijava je besplatna i pristup se otključava odmah.
+            </p>
+          </div>
+          <div className="self-center">
+            <PremiumSignupForm />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const specs: [string, string][] = [
     ["Godište", String(vehicle.godiste)],
@@ -104,10 +131,16 @@ export default async function VehicleDetailPage({
   return (
     <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
       <Link
-        href="/vozila"
+        href={
+          kategorija === "dolazak"
+            ? "/vozila-u-dolasku"
+            : kategorija === "posredovanje"
+              ? "/posredovanje"
+              : "/vozila"
+        }
         className="text-xs uppercase tracking-wider text-muted hover:text-accent"
       >
-        ← Sva vozila
+        ← {kategorija === "dolazak" ? "Vozila u dolasku" : kategorija === "posredovanje" ? "Vozila u posredovanju" : "Sva vozila"}
       </Link>
 
       <div className="mt-6 grid gap-10 md:grid-cols-2">
@@ -122,6 +155,16 @@ export default async function VehicleDetailPage({
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <p className="section-label">{vehicle.marka}</p>
+              {kategorija === "dolazak" && (
+                <span className="rounded-sm border border-accent px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-accent">
+                  U dolasku
+                </span>
+              )}
+              {kategorija === "posredovanje" && (
+                <span className="rounded-sm border border-border px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-muted">
+                  Posredovanje
+                </span>
+              )}
               {naAkciji && (
                 <span className="rounded-sm bg-red-500/15 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-red-400">
                   Akcija

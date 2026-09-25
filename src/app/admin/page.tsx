@@ -58,6 +58,12 @@ export default async function AdminDashboardPage() {
               <div>
                 <p className="text-sm font-medium">
                   {v.marka} {v.model}
+                  {v.kategorija === "dolazak" && (
+                    <span className="ml-2 rounded-sm border border-accent px-1.5 py-0.5 text-[0.6rem] uppercase tracking-wider text-accent">U dolasku</span>
+                  )}
+                  {v.kategorija === "posredovanje" && (
+                    <span className="ml-2 rounded-sm border border-border px-1.5 py-0.5 text-[0.6rem] uppercase tracking-wider text-muted">Posredovanje</span>
+                  )}
                 </p>
                 <p className="text-xs text-muted">
                   {v.godiste} · {formatPrice(v.cijena, v.valuta)} ·{" "}

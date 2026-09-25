@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import InquiryForm from "@/components/InquiryForm";
 import { getVehicles } from "@/lib/store";
+import { kategorijaVozila } from "@/lib/vehicles";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ProbnaVoznjaPage() {
-  const vehicles = await getVehicles();
+  const vehicles = (await getVehicles()).filter((v) => kategorijaVozila(v) !== "dolazak");
   const vehicleOptions = vehicles.map((v) => `${v.marka} ${v.model} (${v.godiste})`);
 
   return (

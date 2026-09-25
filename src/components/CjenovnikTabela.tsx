@@ -103,6 +103,11 @@ export default function CjenovnikTabela({ vehicles }: { vehicles: Vehicle[] }) {
                     >
                       {v.marka} {v.model}
                     </Link>
+                    {v.kategorija === "posredovanje" && (
+                      <span className="ml-2 text-[0.65rem] uppercase tracking-wider text-muted">
+                        Posredovanje
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-3">{v.godiste}</td>
                   <td className="px-4 py-3">{v.km.toLocaleString("de-DE")} km</td>

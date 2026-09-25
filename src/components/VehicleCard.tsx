@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Vehicle } from "@/lib/vehicles";
+import { kategorijaVozila, type Vehicle } from "@/lib/vehicles";
 import VehicleImage from "./VehicleImage";
 import FavoriteButton from "./FavoriteButton";
 import PriceTag from "./PriceTag";
@@ -14,6 +14,11 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
     >
       <div className="relative">
         <VehicleImage slike={vehicle.slike} label={`${vehicle.marka} ${vehicle.model}`} />
+        {kategorijaVozila(vehicle) !== "ponuda" && (
+          <span className="absolute bottom-2 left-2 rounded-sm bg-background/85 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-foreground backdrop-blur">
+            {kategorijaVozila(vehicle) === "dolazak" ? "U dolasku" : "Posredovanje"}
+          </span>
+        )}
         {naAkciji && (
           <span className="absolute left-2 top-2 rounded-sm bg-red-500 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-white">
             Akcija

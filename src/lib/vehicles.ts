@@ -1,3 +1,9 @@
+export type KategorijaVozila = "ponuda" | "dolazak" | "posredovanje";
+
+export function kategorijaVozila(v: Pick<Vehicle, "kategorija">): KategorijaVozila {
+  return v.kategorija ?? "ponuda";
+}
+
 export type Vehicle = {
   slug: string;
   marka: string;
@@ -30,6 +36,13 @@ export type Vehicle = {
   brojSasije?: string;
   oprema: string[];
   istaknuto?: boolean;
+  /**
+   * Gdje se vozilo prikazuje na sajtu:
+   *  - "ponuda" (ili prazno): salonska ponuda, stranica /vozila
+   *  - "dolazak": vozila u dolasku — vide ih SAMO prijavljeni u privatni salon
+   *  - "posredovanje": tuđa vozila koja se prodaju posredstvom, stranica /posredovanje
+   */
+  kategorija?: KategorijaVozila;
   /** URL-ovi slika (Vercel Blob) — prva slika se koristi kao naslovna. */
   slike?: string[];
 
