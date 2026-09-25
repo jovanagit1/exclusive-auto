@@ -218,3 +218,54 @@ body {
     color: #000000;
   }
 }
+
+/* "Živa" polja sa brojkama (stranica O nama) — tamna pozadina preko koje
+   polako "teče" diskretan bijeli odsjaj, uz lagano pulsiranje ivice. */
+.stat-live {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(115deg, #111113 0%, #1c1c20 35%, #2a2a30 50%, #1c1c20 65%, #111113 100%);
+  background-size: 300% 300%;
+  animation: stat-tece 9s ease-in-out infinite, stat-puls 4.5s ease-in-out infinite;
+  border: 1px solid var(--border);
+}
+.stat-live::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.07) 45%,
+    rgba(255, 255, 255, 0.16) 50%,
+    rgba(255, 255, 255, 0.07) 55%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  animation: stat-sjaj 6s ease-in-out infinite;
+  pointer-events: none;
+}
+.stat-live:nth-child(2),
+.stat-live:nth-child(2)::after {
+  animation-delay: 1.2s;
+}
+.stat-live:nth-child(3),
+.stat-live:nth-child(3)::after {
+  animation-delay: 2.4s;
+}
+@keyframes stat-tece {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes stat-sjaj {
+  0% { transform: translateX(-120%); }
+  60%, 100% { transform: translateX(120%); }
+}
+@keyframes stat-puls {
+  0%, 100% { border-color: var(--border); }
+  50% { border-color: rgba(255, 255, 255, 0.45); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stat-live, .stat-live::after { animation: none; }
+}
