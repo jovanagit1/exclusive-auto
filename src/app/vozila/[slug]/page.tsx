@@ -5,6 +5,7 @@ import { formatKubikaza, formatSnaga, razdvojiBrojSasije, kategorijaVozila } fro
 import { imaPristupSalonu } from "@/lib/salon";
 import PremiumSignupForm from "@/components/PremiumSignupForm";
 import BrojSasije from "@/components/BrojSasije";
+import KalkulatorRate from "@/components/KalkulatorRate";
 import { grupisiOpremu } from "@/lib/oprema";
 import { getVehicleBySlug } from "@/lib/store";
 import VehicleGallery from "@/components/VehicleGallery";
@@ -223,6 +224,14 @@ export default async function VehicleDetailPage({
             </Link>
           </div>
         </div>
+      </div>
+
+      <div className="mt-14">
+        <KalkulatorRate
+          cijena={vehicle.cijena}
+          valuta={vehicle.valuta}
+          vozilo={`${vehicle.marka} ${vehicle.model} (${vehicle.godiste})`}
+        />
       </div>
 
       {svaOprema.length > 0 && (

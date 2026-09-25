@@ -20,6 +20,8 @@ const FORM_NASLOVI: Record<string, string> = {
   "probna-voznja": "Rezervacija probne vožnje",
   uvoz: "Upit za uvoz vozila",
   registracija: "Upit za registraciju vozila",
+  kredit: "Upit za kredit",
+  lizing: "Upit za lizing",
 };
 
 const POTVRDA_TEKST: Record<string, string> = {
@@ -28,6 +30,8 @@ const POTVRDA_TEKST: Record<string, string> = {
     "Primili smo vaš zahtjev za probnu vožnju. Tačan termin ćemo potvrditi telefonom ili mejlom.",
   uvoz: "Primili smo vaš upit za uvoz vozila. Krećemo u potragu i javljamo vam se sa ponudama.",
   registracija: "Primili smo vaš upit za registraciju vozila i uskoro vam se javljamo.",
+  kredit: "Primili smo vaš upit za kredit. Javljamo vam se sa ponudom i narednim koracima.",
+  lizing: "Primili smo vaš upit za lizing. Javljamo vam se sa ponudom po vašoj mjeri.",
 };
 
 const LABELI: Record<string, string> = {
@@ -43,6 +47,11 @@ const LABELI: Record<string, string> = {
   budzet: "Budžet",
   godiste: "Godište",
   status: "Status vozila",
+  cijena: "Cijena vozila",
+  ucesce: "Učešće",
+  iznosKredita: "Iznos kredita",
+  rok: "Rok otplate",
+  rata: "Mjesečna rata",
 };
 
 export async function POST(request: Request) {
