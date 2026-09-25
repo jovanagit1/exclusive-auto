@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { KREDIT, mjesecnaRata } from "@/lib/finansiranje";
+import { KREDIT, LIZING, maxRokLizinga, mjesecnaRata } from "@/lib/finansiranje";
 import { EUR_U_KM } from "@/lib/currency";
 
 function km(x: number) {
@@ -20,10 +20,12 @@ export default function KalkulatorRate({
   cijena,
   valuta,
   vozilo,
+  godiste,
 }: {
   cijena: number;
   valuta: string;
   vozilo: string;
+  godiste: number;
 }) {
   const cijenaKM = valuta === "EUR" ? cijena * EUR_U_KM : cijena;
   const minUcesce = Math.max(0, Math.ceil(cijenaKM - KREDIT.maxIznos));
@@ -39,6 +41,16 @@ export default function KalkulatorRate({
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   const iznosKredita = Math.max(0, cijenaKM - ucesce);
+
+  // Lizing
+  const lizingMaxRok = maxRokLizinga(godiste);
+  const lizingDostupan = lizingMaxRok >= LIZING.minRok;
+  const lizingMinUcesce = Math.ceil((cijenaKM * LIZING.minUcesceProcenat) / 100 / 100) * 100;
+  const lizingMaxUcesce = Math.floor((cijenaKM * LIZING.maxUcesceProcenat) / 100 / 100) * 100;
+  const [lUcesce, setLUcesce] = useState(lizingMinUcesce);
+  const [lRok, setLRok] = useState(Math.min(60, Math.max(LIZING.minRok, lizingMaxRok)));
+  const lIznos = Math.max(0, cijenaKM - lUcesce);
+  const lRata = mjesecnaRata(lIznos, LIZING.godisnjaKamata, Math.min(lRok, lizingMaxRok));
   const rata = useMemo(
     () => mjesecnaRata(iznosKredita, KREDIT.godisnjaKamata, rok),
     [iznosKredita, rok]
@@ -60,7 +72,21 @@ export default function KalkulatorRate({
             rok: `${rok} mjeseci`,
             rata: `${km(rata)} (informativno)`,
           }
-        : { ime, telefon, email, vozilo, cijena: kmOkruglo(cijenaKM) };
+        : {
+            ime,
+            telefon,
+            email,
+            vozilo,
+            cijena: kmOkruglo(cijenaKM),
+            ...(lizingDostupan
+              ? {
+                  ucesce: kmOkruglo(lUcesce),
+                  iznosKredita: kmOkruglo(lIznos),
+                  rok: `${lRok} mjeseci`,
+                  rata: `${km(lRata)} (informativno)`,
+                }
+              : {}),
+          };
     try {
       const res = await fetch("/api/inquiries", {
         method: "POST",
@@ -158,11 +184,75 @@ export default function KalkulatorRate({
           </div>
         </div>
       ) : (
-        <p className="mt-8 max-w-2xl text-sm leading-relaxed text-foreground/75">
-          Ovo vozilo možete kupiti i na lizing. Uslove (učešće, rok i ratu)
-          pravimo po vašoj mjeri — ostavite kontakt i javljamo vam se sa
-          ponudom.
-        </p>
+        lizingDostupan ? (
+          <div className="mt-8 grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-center">
+            <div className="space-y-7">
+              <div>
+                <div className="flex items-baseline justify-between text-sm">
+                  <span className="text-xs uppercase tracking-wider text-muted">
+                    Učešće (min. {LIZING.minUcesceProcenat}%)
+                  </span>
+                  <span className="font-semibold">
+                    {kmOkruglo(lUcesce)}{" "}
+                    <span className="text-xs text-muted">
+                      ({Math.round((lUcesce / cijenaKM) * 100)}%)
+                    </span>
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={lizingMinUcesce}
+                  max={lizingMaxUcesce}
+                  step={100}
+                  value={lUcesce}
+                  onChange={(e) => setLUcesce(Number(e.target.value))}
+                  className="mt-3 w-full accent-white"
+                />
+              </div>
+              <div>
+                <div className="flex items-baseline justify-between text-sm">
+                  <span className="text-xs uppercase tracking-wider text-muted">Rok otplate</span>
+                  <span className="font-semibold">{lRok} mjeseci</span>
+                </div>
+                <input
+                  type="range"
+                  min={LIZING.minRok}
+                  max={lizingMaxRok}
+                  step={6}
+                  value={Math.min(lRok, lizingMaxRok)}
+                  onChange={(e) => setLRok(Number(e.target.value))}
+                  className="mt-3 w-full accent-white"
+                />
+                <p className="mt-1 text-xs text-muted">
+                  Za vozilo iz {godiste}. najduži rok je {lizingMaxRok} mjeseci (starost vozila i
+                  rok zajedno do {LIZING.maxStarostPlusRokGodina} godina).
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm text-foreground/70">
+                <span>
+                  Cijena vozila: <b className="text-foreground">{kmOkruglo(cijenaKM)}</b>
+                </span>
+                <span>
+                  Iznos finansiranja: <b className="text-foreground">{kmOkruglo(lIznos)}</b>
+                </span>
+              </div>
+            </div>
+
+            <div className="border border-border bg-background/40 p-6 text-center">
+              <p className="text-xs uppercase tracking-[0.25em] text-muted">Mjesečna rata</p>
+              <p className="font-display mt-2 text-4xl text-foreground">≈ {km(lRata)}</p>
+              <p className="mt-2 text-xs text-muted">
+                {lRok} rata · kamata {LIZING.godisnjaKamata.toLocaleString("de-DE")}%
+              </p>
+            </div>
+          </div>
+        ) : (
+          <p className="mt-8 max-w-2xl text-sm leading-relaxed text-foreground/75">
+            Za ovo vozilo standardni lizing nije dostupan zbog starosti vozila
+            (starost i rok zajedno do {LIZING.maxStarostPlusRokGodina} godina) —
+            pošaljite upit, pronaći ćemo najbolje rješenje finansiranja.
+          </p>
+        )
       )}
 
       <div className="mt-8 border-t border-border pt-6">
@@ -189,6 +279,13 @@ export default function KalkulatorRate({
           <button type="button" onClick={() => setFormaOtvorena(true)} className="btn-primary">
             {tip === "kredit" ? "Želim ponudu za kredit" : "Želim ponudu za lizing"}
           </button>
+        )}
+        {tip === "lizing" && (
+          <p className="disclaimer mt-4">
+            Informativni izračun. Lizing: minimalno učešće {LIZING.minUcesceProcenat}%, starost
+            vozila i rok otplate zajedno do {LIZING.maxStarostPlusRokGodina} godina. Vozilo je u
+            vlasništvu banke do otplate posljednje rate. Konačne uslove određuje banka.
+          </p>
         )}
         {tip === "kredit" && (
           <p className="disclaimer mt-4">

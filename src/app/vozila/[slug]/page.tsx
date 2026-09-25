@@ -231,6 +231,7 @@ export default async function VehicleDetailPage({
           cijena={vehicle.cijena}
           valuta={vehicle.valuta}
           vozilo={`${vehicle.marka} ${vehicle.model} (${vehicle.godiste})`}
+          godiste={vehicle.godiste}
         />
       </div>
 
