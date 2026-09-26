@@ -103,7 +103,7 @@ export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
           </p>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-foreground/70 md:text-base">
             Uvoz i prodaja novih i korištenih automobila iz Evrope — sa
-            pismenom garancijom na porijeklo, kilometražu, motor i mjenjač.
+            pismenom garancijom na porijeklo i kilometražu.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link href="/vozila" className="btn-primary">

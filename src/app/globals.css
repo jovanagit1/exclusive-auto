@@ -326,3 +326,9 @@ body {
   .hero-slajd, .hero-slajd.is-active { transform: none; transition: opacity 1.2s ease; }
   .hero-ulaz > *, .hero-vozilo { animation: none; opacity: 1; transform: none; }
 }
+
+/* Stavke padajućih menija u tamnim bojama sajta (Windows/Chrome) */
+select.input-field option {
+  background: var(--surface-2);
+  color: var(--foreground);
+}

@@ -92,10 +92,14 @@ export default async function HomePage() {
             ))}
           </div>
 
-          <p className="disclaimer mt-8 max-w-2xl">
-            Napomena: usluge poliranja, detailinga i zatamnjenja stakala su
-            usluge pripreme i dorade vozila i izvode se u skladu sa važećim
-            zakonskim propisima o dozvoljenoj svjetlopropusnosti stakala.
+          <p className="mt-10 flex max-w-2xl items-start gap-3 text-sm leading-relaxed text-foreground/80">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={2} className="mt-0.5 h-4 w-4 shrink-0 text-accent">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 10.5 8 14.5 16 6" />
+            </svg>
+            <span>
+              Svako vozilo iz naše ponude prije prodaje prolazi kompletnu
+              pripremu — hemijsko čišćenje, detailing i poliranje.
+            </span>
           </p>
         </div>
       </section>

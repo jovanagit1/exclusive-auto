@@ -283,8 +283,9 @@ export default function KalkulatorRate({
         {tip === "lizing" && (
           <p className="disclaimer mt-4">
             Informativni izračun. Lizing: minimalno učešće {LIZING.minUcesceProcenat}%, starost
-            vozila i rok otplate zajedno do {LIZING.maxStarostPlusRokGodina} godina. Vozilo je u
-            vlasništvu banke do otplate posljednje rate. Konačne uslove određuje banka.
+            vozila i rok otplate zajedno do {LIZING.maxStarostPlusRokGodina} godina. Lizing
+            radimo najčešće preko partnera {LIZING.kuca}. Vozilo je u vlasništvu lizing kuće
+            do otplate posljednje rate. Konačne uslove određuje lizing kuća.
           </p>
         )}
         {tip === "kredit" && (

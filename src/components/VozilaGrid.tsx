@@ -26,9 +26,24 @@ const OPCIJE_SORTIRANJA: { value: Sortiranje; label: string }[] = [
  */
 const kljucMarke = (m: string) => m.trim().toLowerCase();
 
+/** Tanka strelica za padajuće menije (umjesto sistemske). */
+function Strelica() {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="m5 8 5 5 5-5" />
+    </svg>
+  );
+}
+
 export default function VozilaGrid({ vehicles }: { vehicles: Vehicle[] }) {
   const [sortiranje, setSortiranje] = useState<Sortiranje>("podrazumijevano");
-  const [odabraneMarke, setOdabraneMarke] = useState<string[]>([]);
+  const [marka, setMarka] = useState<string>(""); // "" = sve marke
 
   // Filter marki se pravi AUTOMATSKI samo od marki koje trenutno imamo u
   // ponudi (sa brojem vozila) — kad se doda/obriše vozilo, filter se sam
@@ -47,17 +62,11 @@ export default function VozilaGrid({ vehicles }: { vehicles: Vehicle[] }) {
       .sort((a, b) => a.naziv.localeCompare(b.naziv, "bs"));
   }, [vehicles]);
 
-  function preklopiMarku(k: string) {
-    setOdabraneMarke((prev) =>
-      prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k]
-    );
-  }
-
   const sortirana = useMemo(() => {
     const kopija =
-      odabraneMarke.length === 0
+      marka === ""
         ? [...vehicles]
-        : vehicles.filter((v) => odabraneMarke.includes(kljucMarke(v.marka)));
+        : vehicles.filter((v) => kljucMarke(v.marka) === marka);
     switch (sortiranje) {
       case "cijena-rastuce":
         return kopija.sort((a, b) => a.cijena - b.cijena);
@@ -70,67 +79,55 @@ export default function VozilaGrid({ vehicles }: { vehicles: Vehicle[] }) {
       default:
         return kopija;
     }
-  }, [vehicles, sortiranje, odabraneMarke]);
+  }, [vehicles, sortiranje, marka]);
 
   return (
     <div>
-      {marke.length > 1 && (
-        <div className="mb-6">
-          <p className="mb-3 text-xs uppercase tracking-wider text-muted">Marka</p>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => setOdabraneMarke([])}
-              className={`rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition-colors ${
-                odabraneMarke.length === 0
-                  ? "border-accent bg-accent text-background"
-                  : "border-border text-foreground/80 hover:border-accent"
-              }`}
-            >
-              Sve marke <span className="opacity-60">({vehicles.length})</span>
-            </button>
-            {marke.map((m) => {
-              const aktivna = odabraneMarke.includes(m.kljuc);
-              return (
-                <button
-                  key={m.kljuc}
-                  type="button"
-                  aria-pressed={aktivna}
-                  onClick={() => preklopiMarku(m.kljuc)}
-                  className={`rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition-colors ${
-                    aktivna
-                      ? "border-accent bg-accent text-background"
-                      : "border-border text-foreground/80 hover:border-accent"
-                  }`}
-                >
-                  {m.naziv} <span className="opacity-60">({m.broj})</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-5">
         <p className="text-xs text-muted">
           {sortirana.length === vehicles.length
             ? `${vehicles.length} ${vehicles.length === 1 ? "vozilo" : "vozila"} u ponudi`
             : `Prikazano ${sortirana.length} od ${vehicles.length} vozila`}
         </p>
-        <label className="flex items-center gap-2 text-xs">
-          <span className="uppercase tracking-wider text-muted">Sortiraj:</span>
-          <select
-            value={sortiranje}
-            onChange={(e) => setSortiranje(e.target.value as Sortiranje)}
-            className="input-field w-auto py-2 text-xs"
-          >
-            {OPCIJE_SORTIRANJA.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          {marke.length > 1 && (
+            <label className="flex items-center gap-2 text-xs">
+              <span className="uppercase tracking-wider text-muted">Marka:</span>
+              <span className="relative">
+                <select
+                  value={marka}
+                  onChange={(e) => setMarka(e.target.value)}
+                  className="input-field w-auto cursor-pointer appearance-none py-2 pr-9 text-xs"
+                >
+                  <option value="">Sve marke ({vehicles.length})</option>
+                  {marke.map((m) => (
+                    <option key={m.kljuc} value={m.kljuc}>
+                      {m.naziv} ({m.broj})
+                    </option>
+                  ))}
+                </select>
+                <Strelica />
+              </span>
+            </label>
+          )}
+          <label className="flex items-center gap-2 text-xs">
+            <span className="uppercase tracking-wider text-muted">Sortiraj:</span>
+            <span className="relative">
+              <select
+                value={sortiranje}
+                onChange={(e) => setSortiranje(e.target.value as Sortiranje)}
+                className="input-field w-auto cursor-pointer appearance-none py-2 pr-9 text-xs"
+              >
+                {OPCIJE_SORTIRANJA.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+              <Strelica />
+            </span>
+          </label>
+        </div>
       </div>
 
       {sortirana.length === 0 ? (

@@ -84,9 +84,7 @@ export default function Footer() {
         <p className="disclaimer">
           Usluge zatamnjenja stakala (tzv. „folija“) izvodimo isključivo u
           skladu sa važećim propisima o dozvoljenoj svjetlopropusnosti za
-          vozila u saobraćaju. Poliranje i detailing vozila su kozmetičke
-          usluge pripreme vozila i ne utiču na tehničke karakteristike
-          vozila. Za detalje o zakonskim ograničenjima kontaktirajte nas
+          vozila u saobraćaju. Za detalje o zakonskim ograničenjima kontaktirajte nas
           prije zakazivanja termina.
         </p>
         <p className="mt-4 text-xs text-muted">

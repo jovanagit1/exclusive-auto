@@ -14,16 +14,18 @@ export const KREDIT = {
 };
 
 /**
- * Lizing (Addiko): starost vozila + rok otplate ne smije preći 12 godina,
- * minimalno učešće 10%, vozilo je u vlasništvu banke do otplate. Kamatu za
- * lizing banka nije navela, pa se za informativni izračun koristi ista
- * stopa kao za kredit — promijenite "godisnjaKamata" kad dobijete tačnu.
+ * Lizing (najčešće Raiffeisen Leasing): starost vozila + rok otplate ne
+ * smije preći 7 godina, minimalno učešće 20%, vozilo je u vlasništvu
+ * lizing kuće do otplate. Tačnu kamatu za lizing još nemamo, pa se za
+ * informativni izračun koristi ista stopa kao za kredit — promijenite
+ * "godisnjaKamata" kad dobijete tačnu.
  */
 export const LIZING = {
+  kuca: "Raiffeisen Leasing",
   godisnjaKamata: 6.19,
-  minUcesceProcenat: 10,
+  minUcesceProcenat: 20,
   maxUcesceProcenat: 60,
-  maxStarostPlusRokGodina: 12,
+  maxStarostPlusRokGodina: 7,
   minRok: 12,
   maxRok: 120,
 };

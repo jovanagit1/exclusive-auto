@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "O nama",
   description:
-    "Exclusive Auto Banja Luka — bonitetna ocjena A+, pismene garancije na porijeklo, kilometražu, motor i mjenjač. Uvoz i prodaja novih i korištenih auta iz Evrope, lizing, registracija.",
+    "Exclusive Auto Banja Luka — bonitetna ocjena A+, pismene garancije na porijeklo i kilometražu. Uvoz i prodaja novih i korištenih auta iz Evrope, lizing, registracija.",
 };
 
 const brojke = [
@@ -59,8 +59,7 @@ export default function ONamaPage() {
           </p>
           <p>
             Za automobile se izdaju pismene garancije koje Exclusive Auto daje na
-            porijeklo vozila, tačnost pređenih kilometara, kao i na motor i
-            mjenjač.
+            porijeklo vozila i tačnost pređenih kilometara.
           </p>
           <p>
             Proces od odabira vozila do odobrenja lizinga i preuzimanja vozila je
