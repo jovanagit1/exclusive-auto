@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getVehicles } from "@/lib/store";
 import { kategorijaVozila } from "@/lib/vehicles";
 import { SITE_URL } from "@/lib/structured-data";
+import { GALERIJA_OTVORENA } from "@/lib/galerija";
 
 // Bez ovoga, Next.js pokušava da mapu sajta učita "statično" (jednom, pri
 // build-u) i onda internо baca grešku čim primijeti da getVehicles() čita
@@ -24,9 +25,11 @@ const STATICNE_STRANICE = [
   { path: "/prodaj-vozilo", priority: 0.7, ucestalost: "monthly" as const },
   { path: "/registracija", priority: 0.5, ucestalost: "monthly" as const },
   { path: "/probna-voznja", priority: 0.5, ucestalost: "monthly" as const },
-  { path: "/galerija", priority: 0.5, ucestalost: "monthly" as const },
   { path: "/o-nama", priority: 0.5, ucestalost: "monthly" as const },
   { path: "/kontakt", priority: 0.6, ucestalost: "monthly" as const },
+  ...(GALERIJA_OTVORENA
+    ? [{ path: "/galerija", priority: 0.5, ucestalost: "monthly" as const }]
+    : []),
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

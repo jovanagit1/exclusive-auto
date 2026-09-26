@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import PlaceholderImage from "@/components/PlaceholderImage";
+import { GALERIJA_OTVORENA } from "@/lib/galerija";
 
 export const metadata: Metadata = {
   title: "Galerija",
@@ -16,6 +18,9 @@ const items = [
 ];
 
 export default function GalerijaPage() {
+  // Dok galerija nije spremna, posjetioci se vraćaju na početnu.
+  if (!GALERIJA_OTVORENA) redirect("/");
+
   return (
     <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24">
       <p className="section-label">Galerija</p>

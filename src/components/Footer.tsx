@@ -2,6 +2,7 @@ import Link from "next/link";
 import Logo from "./Logo";
 import PremiumSignupForm from "./PremiumSignupForm";
 import VipZnak from "./VipZnak";
+import { GALERIJA_OTVORENA } from "@/lib/galerija";
 
 export default function Footer() {
   return (
@@ -22,7 +23,9 @@ export default function Footer() {
             <li><Link href="/vozila-u-dolasku" className="hover:text-accent">Vozila u dolasku</Link></li>
             <li><Link href="/posredovanje" className="hover:text-accent">Posredovanje</Link></li>
             <li><Link href="/usluge" className="hover:text-accent">Usluge</Link></li>
-            <li><Link href="/galerija" className="hover:text-accent">Galerija</Link></li>
+            {GALERIJA_OTVORENA && (
+              <li><Link href="/galerija" className="hover:text-accent">Galerija</Link></li>
+            )}
             <li><Link href="/prodaj-vozilo" className="hover:text-accent">Prodaj vozilo</Link></li>
             <li><Link href="/o-nama" className="hover:text-accent">O nama</Link></li>
           </ul>

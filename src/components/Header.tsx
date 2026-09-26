@@ -5,8 +5,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Logo from "./Logo";
 import CurrencyToggle from "./CurrencyToggle";
+import { GALERIJA_OTVORENA } from "@/lib/galerija";
 
-const links = [
+const sviLinkovi = [
   { href: "/", label: "Početna" },
   { href: "/vozila", label: "Vozila" },
   { href: "/cjenovnik", label: "Cjenovnik" },
@@ -15,6 +16,7 @@ const links = [
   { href: "/o-nama", label: "O nama" },
   { href: "/kontakt", label: "Kontakt" },
 ];
+const links = sviLinkovi.filter((l) => GALERIJA_OTVORENA || l.href !== "/galerija");
 
 function SrceIkonica({ className = "" }: { className?: string }) {
   return (
