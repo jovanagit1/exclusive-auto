@@ -269,3 +269,60 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .stat-live, .stat-live::after { animation: none; }
 }
+
+/* ── Početni slajd šou (HeroSlideshow) ───────────────────────────────── */
+.hero-slajd {
+  opacity: 0;
+  transform: scale(1.14);
+  /* kad slajd nestaje: prvo se pretopi, pa se tek onda (nevidljiv) vrati zum */
+  transition: opacity 1.8s ease, transform 0s linear 1.8s;
+}
+.hero-slajd.is-active {
+  opacity: 1;
+  transform: scale(1.04);
+  transition: opacity 1.8s ease, transform 9s cubic-bezier(0.2, 0.6, 0.35, 1);
+}
+.hero-slajd img {
+  filter: blur(2.5px) saturate(0.9) brightness(0.92);
+}
+.hero-prazno {
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 45%, rgba(255, 255, 255, 0.07), transparent 70%),
+    linear-gradient(180deg, #0f0f11, #0a0a0b);
+}
+.hero-vinjeta {
+  background: radial-gradient(ellipse 120% 90% at 60% 40%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+.hero-napredak {
+  width: 0;
+  animation-name: hero-traka;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes hero-traka {
+  to { width: 100%; }
+}
+.hero-ulaz > * {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: hero-gore 1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+.hero-ulaz > *:nth-child(1) { animation-delay: 1.7s; }
+.hero-ulaz > *:nth-child(2) { animation-delay: 1.9s; }
+.hero-ulaz > *:nth-child(3) { animation-delay: 2.0s; }
+.hero-ulaz > *:nth-child(4) { animation-delay: 2.1s; }
+.hero-ulaz > *:nth-child(5) { animation-delay: 2.2s; }
+.hero-vozilo {
+  animation: hero-pojava 1.2s ease forwards;
+}
+@keyframes hero-gore {
+  to { opacity: 1; transform: none; }
+}
+@keyframes hero-pojava {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-slajd, .hero-slajd.is-active { transform: none; transition: opacity 1.2s ease; }
+  .hero-ulaz > *, .hero-vozilo { animation: none; opacity: 1; transform: none; }
+}

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getVehicles } from "@/lib/store";
 import { kategorijaVozila } from "@/lib/vehicles";
 import VehicleCard from "@/components/VehicleCard";
-import PlaceholderImage from "@/components/PlaceholderImage";
+import HeroSlideshow, { type HeroSlajd } from "@/components/HeroSlideshow";
 import VipZnak from "@/components/VipZnak";
 
 export const dynamic = "force-dynamic";
@@ -33,44 +33,22 @@ const services = [
 export default async function HomePage() {
   const vehicles = (await getVehicles()).filter((v) => kategorijaVozila(v) === "ponuda");
   const featured = vehicles.filter((v) => v.istaknuto);
+  // Sva vozila iz ponude koja imaju bar jednu fotografiju — najnovija prva.
+  const slajdovi: HeroSlajd[] = vehicles
+    .filter((v) => v.slike?.[0])
+    .map((v) => ({
+      slika: v.slike![0],
+      naziv: `${v.marka} ${v.model}`,
+      godiste: v.godiste,
+      cijena: v.cijena,
+      valuta: v.valuta,
+      slug: v.slug,
+    }));
 
   return (
     <div>
-      {/* HERO */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 accent-gradient opacity-[0.06]" />
-        <div className="relative mx-auto flex max-w-7xl flex-col gap-10 px-5 py-20 md:flex-row md:items-center md:px-8 md:py-28">
-          <div className="max-w-xl">
-            <p className="section-label">Exclusive Auto · Banja Luka</p>
-            <h1 className="font-display mt-4 text-4xl leading-tight text-foreground md:text-5xl">
-              Vozila birana sa pažnjom.
-              <br />
-              Iskustvo dostojno vašeg ukusa.
-            </h1>
-            <p className="mt-6 text-foreground/75">
-              Uvoz, prodaja i priprema polovnih vozila iz Evrope. Svako
-              vozilo prolazi kroz detaljnu kontrolu i pripremu prije nego
-              stigne do vas.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link href="/vozila" className="btn-primary">
-                Pogledaj ponudu
-              </Link>
-              <Link href="/probna-voznja" className="btn-outline">
-                Zakaži probnu vožnju
-              </Link>
-            </div>
-          </div>
-
-          <div className="flex-1">
-            <PlaceholderImage
-              label="Showroom Exclusive Auto"
-              ratio="aspect-[16/10]"
-              className="w-full"
-            />
-          </div>
-        </div>
-      </section>
+      {/* HERO — slajd šou svih vozila iz ponude */}
+      <HeroSlideshow slajdovi={slajdovi} />
 
       {/* FEATURED VEHICLES */}
       <section className="mx-auto max-w-7xl px-5 py-20 md:px-8">

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Logo from "./Logo";
 import CurrencyToggle from "./CurrencyToggle";
 
@@ -31,11 +31,39 @@ function SrceIkonica({ className = "" }: { className?: string }) {
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pocetna = pathname === "/";
+
+  // Na početnoj je meni providan preko slajd šoua; čim se skrola, dobija
+  // tamnu pozadinu i mali logo (veliki logo je tada već van ekrana).
+  useEffect(() => {
+    if (!pocetna) return;
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [pocetna]);
+
+  const providan = pocetna && !scrolled && !open;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
+    <header
+      className={`top-0 z-50 border-b transition-[background-color,border-color] duration-500 ${
+        pocetna ? "fixed inset-x-0" : "sticky"
+      } ${
+        providan
+          ? "border-transparent bg-transparent"
+          : "border-border bg-background/90 backdrop-blur"
+      }`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
-        <Link href="/" onClick={() => setOpen(false)}>
+        <Link
+          href="/"
+          onClick={() => setOpen(false)}
+          className={`transition-opacity duration-500 ${providan ? "pointer-events-none opacity-0" : "opacity-100"}`}
+          aria-hidden={providan}
+          tabIndex={providan ? -1 : undefined}
+        >
           <Logo className="h-14 w-auto text-white sm:h-16" />
         </Link>
 
