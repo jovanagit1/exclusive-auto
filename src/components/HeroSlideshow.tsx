@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { LogoFull } from "./Logo";
 import PriceTag from "./PriceTag";
 
@@ -25,30 +25,40 @@ const TRAJANJE = 7000;
  */
 export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
   const [aktivni, setAktivni] = useState(0);
-  const [krug, setKrug] = useState(0); // restartuje animaciju trake napretka
   const ukupno = slajdovi.length;
 
-  const idiNa = useCallback(
-    (i: number) => {
-      if (ukupno === 0) return;
-      setAktivni(((i % ukupno) + ukupno) % ukupno);
-      setKrug((k) => k + 1);
-    },
-    [ukupno]
-  );
+  // Svaki put počinje od drugog vozila: nasumičan izbor, ali nikad isto
+  // vozilo kojim je počela prethodna posjeta (pamti se u pregledaču).
+  // Izbor se desi dok je još uvijek preko ekrana splash sa logom.
+  useEffect(() => {
+    if (ukupno < 2) return;
+    let prosli = "";
+    try {
+      prosli = localStorage.getItem("ea_hero_start") ?? "";
+    } catch {}
+    const kandidati = slajdovi.map((_, i) => i).filter((i) => slajdovi[i].slug !== prosli);
+    const izbor = kandidati[Math.floor(Math.random() * kandidati.length)] ?? 0;
+    try {
+      localStorage.setItem("ea_hero_start", slajdovi[izbor].slug);
+    } catch {}
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setAktivni(izbor);
+    // Samo pri prvom prikazu stranice.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (ukupno < 2) return;
     let tajmer: ReturnType<typeof setTimeout>;
     const zakazi = () => {
       tajmer = setTimeout(() => {
-        if (document.visibilityState === "visible") idiNa(aktivni + 1);
+        if (document.visibilityState === "visible") setAktivni((a) => (a + 1) % ukupno);
         else zakazi();
       }, TRAJANJE);
     };
     zakazi();
     return () => clearTimeout(tajmer);
-  }, [aktivni, krug, ukupno, idiNa]);
+  }, [aktivni, ukupno]);
 
   const trenutno = slajdovi[aktivni];
 
@@ -106,40 +116,11 @@ export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
         </div>
       </div>
 
-      {/* Donja traka: napredak + trenutno vozilo */}
+      {/* Dole desno: vozilo koje je trenutno na slici */}
       {ukupno > 0 && trenutno && (
         <div className="absolute inset-x-0 bottom-0">
           <div className="mx-auto flex max-w-7xl items-end justify-between gap-6 px-5 pb-8 md:px-8 md:pb-10">
-            <div className="flex items-center gap-4">
-              <span className="font-display text-sm tabular-nums text-foreground">
-                {String(aktivni + 1).padStart(2, "0")}
-                <span className="text-muted"> / {String(ukupno).padStart(2, "0")}</span>
-              </span>
-              {ukupno > 1 && (
-                <div className="flex items-center gap-2">
-                  {slajdovi.map((s, i) => (
-                    <button
-                      key={s.slug}
-                      type="button"
-                      onClick={() => idiNa(i)}
-                      aria-label={`Prikaži ${s.naziv}`}
-                      className="group py-3"
-                    >
-                      <span className="relative block h-[2px] w-6 overflow-hidden bg-white/20 transition-colors group-hover:bg-white/40 sm:w-10">
-                        {i === aktivni && (
-                          <span
-                            key={krug}
-                            className="hero-napredak absolute inset-y-0 left-0 bg-white"
-                            style={{ animationDuration: `${TRAJANJE}ms` }}
-                          />
-                        )}
-                        {i < aktivni && <span className="absolute inset-0 bg-white/60" />}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            <span />
 
             <Link
               key={trenutno.slug}
