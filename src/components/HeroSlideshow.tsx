@@ -94,7 +94,7 @@ export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
       <div className="hero-vinjeta pointer-events-none absolute inset-0" />
 
       {/* Sadržaj */}
-      <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-5 pb-28 md:px-8 md:pb-32">
+      <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-start px-5 pt-32 pb-28 md:px-8 md:pt-36">
         <div className="hero-ulaz max-w-2xl">
           <LogoFull className="h-24 w-auto text-white sm:h-32 md:h-40" />
           <span className="mt-6 block h-px w-16 bg-white/60" />
