@@ -97,11 +97,8 @@ export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
       <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-5 pb-28 md:px-8 md:pb-32">
         <div className="hero-ulaz max-w-2xl">
           <LogoFull className="h-24 w-auto text-white sm:h-32 md:h-40" />
-          <span className="mt-8 block h-px w-16 bg-white/60" />
-          <p className="font-display mt-6 text-3xl leading-tight text-foreground md:text-5xl">
-            Vozila birana sa pažnjom.
-          </p>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-foreground/70 md:text-base">
+          <span className="mt-6 block h-px w-16 bg-white/60" />
+          <p className="mt-5 max-w-md text-sm leading-relaxed text-foreground/70 md:text-base">
             Uvoz i prodaja novih i korištenih automobila iz Evrope — sa
             pismenom garancijom na porijeklo i kilometražu.
           </p>
