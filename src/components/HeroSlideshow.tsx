@@ -94,15 +94,15 @@ export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
       <div className="hero-vinjeta pointer-events-none absolute inset-0" />
 
       {/* Sadržaj */}
-      <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-start px-5 pt-32 pb-28 md:px-8 md:pt-36">
+      <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-center px-5 pt-20 pb-12 md:px-8">
         <div className="hero-ulaz max-w-2xl">
-          <LogoFull className="h-24 w-auto text-white sm:h-32 md:h-40" />
-          <span className="mt-6 block h-px w-16 bg-white/60" />
-          <p className="mt-5 max-w-md text-sm leading-relaxed text-foreground/70 md:text-base">
+          <LogoFull className="h-28 w-auto text-white sm:h-36 md:h-52" />
+          <span className="mt-8 block h-px w-16 bg-white/60" />
+          <p className="mt-6 max-w-md text-sm leading-relaxed text-foreground/70 md:text-base">
             Uvoz i prodaja novih i korištenih automobila iz Evrope — sa
             pismenom garancijom na porijeklo i kilometražu.
           </p>
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="mt-12 flex flex-wrap gap-4">
             <Link href="/vozila" className="btn-primary">
               Pogledaj ponudu
             </Link>
