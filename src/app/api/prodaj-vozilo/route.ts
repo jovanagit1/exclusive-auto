@@ -10,6 +10,7 @@ import {
   dugme,
   escapeHtml,
 } from "@/lib/mailer";
+import { okvirMejla, blokUvod, blokKartica, blokKoraci, blokDugmad } from "@/lib/mejl-potvrda";
 
 /**
  * Prima zahtjeve sa javne stranice "/prodaj-vozilo" — posjetilac nudi svoje
@@ -114,8 +115,8 @@ export async function POST(request: Request) {
       replyTo: zahtjev.email,
       subject: `${tipTekst}: ${zahtjev.marka} ${zahtjev.model} — ${zahtjev.ime}`,
       html: sablonMejla(
-        tipTekst,
-        paragraf("Novi zahtjev sa stranice „Prodaj ili zamijeni vozilo“.") +
+        `${zahtjev.marka} ${zahtjev.model}`,
+        paragraf(`${tipTekst} — novi zahtjev sa stranice „Prodaj ili zamijeni vozilo“.`) +
           tabelaPodataka(kontakt) +
           "<br>" +
           tabelaPodataka(redovi) +
@@ -130,18 +131,42 @@ export async function POST(request: Request) {
         to: zahtjev.email,
         replyTo: OWNER_EMAIL,
         subject: "Potvrda: primili smo vaš zahtjev — Exclusive Auto",
-        html: sablonMejla(
-          `Hvala, ${zahtjev.ime.split(" ")[0]}!`,
-          paragraf(
+        html: okvirMejla(
+          blokUvod(
+            `Potvrda · ${zahtjev.tip === "zamjena" ? "Zamjena vozila" : "Prodaja vozila"}`,
+            `Hvala, ${zahtjev.ime.split(" ")[0]}.`,
             zahtjev.tip === "zamjena"
-              ? "Primili smo vaš zahtjev za zamjenu vozila. Pregledaćemo podatke i javiti vam se sa procjenom i prijedlogom zamjene."
-              : "Primili smo vašu ponudu za prodaju vozila. Pregledaćemo podatke i javiti vam se sa procjenom."
+              ? `Vaš zahtjev za zamjenu vozila <b>${escapeHtml(`${zahtjev.marka} ${zahtjev.model}`)}</b> je stigao do nas. Pregledaćemo podatke i javiti vam se sa procjenom i prijedlogom zamjene.`
+              : `Vaša ponuda za prodaju vozila <b>${escapeHtml(`${zahtjev.marka} ${zahtjev.model}`)}</b> je stigla do nas. Pregledaćemo podatke i javiti vam se sa procjenom.`
           ) +
-            paragraf("Sažetak vašeg zahtjeva:") +
-            tabelaPodataka([...kontakt, ...redovi]) +
-            paragraf(
-              '<br>Za sva pitanja pozovite nas na <a href="tel:+38765063063">065 063 063</a>.'
-            )
+            blokKartica("Vaše vozilo", `${zahtjev.marka} ${zahtjev.model}`, [
+              { oznaka: "Godište", vrijednost: zahtjev.godiste },
+              { oznaka: "Kilometraža", vrijednost: `${zahtjev.kilometraza} km` },
+              { oznaka: "Gorivo", vrijednost: zahtjev.gorivo ?? "" },
+              { oznaka: "Mjenjač", vrijednost: zahtjev.mjenjac ?? "" },
+              { oznaka: "Boja", vrijednost: zahtjev.boja ?? "" },
+              { oznaka: "Vaša cijena", vrijednost: zahtjev.procijenjenaCijena ?? "" },
+              { oznaka: "Zamjena za", vrijednost: zamjenaNaziv, siroko: true },
+              { oznaka: "Stanje / napomena", vrijednost: zahtjev.opis ?? "", siroko: true },
+            ]) +
+            blokKoraci("Šta slijedi", [
+              ["Pregled", "Pregledamo podatke i fotografije vašeg vozila."],
+              ["Procjena", "Javljamo vam se sa realnom procjenom vrijednosti."],
+              [
+                zahtjev.tip === "zamjena" ? "Zamjena" : "Dogovor",
+                zahtjev.tip === "zamjena"
+                  ? "Dogovaramo zamjenu i preuzimamo svu papirologiju."
+                  : "Dogovaramo otkup, isplatu i prepis — brzo i bez komplikacija.",
+              ],
+            ]) +
+            blokDugmad(
+              [
+                ["Pogledaj ponudu", `${SITE_URL}/vozila`],
+                ["Pozovite nas", "tel:+38765063063"],
+              ],
+              `Vaši podaci: ${[zahtjev.ime, zahtjev.telefon, zahtjev.email ?? ""].filter(Boolean).map(escapeHtml).join(" · ")}`
+            ),
+          "Primili smo vaš zahtjev — Exclusive Auto"
         ),
       });
     }

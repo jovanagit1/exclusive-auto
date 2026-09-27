@@ -7,6 +7,7 @@ import {
   paragraf,
   escapeHtml,
 } from "@/lib/mailer";
+import { imaPotvrdu, potvrdaMejl } from "@/lib/mejl-potvrda";
 
 /**
  * Prima sve upite sa sajta (kontakt, probna vožnja, uvoz, registracija):
@@ -85,7 +86,8 @@ export async function POST(request: Request) {
       subject: `${naslov} — ${String(data.ime ?? "")}`.trim(),
       html: sablonMejla(
         naslov,
-        paragraf("Novi upit sa sajta exclusiveautobl.com:") + tabelaPodataka(redovi)
+        paragraf("Novi upit sa sajta exclusiveautobl.com:") + tabelaPodataka(redovi),
+        "Novi upit"
       ),
     });
 
@@ -95,15 +97,14 @@ export async function POST(request: Request) {
         to: email,
         replyTo: OWNER_EMAIL,
         subject: `Potvrda: ${naslov} — Exclusive Auto`,
-        html: sablonMejla(
-          ime ? `Hvala, ${ime}!` : "Hvala vam!",
-          paragraf(escapeHtml(POTVRDA_TEKST[formType] ?? "Primili smo vaš upit.")) +
-            paragraf("Kopija podataka koje ste poslali:") +
-            tabelaPodataka(redovi) +
-            paragraf(
-              '<br>Za hitna pitanja pozovite nas na <a href="tel:+38765063063">065 063 063</a>.'
-            )
-        ),
+        html: imaPotvrdu(formType)
+          ? potvrdaMejl(formType, data)
+          : sablonMejla(
+              ime ? `Hvala, ${ime}.` : "Hvala vam.",
+              paragraf(escapeHtml(POTVRDA_TEKST[formType] ?? "Primili smo vaš upit.")) +
+                tabelaPodataka(redovi),
+              "Potvrda"
+            ),
       });
     }
 

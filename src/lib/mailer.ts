@@ -1,5 +1,6 @@
 import nodemailer, { type Transporter } from "nodemailer";
 import { Resend } from "resend";
+import { okvirMejla, blokUvod, blokSadrzaj, tabela } from "./mejl-potvrda";
 
 /**
  * Zajednički modul za slanje SVIH mejlova sa sajta (forme, potvrde
@@ -110,45 +111,23 @@ export function escapeHtml(v: unknown): string {
 
 /** Tabela "oznaka — vrijednost" za mejlove (prazne vrijednosti se preskaču). */
 export function tabelaPodataka(redovi: [string, unknown][]): string {
-  const tr = redovi
-    .filter(([, v]) => String(v ?? "").trim() !== "")
-    .map(
-      ([k, v]) =>
-        `<tr><td style="padding:8px 14px;color:#6b6b70;font-size:13px;white-space:nowrap;vertical-align:top;border-bottom:1px solid #ececef;">${escapeHtml(
-          k
-        )}</td><td style="padding:8px 14px;font-size:14px;color:#111;border-bottom:1px solid #ececef;">${escapeHtml(
-          v
-        ).replace(/\n/g, "<br>")}</td></tr>`
-    )
-    .join("");
-  return `<table style="width:100%;border-collapse:collapse;background:#f7f7f8;border-radius:6px;overflow:hidden;">${tr}</table>`;
+  return tabela(redovi);
 }
 
-/** Zajednički izgled svih mejlova (crno zaglavlje sa nazivom firme). */
-export function sablonMejla(naslov: string, sadrzaj: string): string {
-  return `<!doctype html><html><body style="margin:0;padding:0;background:#f2f2f4;">
-<div style="font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
-  <div style="background:#0a0a0b;padding:22px 28px;text-align:center;">
-    <div style="color:#ffffff;font-size:20px;letter-spacing:5px;font-weight:bold;">EXCLUSIVE</div>
-    <div style="color:#ffffff;font-size:11px;letter-spacing:6px;margin-top:2px;">— AUTO —</div>
-  </div>
-  <div style="padding:28px;">
-    <h2 style="margin:0 0 14px;font-size:20px;color:#111;">${escapeHtml(naslov)}</h2>
-    ${sadrzaj}
-  </div>
-  <div style="padding:18px 28px;border-top:1px solid #ececef;color:#8a8a8f;font-size:12px;line-height:1.6;">
-    Exclusive Auto · Jaroslava Plecitija 17, 78000 Banja Luka<br>
-    065 063 063 · 066 888 555 · <a href="${SITE_URL}" style="color:#8a8a8f;">exclusiveautobl.com</a>
-  </div>
-</div></body></html>`;
+/**
+ * Zajednički izgled mejlova (crno zaglavlje sa logom, crni footer sa
+ * podacima firme) — vidi src/lib/mejl-potvrda.ts.
+ */
+export function sablonMejla(naslov: string, sadrzaj: string, oznaka = "Exclusive Auto"): string {
+  return okvirMejla(blokUvod(oznaka, naslov) + blokSadrzaj(sadrzaj, 12, 40), naslov);
 }
 
 export function paragraf(tekst: string): string {
-  return `<p style="margin:0 0 14px;color:#333;font-size:14px;line-height:1.6;">${tekst}</p>`;
+  return `<p style="margin:0 0 14px;color:#3c3c42;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;">${tekst}</p>`;
 }
 
 export function dugme(tekst: string, href: string): string {
-  return `<a href="${href}" style="background:#111;color:#fff;padding:12px 22px;text-decoration:none;border-radius:4px;font-size:13px;display:inline-block;margin-top:6px;">${escapeHtml(
+  return `<a href="${href}" style="background:#0a0a0b;color:#ffffff;padding:14px 26px;text-decoration:none;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;display:inline-block;margin-top:6px;">${escapeHtml(
     tekst
   )}</a>`;
 }

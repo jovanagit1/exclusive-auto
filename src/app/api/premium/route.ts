@@ -7,9 +7,9 @@ import {
   sablonMejla,
   tabelaPodataka,
   paragraf,
-  dugme,
   escapeHtml,
 } from "@/lib/mailer";
+import { okvirMejla, blokUvod, blokKartica, blokSadrzaj, blokDugmad } from "@/lib/mejl-potvrda";
 import { SALON_COOKIE, opcijeKolacica, vrijednostKolacica, linkZaPristup } from "@/lib/salon";
 
 /**
@@ -51,23 +51,38 @@ export async function POST(request: Request) {
       to: novi.email,
       replyTo: OWNER_EMAIL,
       subject: "Dobrodošli u EXCLUSIVE AUTO VIP",
-      html: sablonMejla(
-        ime ? `Dobrodošli, ${ime}!` : "Dobrodošli u EXCLUSIVE AUTO VIP!",
-        paragraf(
-          "Hvala što ste se postali član EXCLUSIVE AUTO VIP. Od sada ćete prvi saznati kada nova vozila stignu u našu ponudu."
+      html: okvirMejla(
+        blokUvod(
+          "Exclusive Auto VIP",
+          ime ? `Dobrodošli, ${ime}.` : "Dobrodošli.",
+          "Hvala što ste postali član EXCLUSIVE AUTO VIP. Od sada prvi saznajete kada nova vozila stignu u našu ponudu."
         ) +
-          paragraf(
-            "Šta to znači za vas:<br>• rane najave novih vozila, direktno na mejl<br>• kompletni podaci o vozilu i cijeni odmah u mejlu<br>• prilika da rezervišete vozilo prije redovne prodaje"
+          blokKartica(
+            "Vaše članstvo",
+            "EXCLUSIVE AUTO VIP",
+            [],
+            `<p style="margin:-8px 0 20px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.9;color:#d8d8dc;">
+              — Vozila u dolasku, prije svih ostalih<br>
+              — Najave novih vozila direktno na mejl<br>
+              — Kompletni podaci i cijena odmah u mejlu<br>
+              — Prilika da rezervišete vozilo prije redovne prodaje
+            </p>`
           ) +
-          paragraf(
-            "<b>Vaš VIP pristup:</b> kao član sada vidite i odjeljak <b>Vozila u dolasku</b> — vozila koja stižu u našu ponudu, prije nego što ih vide ostali posjetioci. Na ovom uređaju je pristup već otključan, a na telefonu ili drugom računaru ga otključavate klikom na dugme ispod."
+          blokSadrzaj(
+            "Na ovom uređaju je VIP pristup već otključan. Na telefonu ili drugom računaru ga otključavate klikom na dugme ispod.",
+            26,
+            0
           ) +
-          dugme("Otvori Vozila u dolasku", await linkZaPristup(SITE_URL, novi.email)) +
-          "&nbsp; " +
-          dugme("Trenutna ponuda", `${SITE_URL}/vozila`) +
-          `<p style="margin:22px 0 0;color:#9a9a9a;font-size:11px;line-height:1.6;">Prijavljeni ste sa adresom ${escapeHtml(
-            novi.email
-          )}. Ako ne želite više da primate obavještenja, samo odgovorite na ovaj mejl i uklonićemo vas sa liste.</p>`
+          blokDugmad(
+            [
+              ["Vozila u dolasku", await linkZaPristup(SITE_URL, novi.email)],
+              ["Trenutna ponuda", `${SITE_URL}/vozila`],
+            ],
+            `Prijavljeni ste sa adresom ${escapeHtml(
+              novi.email
+            )}. Ako ne želite više da primate obavještenja, samo odgovorite na ovaj mejl i uklonićemo vas sa liste.`
+          ),
+        "Dobrodošli u EXCLUSIVE AUTO VIP"
       ),
     });
 
@@ -76,7 +91,7 @@ export async function POST(request: Request) {
       replyTo: novi.email,
       subject: `Novi VIP član — ${novi.email}`,
       html: sablonMejla(
-        "Novi član EXCLUSIVE AUTO VIP",
+        "Novi VIP član",
         paragraf("Neko se upravo prijavio u EXCLUSIVE AUTO VIP (newsletter o novim vozilima):") +
           tabelaPodataka([
             ["Email", novi.email],

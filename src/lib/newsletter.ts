@@ -5,13 +5,10 @@ import {
   OWNER_EMAIL,
   SITE_URL,
   posaljiMejl,
-  sablonMejla,
-  tabelaPodataka,
-  paragraf,
-  dugme,
   escapeHtml,
   mailKonfigurisan,
 } from "./mailer";
+import { okvirMejla, blokUvod, blokKartica, blokSlika, blokDugmad } from "./mejl-potvrda";
 
 /**
  * Šalje obavještenje o novom vozilu svim Premium pretplatnicima.
@@ -28,40 +25,46 @@ export async function posaljiObavjestenjeONovomVozilu(vehicle: Vehicle) {
   const slika = vehicle.slike?.[0];
   const naAkciji = Boolean(vehicle.akcija && vehicle.regularnaCijena);
   const cijenaHtml = naAkciji
-    ? `<p style="margin:0 0 14px;"><span style="color:#999;text-decoration:line-through;font-size:15px;">${escapeHtml(
+    ? `<p style="margin:-10px 0 22px;font-family:Arial,Helvetica,sans-serif;"><span style="color:#8e8e94;text-decoration:line-through;font-size:15px;">${escapeHtml(
         formatPrice(vehicle.regularnaCijena!, vehicle.valuta)
-      )}</span> &nbsp;<span style="color:#c0392b;font-size:22px;font-weight:bold;">${escapeHtml(
+      )}</span> &nbsp;<span style="color:#ff6b5e;font-size:22px;font-weight:bold;">${escapeHtml(
         formatPrice(vehicle.cijena, vehicle.valuta)
       )}</span></p>`
-    : `<p style="margin:0 0 14px;font-size:22px;font-weight:bold;color:#111;">${escapeHtml(
+    : `<p style="margin:-10px 0 22px;font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:bold;color:#ffffff;">${escapeHtml(
         formatPrice(vehicle.cijena, vehicle.valuta)
       )}</p>`;
 
   const html = (ime: string | undefined, link: string) =>
-    sablonMejla(
-      `${vehicle.marka} ${vehicle.model}`,
-      paragraf(
-        `${ime ? `Poštovani/a ${escapeHtml(ime.split(" ")[0])}, ` : ""}${
-          uDolasku
-            ? "ekskluzivno za članove EXCLUSIVE AUTO VIP: ovo vozilo je na putu do nas i još nije u javnoj ponudi."
-            : "u našu ponudu upravo je stiglo novo vozilo — prvi saznajete kao član EXCLUSIVE AUTO VIP."
-        }`
+    okvirMejla(
+      blokUvod(
+        uDolasku ? "Exclusive Auto VIP · Stiže uskoro" : "Exclusive Auto VIP · Novo u ponudi",
+        ime ? `${ime.split(" ")[0]}, ovo je za vas.` : "Ovo je za vas.",
+        uDolasku
+          ? "Ekskluzivno za VIP članove: ovo vozilo je na putu do nas i još nije u javnoj ponudi."
+          : "U našu ponudu upravo je stiglo novo vozilo — kao VIP član saznajete prvi."
       ) +
-        (slika
-          ? `<a href="${link}"><img src="${escapeHtml(slika)}" alt="" style="width:100%;border-radius:6px;margin:0 0 14px;display:block;"></a>`
-          : "") +
-        cijenaHtml +
-        tabelaPodataka([
-          ["Godište", String(vehicle.godiste)],
-          ["Kilometraža", `${vehicle.km.toLocaleString("de-DE")} km`],
-          ["Gorivo", vehicle.gorivo],
-          ["Mjenjač", vehicle.mjenjac],
-          ["Kubikaža", formatKubikaza(vehicle.kubikaza)],
-          ["Snaga", formatSnaga(vehicle.snaga, vehicle.snagaKw)],
-        ]) +
-        "<br>" +
-        dugme("Pogledaj vozilo", link) +
-        `<p style="margin:22px 0 0;color:#9a9a9a;font-size:11px;">Ovaj mejl ste dobili jer ste član EXCLUSIVE AUTO VIP. Za odjavu samo odgovorite na ovaj mejl.</p>`
+        (slika ? blokSlika(slika, link) : "") +
+        blokKartica(
+          vehicle.marka,
+          vehicle.model,
+          [
+            { oznaka: "Godište", vrijednost: String(vehicle.godiste) },
+            { oznaka: "Kilometraža", vrijednost: `${vehicle.km.toLocaleString("de-DE")} km` },
+            { oznaka: "Gorivo", vrijednost: vehicle.gorivo },
+            { oznaka: "Mjenjač", vrijednost: vehicle.mjenjac },
+            { oznaka: "Kubikaža", vrijednost: formatKubikaza(vehicle.kubikaza) },
+            { oznaka: "Snaga", vrijednost: formatSnaga(vehicle.snaga, vehicle.snagaKw) },
+          ],
+          cijenaHtml
+        ) +
+        blokDugmad(
+          [
+            ["Pogledaj vozilo", link],
+            ["Pozovite nas", "tel:+38765063063"],
+          ],
+          "Ovaj mejl ste dobili jer ste član EXCLUSIVE AUTO VIP. Za odjavu samo odgovorite na ovaj mejl."
+        ),
+      `${vehicle.marka} ${vehicle.model} — ${formatPrice(vehicle.cijena, vehicle.valuta)}`
     );
 
   let poslato = 0;
