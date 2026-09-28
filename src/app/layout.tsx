@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
-import { autoDealerJsonLd, SITE_URL } from "@/lib/structured-data";
+import { autoDealerJsonLd, websiteJsonLd, SITE_URL } from "@/lib/structured-data";
 import { Analytics } from "@vercel/analytics/next";
 
 // Naslov i opis su namjerno formulisani tako da prirodno sadrže fraze koje
@@ -14,12 +14,11 @@ import { Analytics } from "@vercel/analytics/next";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default:
-      "Exclusive Auto — Polovna auta Banja Luka | Prodaja i uvoz vozila",
+    default: "EXCLUSIVE AUTO — Prodaja novih i polovnih automobila",
     template: "%s | Exclusive Auto Banja Luka",
   },
   description:
-    "Exclusive Auto — prodaja polovnih auta i automobila u Banjoj Luci, uvoz vozila iz Evrope, registracija i priprema vozila. Pogledajte ponudu polovnih vozila i zakažite probnu vožnju.",
+    "Uvoz vozila iz Evrope, priprema i prodaja uz garanciju na porijeklo i kilometražu.",
   keywords: [
     "polovna auta",
     "prodaja auta",
@@ -37,10 +36,11 @@ export const metadata: Metadata = {
     type: "website",
     locale: "bs_BA",
     siteName: "Exclusive Auto",
-    title: "Exclusive Auto — Polovna auta Banja Luka",
+    title: "EXCLUSIVE AUTO — Prodaja novih i polovnih automobila",
     description:
-      "Prodaja i uvoz polovnih vozila u Banjoj Luci. Pogledajte trenutnu ponudu automobila.",
+      "Uvoz vozila iz Evrope, priprema i prodaja uz garanciju na porijeklo i kilometražu.",
     url: SITE_URL,
+    images: [{ url: "/logo/logo-google.png", width: 512, height: 512, alt: "Exclusive Auto" }],
   },
 };
 
@@ -57,7 +57,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(autoDealerJsonLd).replace(/</g, "\\u003c"),
+            __html: JSON.stringify([websiteJsonLd, autoDealerJsonLd]).replace(/</g, "\\u003c"),
           }}
         />
         <SiteChrome>{children}</SiteChrome>

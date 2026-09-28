@@ -8,13 +8,27 @@
  */
 export const SITE_URL = "https://www.exclusiveautobl.com";
 
+/**
+ * "WebSite" — Google iz ovoga uzima NAZIV sajta koji prikazuje iznad
+ * linka u rezultatima (umjesto golog "exclusiveautobl.com").
+ */
+export const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Exclusive Auto",
+  alternateName: ["EXCLUSIVE AUTO", "Exclusive Auto Banja Luka"],
+  url: `${SITE_URL}/`,
+};
+
 export const autoDealerJsonLd = {
   "@context": "https://schema.org",
   "@type": "AutoDealer",
   name: "Exclusive Auto",
   description:
-    "Prodaja i uvoz polovnih vozila u Banjoj Luci. Registracija, detailing i priprema vozila.",
+    "Prodaja novih i polovnih automobila u Banjoj Luci. Uvoz vozila iz Evrope, priprema i prodaja uz garanciju na porijeklo i kilometražu.",
   url: SITE_URL,
+  logo: `${SITE_URL}/logo/logo-google.png`,
+  image: `${SITE_URL}/logo/logo-google.png`,
   telephone: "+38765063063",
   email: "aleksandar.maric@exclusiveautobl.com",
   address: {
