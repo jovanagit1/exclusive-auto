@@ -14,7 +14,7 @@ import { Analytics } from "@vercel/analytics/next";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "EXCLUSIVE AUTO — Prodaja novih i polovnih automobila",
+    default: "EXCLUSIVE AUTO Banja Luka — Prodaja novih i polovnih automobila",
     template: "%s | Exclusive Auto Banja Luka",
   },
   description:
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "bs_BA",
     siteName: "Exclusive Auto",
-    title: "EXCLUSIVE AUTO — Prodaja novih i polovnih automobila",
+    title: "EXCLUSIVE AUTO Banja Luka — Prodaja novih i polovnih automobila",
     description:
       "Uvoz vozila iz Evrope, priprema i prodaja uz garanciju na porijeklo i kilometražu.",
     url: SITE_URL,
