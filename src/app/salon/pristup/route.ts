@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { U_DOLASKU_AKTIVNO } from "@/lib/u-dolasku";
 import { SALON_COOKIE, opcijeKolacica, tokenZaEmail, vrijednostKolacica } from "@/lib/salon";
 
 /**
@@ -10,7 +11,8 @@ export async function GET(request: Request) {
   const email = (url.searchParams.get("e") ?? "").toLowerCase();
   const token = url.searchParams.get("t") ?? "";
   const next = url.searchParams.get("next") ?? "";
-  const cilj = next.startsWith("/") && !next.startsWith("//") ? next : "/vozila-u-dolasku";
+  const podrazumijevano = U_DOLASKU_AKTIVNO ? "/vozila-u-dolasku" : "/vozila";
+  const cilj = next.startsWith("/") && !next.startsWith("//") ? next : podrazumijevano;
 
   const res = NextResponse.redirect(new URL(cilj, url.origin));
   if (email && token && token === (await tokenZaEmail(email))) {

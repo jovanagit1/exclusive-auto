@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatKubikaza, formatSnaga, formatPrice, razdvojiBrojSasije, kategorijaVozila } from "@/lib/vehicles";
 import { voziloJsonLd } from "@/lib/structured-data";
+import { U_DOLASKU_AKTIVNO } from "@/lib/u-dolasku";
 import { imaPristupSalonu } from "@/lib/salon";
 import PremiumSignupForm from "@/components/PremiumSignupForm";
 import VipZnak from "@/components/VipZnak";
@@ -68,6 +69,8 @@ export default async function VehicleDetailPage({
   if (!vehicle) notFound();
 
   const kategorija = kategorijaVozila(vehicle);
+  // Dok je odjeljak "u dolasku" isključen, takva vozila se ne prikazuju.
+  if (kategorija === "dolazak" && !U_DOLASKU_AKTIVNO) notFound();
   // Vozila u dolasku vide samo članovi privatnog salona.
   if (kategorija === "dolazak" && !(await imaPristupSalonu())) {
     return (

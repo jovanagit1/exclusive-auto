@@ -5,6 +5,7 @@ import { kategorijaVozila } from "@/lib/vehicles";
 import VehicleCard from "@/components/VehicleCard";
 import HeroSlideshow, { type HeroSlajd } from "@/components/HeroSlideshow";
 import VipZnak from "@/components/VipZnak";
+import { U_DOLASKU_AKTIVNO } from "@/lib/u-dolasku";
 
 export const dynamic = "force-dynamic";
 
@@ -110,7 +111,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* EXCLUSIVE AUTO VIP — vozila u dolasku */}
+      {/* EXCLUSIVE AUTO VIP — vozila u dolasku (prikazuje se samo dok je odjeljak uključen) */}
+      {U_DOLASKU_AKTIVNO && (
       <section className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 py-16 md:flex-row md:items-center md:justify-between md:px-8">
           <div className="max-w-xl">
@@ -127,6 +129,7 @@ export default async function HomePage() {
           </Link>
         </div>
       </section>
+      )}
 
       {/* PRODAJ/ZAMIJENI VOZILO */}
       <section className="border-t border-border bg-surface">

@@ -1,5 +1,6 @@
 "use client";
 
+import { U_DOLASKU_AKTIVNO } from "@/lib/u-dolasku";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { upload } from "@vercel/blob/client";
@@ -696,7 +697,9 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
             {(
               [
                 ["ponuda", "Salonska ponuda"],
-                ["dolazak", "U dolasku (samo VIP)"],
+                ...(U_DOLASKU_AKTIVNO || kategorija === "dolazak"
+                  ? ([["dolazak", "U dolasku (samo VIP)"]] as [KategorijaVozila, string][])
+                  : []),
                 ["posredovanje", "Posredovanje (nije salonsko)"],
               ] as [KategorijaVozila, string][]
             ).map(([k, naziv]) => (
@@ -716,7 +719,9 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
           </div>
           <p className="mt-1 text-xs text-muted">
             {kategorija === "dolazak"
-              ? "Vide ga samo VIP članovi (prijavljeni na newsletter). Kad vozilo stigne, samo prebacite na „Salonska ponuda“."
+              ? U_DOLASKU_AKTIVNO
+                ? "Vide ga samo VIP članovi (prijavljeni na newsletter). Kad vozilo stigne, samo prebacite na „Salonska ponuda“."
+                : "Odjeljak „Vozila u dolasku“ je trenutno isključen, pa se ovo vozilo nigdje ne prikazuje. Prebacite ga na „Salonska ponuda“."
               : kategorija === "posredovanje"
                 ? "Prikazuje se na posebnoj stranici „Vozila u posredovanju“, odvojeno od salonske ponude."
                 : "Standardno — vozilo je u javnoj ponudi na stranici Vozila."}

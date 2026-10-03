@@ -9,6 +9,7 @@ import {
   paragraf,
   escapeHtml,
 } from "@/lib/mailer";
+import { U_DOLASKU_AKTIVNO } from "@/lib/u-dolasku";
 import { okvirMejla, blokUvod, blokKartica, blokSadrzaj, blokDugmad } from "@/lib/mejl-potvrda";
 import { SALON_COOKIE, opcijeKolacica, vrijednostKolacica, linkZaPristup } from "@/lib/salon";
 
@@ -62,22 +63,29 @@ export async function POST(request: Request) {
             "EXCLUSIVE AUTO VIP",
             [],
             `<p style="margin:-8px 0 20px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.9;color:#d8d8dc;">
-              — Vozila u dolasku, prije svih ostalih<br>
+              ${U_DOLASKU_AKTIVNO ? "— Vozila u dolasku, prije svih ostalih<br>" : ""}
               — Najave novih vozila direktno na mejl<br>
               — Kompletni podaci i cijena odmah u mejlu<br>
               — Prilika da rezervišete vozilo prije redovne prodaje
             </p>`
           ) +
-          blokSadrzaj(
-            "Na ovom uređaju je VIP pristup već otključan. Na telefonu ili drugom računaru ga otključavate klikom na dugme ispod.",
-            26,
-            0
-          ) +
+          (U_DOLASKU_AKTIVNO
+            ? blokSadrzaj(
+                "Na ovom uređaju je VIP pristup već otključan. Na telefonu ili drugom računaru ga otključavate klikom na dugme ispod.",
+                26,
+                0
+              )
+            : "") +
           blokDugmad(
-            [
-              ["Vozila u dolasku", await linkZaPristup(SITE_URL, novi.email)],
-              ["Trenutna ponuda", `${SITE_URL}/vozila`],
-            ],
+            U_DOLASKU_AKTIVNO
+              ? [
+                  ["Vozila u dolasku", await linkZaPristup(SITE_URL, novi.email)],
+                  ["Trenutna ponuda", `${SITE_URL}/vozila`],
+                ]
+              : [
+                  ["Trenutna ponuda", `${SITE_URL}/vozila`],
+                  ["Pozovite nas", "tel:+38765063063"],
+                ],
             `Prijavljeni ste sa adresom ${escapeHtml(
               novi.email
             )}. Ako ne želite više da primate obavještenja, samo odgovorite na ovaj mejl i uklonićemo vas sa liste.`

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Vehicle } from "@/lib/vehicles";
 import { kategorijaVozila } from "@/lib/vehicles";
+import { U_DOLASKU_AKTIVNO } from "@/lib/u-dolasku";
 
 /**
  * Kartice na vrhu stranica sa vozilima: Salonska ponuda · Posredovanje ·
@@ -20,7 +21,9 @@ export default function VozilaTabs({
     { k: "ponuda", href: "/vozila", naziv: "Salonska ponuda", n: broj("ponuda") },
     { k: "posredovanje", href: "/posredovanje", naziv: "Posredovanje", n: broj("posredovanje") },
     { k: "dolazak", href: "/vozila-u-dolasku", naziv: "Vozila u dolasku", n: broj("dolazak") },
-  ].filter((t) => t.k !== "posredovanje" || t.n > 0 || aktivna === "posredovanje");
+  ]
+    .filter((t) => t.k !== "posredovanje" || t.n > 0 || aktivna === "posredovanje")
+    .filter((t) => t.k !== "dolazak" || U_DOLASKU_AKTIVNO);
 
   return (
     <nav className="mt-10 flex flex-wrap gap-x-8 gap-y-2 border-b border-border">

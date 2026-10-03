@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { U_DOLASKU_AKTIVNO } from "@/lib/u-dolasku";
 import { getVehicles } from "@/lib/store";
 import { kategorijaVozila } from "@/lib/vehicles";
 import { imaPristupSalonu } from "@/lib/salon";
@@ -17,6 +19,8 @@ export const metadata: Metadata = {
 };
 
 export default async function VozilaUDolaskuPage() {
+  // Odjeljak je isključen — posjetioci idu na salonsku ponudu.
+  if (!U_DOLASKU_AKTIVNO) redirect("/vozila");
   const [vehicles, otkljucano] = await Promise.all([getVehicles(), imaPristupSalonu()]);
   const lista = vehicles.filter((v) => kategorijaVozila(v) === "dolazak");
 

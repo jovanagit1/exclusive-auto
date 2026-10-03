@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { U_DOLASKU_AKTIVNO } from "@/lib/u-dolasku";
 import { useRouter } from "next/navigation";
 
 /**
@@ -46,10 +47,12 @@ export default function PremiumSignupForm() {
     return (
       <p className="text-sm text-accent">
         {vecPrijavljen
-          ? "Već ste član EXCLUSIVE AUTO VIP — pristup je otključan na ovom uređaju. "
+          ? U_DOLASKU_AKTIVNO
+            ? "Već ste član EXCLUSIVE AUTO VIP — pristup je otključan na ovom uređaju. "
+            : "Već ste član EXCLUSIVE AUTO VIP — o novim vozilima javljamo vam mejlom. "
           : "Hvala! Dobrodošli u EXCLUSIVE AUTO VIP — potvrda vam stiže na mejl. "}
-        <Link href="/vozila-u-dolasku" className="underline underline-offset-4">
-          Pogledajte vozila u dolasku →
+        <Link href={U_DOLASKU_AKTIVNO ? "/vozila-u-dolasku" : "/vozila"} className="underline underline-offset-4">
+          {U_DOLASKU_AKTIVNO ? "Pogledajte vozila u dolasku →" : "Pogledajte ponudu →"}
         </Link>
       </p>
     );
