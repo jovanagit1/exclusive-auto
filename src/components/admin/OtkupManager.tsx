@@ -150,7 +150,7 @@ export default function OtkupManager({ zahtjevi }: { zahtjevi: OtkupZahtjev[] })
             <button
               onClick={() => obrisi(z.id)}
               disabled={radi === z.id}
-              className="text-xs uppercase tracking-wider text-muted hover:text-red-400 disabled:opacity-50"
+              className="text-xs uppercase tracking-wider text-muted hover:text-red-600 disabled:opacity-50"
             >
               Obriši
             </button>

@@ -124,7 +124,7 @@ export default function InquiryForm({
           {status === "sending" ? "Slanje..." : submitLabel}
         </button>
         {status === "error" && (
-          <p className="mt-3 text-sm text-red-400">
+          <p className="mt-3 text-sm text-red-600">
             Došlo je do greške. Pokušajte ponovo ili nas kontaktirajte
             direktno telefonom.
           </p>

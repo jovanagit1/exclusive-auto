@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Logo from "./Logo";
+import { LogoMark, LogoTekst } from "./Logo";
 import PremiumSignupForm from "./PremiumSignupForm";
 import VipZnak from "./VipZnak";
 import { U_DOLASKU_AKTIVNO } from "@/lib/u-dolasku";
@@ -7,10 +7,11 @@ import { GALERIJA_OTVORENA } from "@/lib/galerija";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-surface">
+    <footer className="tamno bg-background">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 md:grid-cols-4 md:px-8">
         <div>
-          <Logo className="h-14 w-auto text-white" />
+          <LogoMark className="h-9 w-auto text-white" />
+          <LogoTekst className="mt-3 h-9 w-auto text-white" />
           <p className="mt-4 text-sm leading-relaxed text-muted">
             Uvoz, prodaja i priprema vozila iz Evrope. Povjerenje izgrađeno na
             transparentnosti i kvalitetu.
@@ -18,7 +19,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="section-label mb-4">Navigacija</h3>
+          <h3 className="section-label mb-4">Ponuda</h3>
           <ul className="space-y-2 text-sm text-foreground/80">
             <li><Link href="/vozila" className="hover:text-accent">Vozila</Link></li>
             {U_DOLASKU_AKTIVNO && (
@@ -84,7 +85,7 @@ export default function Footer() {
                 i obavještenje mejlom o svakom novom vozilu, prije svih ostalih.
               </>
             ) : (
-              "Besplatna prijava: obavještenje mejlom o svakom novom vozilu u ponudi, prije svih ostalih."
+              "Prijavite se i javićemo vam mejlom čim nam stigne novo vozilo."
             )}
           </p>
           <PremiumSignupForm />

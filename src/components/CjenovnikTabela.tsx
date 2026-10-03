@@ -64,7 +64,7 @@ export default function CjenovnikTabela({ vehicles }: { vehicles: Vehicle[] }) {
                   onChange={() =>
                     setOdabrana(sveOdabrano ? [] : vehicles.map((v) => v.slug))
                   }
-                  className="accent-white"
+                  className="accent-black"
                 />
               </th>
               <th className="px-4 py-3">Vozilo</th>
@@ -92,7 +92,7 @@ export default function CjenovnikTabela({ vehicles }: { vehicles: Vehicle[] }) {
                       checked={oznaceno}
                       onChange={() => preklopi(v.slug)}
                       onClick={(e) => e.stopPropagation()}
-                      className="accent-white"
+                      className="accent-black"
                     />
                   </td>
                   <td className="px-4 py-3">

@@ -81,7 +81,7 @@ export default function NewsletterManager({
         >
           {saving ? "Dodavanje..." : "+ Dodaj korisnika"}
         </button>
-        {error && <p className="text-sm text-red-400 sm:col-span-3">{error}</p>}
+        {error && <p className="text-sm text-red-600 sm:col-span-3">{error}</p>}
       </form>
 
       <div className="mt-10 divide-y divide-border border-y border-border">
@@ -104,7 +104,7 @@ export default function NewsletterManager({
             <button
               onClick={() => handleRemove(s.email)}
               disabled={removing === s.email}
-              className="text-xs uppercase tracking-wider text-muted hover:text-red-400 disabled:opacity-50"
+              className="text-xs uppercase tracking-wider text-muted hover:text-red-600 disabled:opacity-50"
             >
               {removing === s.email ? "..." : "Ukloni"}
             </button>

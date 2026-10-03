@@ -14,32 +14,44 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const services = [
+const usluge = [
   {
-    title: "Uvoz vozila",
-    desc: "Pronalazimo i uvozimo vozilo po vašoj želji iz Njemačke, Austrije, Švicarske i drugih tržišta.",
+    naslov: "Uvoz vozila",
+    opis: "Nađemo i dovezemo auto po vašoj želji iz Evrope.",
+    link: "Pošalji upit",
     href: "/uvoz",
   },
   {
-    title: "Registracija vozila",
-    desc: "Kompletna registracija i carinjenje vozila, bez čekanja u redovima.",
+    naslov: "Lizing i kredit",
+    opis: "Izračunajte mjesečnu ratu za svako vozilo iz ponude.",
+    link: "Pogledaj vozila",
+    href: "/vozila",
+  },
+  {
+    naslov: "Registracija",
+    opis: "Registraciju i prepis vozila završavamo umjesto vas.",
+    link: "Saznaj više",
     href: "/registracija",
   },
   {
-    title: "Detailing i poliranje",
-    desc: "Profesionalna hemijska priprema, poliranje i zaštita laka do visokog sjaja.",
+    naslov: "Priprema vozila",
+    opis: "Svako auto prolazi detailing i poliranje prije prodaje.",
+    link: "Saznaj više",
     href: "/usluge",
   },
-  {
-    title: "Zatamnjenje stakala",
-    desc: "Ugradnja folije u skladu sa zakonski dozvoljenom svjetlopropusnosti.",
-    href: "/usluge",
-  },
+];
+
+const brojke = [
+  { vrijednost: "A+", opis: "Bonitetna ocjena" },
+  { vrijednost: "10+", opis: "Godina iskustva" },
+  { vrijednost: "5000+", opis: "Zadovoljnih kupaca" },
 ];
 
 export default async function HomePage() {
   const vehicles = (await getVehicles()).filter((v) => kategorijaVozila(v) === "ponuda");
   const featured = vehicles.filter((v) => v.istaknuto);
+  // Na početnoj samo nekoliko vozila (izdvojena, a ako ih nema — najnovija).
+  const izdvojena = (featured.length ? featured : vehicles).slice(0, 3);
   // Sva vozila iz ponude koja imaju bar jednu fotografiju — najnovija prva.
   const slajdovi: HeroSlajd[] = vehicles
     .filter((v) => v.slike?.[0])
@@ -54,100 +66,89 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* HERO — slajd šou svih vozila iz ponude */}
+      {/* VIDEO / SLAJD ŠOU — tamni dio na vrhu */}
       <HeroSlideshow slajdovi={slajdovi} />
 
-      {/* FEATURED VEHICLES */}
-      <section className="mx-auto max-w-7xl px-5 py-20 md:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="section-label">Trenutna ponuda</p>
-            <h2 className="font-display mt-2 text-3xl">Izdvojena vozila</h2>
-          </div>
+      {/* IZDVOJENA VOZILA */}
+      <section className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24">
+        <p className="section-label">Izdvojeno</p>
+        <h2 className="font-display mt-3 text-3xl md:text-[2.6rem]">Trenutno u ponudi</h2>
+        <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {izdvojena.map((v) => (
+            <VehicleCard key={v.slug} vehicle={v} />
+          ))}
+        </div>
+        <div className="mt-12 text-center">
           <Link href="/vozila" className="btn-outline">
             Sva vozila
           </Link>
         </div>
+      </section>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {(featured.length ? featured : vehicles).map((v) => (
-            <VehicleCard key={v.slug} vehicle={v} />
+      {/* BROJKE */}
+      <section className="mx-auto max-w-7xl px-5 md:px-8">
+        <div className="grid grid-cols-1 border-y border-border sm:grid-cols-3">
+          {brojke.map((b, i) => (
+            <div
+              key={b.opis}
+              className={`px-6 py-12 text-center md:py-14 ${i > 0 ? "border-t border-border sm:border-l sm:border-t-0" : ""}`}
+            >
+              <p className="font-display text-5xl text-foreground md:text-6xl">{b.vrijednost}</p>
+              <p className="mt-3 text-[0.7rem] uppercase tracking-[0.3em] text-muted">{b.opis}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* SERVICES */}
-      <section className="border-t border-border bg-surface">
-        <div className="mx-auto max-w-7xl px-5 py-20 md:px-8">
-          <p className="section-label">Naše usluge</p>
-          <h2 className="font-display mt-2 max-w-lg text-3xl">
-            Sve na jednom mjestu — od uvoza do registracije
-          </h2>
-
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {services.map((s) => (
-              <Link
-                key={s.title}
-                href={s.href}
-                className="card group p-6 transition-colors hover:border-accent"
-              >
-                <h3 className="font-display text-lg text-foreground group-hover:text-accent">
-                  {s.title}
-                </h3>
-                <p className="mt-3 text-sm text-foreground/70">{s.desc}</p>
-              </Link>
-            ))}
-          </div>
-
-          <p className="mt-10 flex max-w-2xl items-start gap-3 text-sm leading-relaxed text-foreground/80">
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={2} className="mt-0.5 h-4 w-4 shrink-0 text-accent">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 10.5 8 14.5 16 6" />
-            </svg>
-            <span>
-              Svako vozilo iz naše ponude prije prodaje prolazi kompletnu
-              pripremu — hemijsko čišćenje, detailing i poliranje.
-            </span>
-          </p>
+      {/* USLUGE */}
+      <section className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24">
+        <p className="section-label">Usluge</p>
+        <h2 className="font-display mt-3 text-3xl md:text-[2.6rem]">Sve za vaše auto na jednom mjestu</h2>
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {usluge.map((u) => (
+            <Link
+              key={u.naslov}
+              href={u.href}
+              className="usluga-prozor tamno group relative flex min-h-[19rem] flex-col justify-end overflow-hidden p-7 md:min-h-[24rem]"
+            >
+              <h3 className="text-2xl font-normal text-white">{u.naslov}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-white/75">{u.opis}</p>
+              <span className="mt-5 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-white">
+                {u.link} <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 
       {/* EXCLUSIVE AUTO VIP — vozila u dolasku (prikazuje se samo dok je odjeljak uključen) */}
       {U_DOLASKU_AKTIVNO && (
-      <section className="border-t border-border">
-        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 py-16 md:flex-row md:items-center md:justify-between md:px-8">
-          <div className="max-w-xl">
-            <p className="text-xs text-accent"><VipZnak /></p>
-            <h2 className="font-display mt-2 text-3xl">Vozila u dolasku — samo za VIP članove</h2>
-            <p className="mt-4 text-sm leading-relaxed text-foreground/70">
-              Postanite besplatno član EXCLUSIVE AUTO VIP i vidite vozila koja
-              su na putu do nas, prije nego što se pojave u javnoj ponudi. O
-              svakom novom vozilu javljamo vam mejlom — prvima.
-            </p>
+        <section className="border-t border-border">
+          <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 py-16 md:flex-row md:items-center md:justify-between md:px-8">
+            <div className="max-w-xl">
+              <p className="text-xs text-accent"><VipZnak /></p>
+              <h2 className="font-display mt-2 text-3xl">Vozila u dolasku — samo za VIP članove</h2>
+            </div>
+            <Link href="/vozila-u-dolasku" className="btn-outline shrink-0">
+              Postani VIP član
+            </Link>
           </div>
-          <Link href="/vozila-u-dolasku" className="btn-outline shrink-0">
-            Postani VIP član
-          </Link>
-        </div>
-      </section>
+        </section>
       )}
 
       {/* PRODAJ/ZAMIJENI VOZILO */}
-      <section className="border-t border-border bg-surface">
-        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 py-16 md:flex-row md:items-center md:justify-between md:px-8">
+      <section className="border-t border-border">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-14 md:flex-row md:items-center md:justify-between md:px-8">
           <div className="max-w-xl">
             <p className="section-label">Za vlasnike vozila</p>
-            <h2 className="font-display mt-2 text-3xl">
-              Prodaj ili zamijeni svoje vozilo
-            </h2>
-            <p className="mt-4 text-sm leading-relaxed text-foreground/70">
-              Ne živite u Banjoj Luci? Nije problem — pošaljite nam podatke i
-              fotografije vašeg vozila, mi vam se javljamo sa procjenom, a vi
-              birate da li vam više odgovara prodaja ili zamjena za neko od
-              vozila iz naše ponude.
+            <h2 className="font-display mt-3 text-2xl md:text-3xl">Prodaj ili zamijeni svoje vozilo</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              Pošaljite podatke i fotografije vašeg vozila — javljamo se sa procjenom, a vi
+              birate prodaju ili zamjenu za vozilo iz naše ponude.
             </p>
           </div>
           <Link href="/prodaj-vozilo" className="btn-primary shrink-0">
-            Prodaj ili zamijeni vozilo
+            Prodaj ili zamijeni
           </Link>
         </div>
       </section>
@@ -156,7 +157,7 @@ export default async function HomePage() {
           poput "auta banja luka", "prodaja automobila banja luka", "auto
           salon banja luka", "prodaja polovnih auta", "uvoz auta iz
           austrije"… Pisano za ljude, bez nabijanja ključnih riječi. */}
-      <section className="border-t border-border">
+      <section className="border-t border-border bg-surface">
         <div className="mx-auto max-w-7xl *:max-w-3xl px-5 py-16 md:px-8">
           <p className="section-label">Auto salon Banja Luka</p>
           <h2 className="font-display mt-2 text-2xl">
@@ -185,19 +186,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="mx-auto max-w-7xl px-5 py-20 text-center md:px-8">
-        <p className="section-label">Test vožnja</p>
-        <h2 className="font-display mx-auto mt-2 max-w-2xl text-3xl">
-          Uvjerite se lično — zakažite probnu vožnju vozila koje vas
-          interesuje
-        </h2>
-        <div className="mt-8">
-          <Link href="/probna-voznja" className="btn-primary">
-            Rezerviši termin
-          </Link>
-        </div>
-      </section>
     </div>
   );
 }

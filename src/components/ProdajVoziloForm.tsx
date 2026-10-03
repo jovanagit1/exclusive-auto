@@ -350,7 +350,7 @@ export default function ProdajVoziloForm({
                 <button
                   type="button"
                   onClick={() => ukloniSliku(src)}
-                  className="absolute right-1 top-1 bg-black/70 px-1.5 py-0.5 text-xs text-red-400 opacity-0 transition-opacity group-hover:opacity-100"
+                  className="absolute right-1 top-1 bg-black/70 px-1.5 py-0.5 text-xs text-red-600 opacity-0 transition-opacity group-hover:opacity-100"
                 >
                   ✕
                 </button>
@@ -370,7 +370,7 @@ export default function ProdajVoziloForm({
         {uploading && <p className="mt-2 text-sm text-accent">{uploadProgres}</p>}
       </div>
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
       <button
         type="submit"

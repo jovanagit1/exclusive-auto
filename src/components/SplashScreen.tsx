@@ -28,7 +28,7 @@ export default function SplashScreen() {
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background ${
+      className={`tamno fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background ${
         fading ? "splash-exit" : ""
       }`}
       aria-hidden="true"

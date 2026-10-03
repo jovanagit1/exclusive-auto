@@ -141,7 +141,7 @@ export default function KalkulatorRate({
                 step={100}
                 value={ucesce}
                 onChange={(e) => setUcesce(Number(e.target.value))}
-                className="mt-3 w-full accent-white"
+                className="mt-3 w-full accent-black"
               />
               {minUcesce > 0 && (
                 <p className="mt-1 text-xs text-muted">
@@ -162,7 +162,7 @@ export default function KalkulatorRate({
                 step={6}
                 value={rok}
                 onChange={(e) => setRok(Number(e.target.value))}
-                className="mt-3 w-full accent-white"
+                className="mt-3 w-full accent-black"
               />
             </div>
             <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm text-foreground/70">
@@ -175,7 +175,7 @@ export default function KalkulatorRate({
             </div>
           </div>
 
-          <div className="border border-border bg-background/40 p-6 text-center">
+          <div className="border border-border bg-background p-6 text-center">
             <p className="text-xs uppercase tracking-[0.25em] text-muted">Mjesečna rata</p>
             <p className="font-display mt-2 text-4xl text-foreground">≈ {km(rata)}</p>
             <p className="mt-2 text-xs text-muted">
@@ -206,7 +206,7 @@ export default function KalkulatorRate({
                   step={100}
                   value={lUcesce}
                   onChange={(e) => setLUcesce(Number(e.target.value))}
-                  className="mt-3 w-full accent-white"
+                  className="mt-3 w-full accent-black"
                 />
               </div>
               <div>
@@ -221,7 +221,7 @@ export default function KalkulatorRate({
                   step={6}
                   value={Math.min(lRok, lizingMaxRok)}
                   onChange={(e) => setLRok(Number(e.target.value))}
-                  className="mt-3 w-full accent-white"
+                  className="mt-3 w-full accent-black"
                 />
                 <p className="mt-1 text-xs text-muted">
                   Za vozilo iz {godiste}. najduži rok je {lizingMaxRok} mjeseci (starost vozila i
@@ -238,7 +238,7 @@ export default function KalkulatorRate({
               </div>
             </div>
 
-            <div className="border border-border bg-background/40 p-6 text-center">
+            <div className="border border-border bg-background p-6 text-center">
               <p className="text-xs uppercase tracking-[0.25em] text-muted">Mjesečna rata</p>
               <p className="font-display mt-2 text-4xl text-foreground">≈ {km(lRata)}</p>
               <p className="mt-2 text-xs text-muted">
@@ -270,7 +270,7 @@ export default function KalkulatorRate({
               {status === "sending" ? "Slanje..." : "Pošalji"}
             </button>
             {status === "error" && (
-              <p className="text-sm text-red-400 sm:col-span-4">
+              <p className="text-sm text-red-600 sm:col-span-4">
                 Slanje nije uspjelo — pozovite nas na 065 063 063.
               </p>
             )}

@@ -23,7 +23,7 @@ export default function VehicleImage({
 
   return (
     <div
-      className={`relative overflow-hidden border border-border bg-surface-2 ${ratio} ${className}`}
+      className={`relative overflow-hidden bg-surface-2 ${ratio} ${className}`}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt={label} className="h-full w-full object-cover" loading="lazy" />

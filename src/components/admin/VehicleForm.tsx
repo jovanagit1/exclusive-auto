@@ -509,7 +509,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
           <label
             className={`inline-flex cursor-pointer items-center gap-2 rounded-sm border px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${
               akcija
-                ? "border-red-500 bg-red-500/15 text-red-400"
+                ? "border-red-500 bg-red-500/15 text-red-600"
                 : "border-border text-muted hover:border-red-500/50"
             }`}
           >
@@ -684,7 +684,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
           <p className="mt-1 text-xs text-muted">
             Na sajtu se prikazuje na posebnom, istaknutom mjestu ispod opisa.
             {brojSasije && brojSasije.length !== 17 && (
-              <span className="text-red-400"> Standardni VIN ima 17 znakova (sada: {brojSasije.length}).</span>
+              <span className="text-red-600"> Standardni VIN ima 17 znakova (sada: {brojSasije.length}).</span>
             )}
           </p>
         </div>
@@ -891,7 +891,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
                   <button
                     type="button"
                     onClick={() => ukloniSliku(src)}
-                    className="px-1 text-xs text-red-400"
+                    className="px-1 text-xs text-red-600"
                   >
                     ✕
                   </button>
@@ -936,7 +936,7 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
         </label>
       )}
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
       {poruka && <p className="text-sm text-accent">{poruka}</p>}
 
       <div className="flex gap-4">

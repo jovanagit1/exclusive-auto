@@ -33,18 +33,14 @@ export default function ONamaPage() {
 
       <section className="mx-auto max-w-7xl px-5 pt-16 md:px-8 md:pt-20">
         <p className="section-label">O nama</p>
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {brojke.map((b) => (
+        <div className="mt-6 grid grid-cols-1 border-y border-border sm:grid-cols-3">
+          {brojke.map((b, i) => (
             <div
               key={b.opis}
-              className="stat-live flex flex-col items-center px-6 py-12 text-center md:py-16"
+              className={`px-6 py-12 text-center md:py-14 ${i > 0 ? "border-t border-border sm:border-l sm:border-t-0" : ""}`}
             >
-              <p className="font-display relative z-10 text-5xl text-foreground md:text-6xl">
-                {b.vrijednost}
-              </p>
-              <p className="relative z-10 mt-3 text-xs font-semibold uppercase tracking-[0.3em] text-muted">
-                {b.opis}
-              </p>
+              <p className="font-display text-5xl text-foreground md:text-6xl">{b.vrijednost}</p>
+              <p className="mt-3 text-[0.7rem] uppercase tracking-[0.3em] text-muted">{b.opis}</p>
             </div>
           ))}
         </div>

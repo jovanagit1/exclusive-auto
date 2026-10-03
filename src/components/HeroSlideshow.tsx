@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { LogoFull } from "./Logo";
+import { LogoTekst } from "./Logo";
 import PriceTag from "./PriceTag";
 
 export type HeroSlajd = {
@@ -63,7 +63,7 @@ export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
   const trenutno = slajdovi[aktivni];
 
   return (
-    <section className="hero relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-background">
+    <section className="hero tamno relative h-[calc(100svh-4rem)] min-h-[560px] w-full overflow-hidden bg-background md:h-[calc(100svh-5rem)]">
       {/* Fotografije */}
       {ukupno > 0 ? (
         slajdovi.map((s, i) => (
@@ -88,61 +88,53 @@ export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
 
       {/* Zatamnjenja — tekst uvijek čitljiv, a donja ivica se stapa sa stranicom */}
       <div className="pointer-events-none absolute inset-0 bg-background/25" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/90 via-background/45 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-background/85 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background via-background/55 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/85 via-background/30 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
       <div className="hero-vinjeta pointer-events-none absolute inset-0" />
 
-      {/* Sadržaj */}
-      <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-center px-5 pt-20 pb-12 md:px-8">
-        <div className="hero-ulaz max-w-2xl">
+      {/* Sadržaj: dole lijevo natpis firme, opis i dugmad; dole desno vozilo sa slike */}
+      <div className="relative mx-auto flex h-full max-w-7xl items-end justify-between gap-8 px-5 pb-14 md:px-8 md:pb-20">
+        <div className="hero-ulaz max-w-xl">
           <h1>
             <span className="sr-only">
               Exclusive Auto — prodaja novih i polovnih automobila, Banja Luka
             </span>
-            <LogoFull className="h-28 w-auto text-white sm:h-36 md:h-52" />
+            <LogoTekst className="h-12 w-auto text-white sm:h-16 md:h-[4.6rem]" />
           </h1>
-          <span className="mt-8 block h-px w-16 bg-white/60" />
-          <p className="mt-6 max-w-md text-sm leading-relaxed text-foreground/70 md:text-base">
-            Uvoz i prodaja novih i korištenih automobila iz Evrope — sa
-            pismenom garancijom na porijeklo i kilometražu.
+          <span className="mt-6 block h-px w-16 bg-white/60" />
+          <p className="mt-5 max-w-md text-sm leading-relaxed text-white/75 md:text-base">
+            Uvoz i prodaja novih i korištenih automobila iz Evrope — uz
+            pismenu garanciju na porijeklo i kilometražu.
           </p>
-          <div className="mt-12 flex flex-wrap gap-4">
+          <div className="mt-8 flex flex-wrap gap-3 md:gap-4">
             <Link href="/vozila" className="btn-primary">
               Pogledaj ponudu
             </Link>
-            <Link href="/probna-voznja" className="btn-outline border-white/40 backdrop-blur-sm">
+            <Link href="/probna-voznja" className="btn-outline border-white/50">
               Zakaži probnu vožnju
             </Link>
           </div>
         </div>
+
+        {ukupno > 0 && trenutno && (
+          <Link
+            key={trenutno.slug}
+            href={`/vozila/${trenutno.slug}`}
+            className="hero-vozilo group hidden shrink-0 pb-1 text-right sm:block"
+          >
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-muted">
+              U ponudi · {trenutno.godiste}
+            </p>
+            <p className="font-naziv-vozila mt-1 text-xl text-foreground">{trenutno.naziv}</p>
+            <p className="mt-1 flex items-center justify-end gap-3 text-sm text-foreground/80">
+              <PriceTag cijena={trenutno.cijena} valuta={trenutno.valuta} />
+              <span className="text-xs uppercase tracking-wider text-foreground/60 transition-colors group-hover:text-white">
+                Pogledaj →
+              </span>
+            </p>
+          </Link>
+        )}
       </div>
-
-      {/* Dole desno: vozilo koje je trenutno na slici */}
-      {ukupno > 0 && trenutno && (
-        <div className="absolute inset-x-0 bottom-0">
-          <div className="mx-auto flex max-w-7xl items-end justify-between gap-6 px-5 pb-8 md:px-8 md:pb-10">
-            <span />
-
-            <Link
-              key={trenutno.slug}
-              href={`/vozila/${trenutno.slug}`}
-              className="hero-vozilo group hidden text-right sm:block"
-            >
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-muted">
-                U ponudi · {trenutno.godiste}
-              </p>
-              <p className="font-display mt-1 text-xl text-foreground">{trenutno.naziv}</p>
-              <p className="mt-1 flex items-center justify-end gap-3 text-sm text-foreground/80">
-                <PriceTag cijena={trenutno.cijena} valuta={trenutno.valuta} />
-                <span className="text-xs uppercase tracking-wider text-foreground/60 transition-colors group-hover:text-white">
-                  Pogledaj →
-                </span>
-              </p>
-            </Link>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

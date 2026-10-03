@@ -188,7 +188,7 @@ export default async function VehicleDetailPage({
                 </span>
               )}
               {naAkciji && (
-                <span className="rounded-sm bg-red-500/15 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-red-400">
+                <span className="rounded-sm bg-red-500/15 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-red-600">
                   Akcija
                 </span>
               )}
@@ -209,7 +209,7 @@ export default async function VehicleDetailPage({
               <PriceTag
                 cijena={vehicle.cijena}
                 valuta={vehicle.valuta}
-                className="rounded-sm bg-red-500/10 px-3 py-1 text-2xl font-semibold text-red-400"
+                className="rounded-sm bg-red-500/10 px-3 py-1 text-2xl font-semibold text-red-600"
               />
             </div>
           ) : (

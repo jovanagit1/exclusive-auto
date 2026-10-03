@@ -18,7 +18,7 @@ export default function DeleteVehicleButton({
     return (
       <button
         onClick={() => setConfirming(true)}
-        className="text-xs uppercase tracking-wider text-muted hover:text-red-400"
+        className="text-xs uppercase tracking-wider text-muted hover:text-red-600"
       >
         Obriši
       </button>
@@ -41,7 +41,7 @@ export default function DeleteVehicleButton({
       <button
         onClick={potvrdi}
         disabled={loading}
-        className="uppercase tracking-wider text-red-400 hover:text-red-300"
+        className="uppercase tracking-wider text-red-600 hover:text-red-700"
       >
         {loading ? "..." : "Da"}
       </button>

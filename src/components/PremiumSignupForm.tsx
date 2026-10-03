@@ -82,7 +82,7 @@ export default function PremiumSignupForm() {
       >
         {status === "sending" ? "Prijava..." : "Prijavi se"}
       </button>
-      {error && <p className="w-full text-xs text-red-400">{error}</p>}
+      {error && <p className="w-full text-xs text-red-600">{error}</p>}
     </form>
   );
 }

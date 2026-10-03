@@ -1,6 +1,88 @@
 @import "tailwindcss";
 
+/* Font sajta: Manrope (tanak, moderan, čist) — fajlovi su u public/fonts */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-300-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-ext-300-normal.woff2') format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-400-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-ext-400-normal.woff2') format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-500-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-ext-500-normal.woff2') format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-600-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-ext-600-normal.woff2') format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+/*
+ * BOJE — sajt je svijetao (bijele stranice, crna slova), a meni gore,
+ * početni video i footer su tamni. Sve što je unutar elementa sa klasom
+ * "tamno" automatski dobija tamne boje (vidi .tamno ispod).
+ */
 :root {
+  --background: #ffffff;
+  --foreground: #111113;
+  --surface: #f6f6f7;
+  --surface-2: #efeff1;
+  --border: #e5e5e8;
+  --accent: #0a0a0b;
+  --accent-light: #2a2a2e;
+  --muted: #6e6e75;
+}
+
+.tamno {
   --background: #0a0a0b;
   --foreground: #f5f5f6;
   --surface: #17171a;
@@ -9,6 +91,7 @@
   --accent: #ffffff;
   --accent-light: #ffffff;
   --muted: #97979d;
+  color: var(--foreground);
 }
 
 @theme inline {
@@ -29,7 +112,8 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: "Manrope", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
@@ -51,7 +135,15 @@ body {
    * Vercelu se učitava bez problema.
    */
   .font-display {
+    font-family: "Manrope", -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+  }
+
+  /* Naziv vozila u početnom videu — namjerno ostaje u serifnom fontu. */
+  .font-naziv-vozila {
     font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-weight: 400;
     letter-spacing: 0.01em;
   }
 
@@ -77,11 +169,11 @@ body {
     justify-content: center;
     gap: 0.5rem;
     padding: 0.85rem 1.75rem;
-    border-radius: 2px;
+    border-radius: 0;
     font-weight: 600;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     background: var(--accent);
     color: var(--background);
     transition: all 0.25s ease;
@@ -98,27 +190,27 @@ body {
     justify-content: center;
     gap: 0.5rem;
     padding: 0.8rem 1.7rem;
-    border-radius: 2px;
+    border-radius: 0;
     font-weight: 600;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    font-size: 0.8rem;
-    border: 1px solid var(--border);
+    font-size: 0.72rem;
+    border: 1px solid var(--accent);
     color: var(--foreground);
     transition: all 0.25s ease;
   }
 
   .btn-outline:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    background: var(--accent);
+    color: var(--background);
   }
 
   .section-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.25em;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 600;
+    color: var(--muted);
+    font-weight: 500;
   }
 
   .card {
@@ -331,4 +423,13 @@ body {
 select.input-field option {
   background: var(--surface-2);
   color: var(--foreground);
+}
+
+/* Prozori usluga na početnoj (tamni, sa mekim svjetlom) */
+.usluga-prozor {
+  background: radial-gradient(ellipse 90% 70% at 55% 22%, #3a3e46, #0d0e10 72%);
+  transition: transform 0.4s ease;
+}
+.usluga-prozor:hover {
+  transform: translateY(-3px);
 }

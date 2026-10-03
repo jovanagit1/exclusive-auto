@@ -2,16 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import Logo from "./Logo";
+import { useState } from "react";
+import { LogoMark } from "./Logo";
 import CurrencyToggle from "./CurrencyToggle";
 import { GALERIJA_OTVORENA } from "@/lib/galerija";
 
 const sviLinkovi = [
-  { href: "/", label: "Početna" },
   { href: "/vozila", label: "Vozila" },
-  { href: "/cjenovnik", label: "Cjenovnik" },
   { href: "/usluge", label: "Usluge" },
+  { href: "/cjenovnik", label: "Cjenovnik" },
   { href: "/galerija", label: "Galerija" },
   { href: "/o-nama", label: "O nama" },
   { href: "/kontakt", label: "Kontakt" },
@@ -20,7 +19,7 @@ const links = sviLinkovi.filter((l) => GALERIJA_OTVORENA || l.href !== "/galerij
 
 function SrceIkonica({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} className={className}>
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -30,55 +29,28 @@ function SrceIkonica({ className = "" }: { className?: string }) {
   );
 }
 
+/**
+ * Gornja crna linija (kao kod Mercedes-Benz sajtova): meni lijevo, auto iz
+ * logoa u sredini (klik vodi na početnu), desno KM/EUR i sačuvana vozila.
+ */
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const pocetna = pathname === "/";
-
-  // Na početnoj je meni providan preko slajd šoua; čim se skrola, dobija
-  // tamnu pozadinu i mali logo (veliki logo je tada već van ekrana).
-  useEffect(() => {
-    if (!pocetna) return;
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [pocetna]);
-
-  const providan = pocetna && !scrolled && !open;
+  const sacuvana = pathname.startsWith("/sacuvana-vozila");
 
   return (
-    <header
-      className={`top-0 z-50 border-b transition-[background-color,border-color] duration-500 ${
-        pocetna ? "fixed inset-x-0" : "sticky"
-      } ${
-        providan
-          ? "border-transparent bg-transparent"
-          : "border-border bg-background/90 backdrop-blur"
-      }`}
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
-        <Link
-          href="/"
-          onClick={() => setOpen(false)}
-          className={`transition-opacity duration-500 ${providan ? "pointer-events-none opacity-0" : "opacity-100"}`}
-          aria-hidden={providan}
-          tabIndex={providan ? -1 : undefined}
-        >
-          <Logo className="h-14 w-auto text-white sm:h-16" />
-        </Link>
-
-        <nav className="hidden items-center gap-8 md:flex">
+    <header className="tamno sticky top-0 z-50 border-b border-white/10 bg-black">
+      <div className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center px-5 md:h-20 md:px-8">
+        {/* Lijevo: meni (na telefonu dugme za meni) */}
+        <nav className="hidden items-center gap-7 lg:flex">
           {links.map((link) => {
-            const active =
-              link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+            const active = pathname.startsWith(link.href);
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm uppercase tracking-wider transition-colors ${
-                  active ? "text-accent" : "text-foreground/80 hover:text-accent"
+                className={`text-[0.95rem] transition-colors ${
+                  active ? "text-white" : "text-white/75 hover:text-white"
                 }`}
               >
                 {link.label}
@@ -86,83 +58,52 @@ export default function Header() {
             );
           })}
         </nav>
-
-        <CurrencyToggle className="hidden md:flex" />
-
-        <Link
-          href="/sacuvana-vozila"
-          aria-label="Sačuvana vozila"
-          title="Sačuvana vozila"
-          className={`hidden items-center transition-colors md:flex ${
-            pathname.startsWith("/sacuvana-vozila")
-              ? "text-accent"
-              : "text-foreground/80 hover:text-accent"
-          }`}
-        >
-          <SrceIkonica className="h-5 w-5" />
-        </Link>
-
-        <Link href="/probna-voznja" className="btn-primary hidden md:inline-flex">
-          Zakaži vožnju
-        </Link>
-
         <button
           type="button"
           aria-label="Otvori meni"
-          className="flex flex-col gap-1.5 md:hidden"
+          className="flex w-8 flex-col gap-1.5 lg:hidden"
           onClick={() => setOpen((v) => !v)}
         >
-          <span
-            className={`h-[1.5px] w-6 bg-foreground transition-transform ${
-              open ? "translate-y-[7px] rotate-45" : ""
-            }`}
-          />
-          <span
-            className={`h-[1.5px] w-6 bg-foreground transition-opacity ${
-              open ? "opacity-0" : ""
-            }`}
-          />
-          <span
-            className={`h-[1.5px] w-6 bg-foreground transition-transform ${
-              open ? "-translate-y-[7px] -rotate-45" : ""
-            }`}
-          />
+          <span className={`h-[1.5px] w-6 bg-white transition-transform ${open ? "translate-y-[7px] rotate-45" : ""}`} />
+          <span className={`h-[1.5px] w-6 bg-white transition-opacity ${open ? "opacity-0" : ""}`} />
+          <span className={`h-[1.5px] w-6 bg-white transition-transform ${open ? "-translate-y-[7px] -rotate-45" : ""}`} />
         </button>
+
+        {/* Sredina: auto iz logoa */}
+        <Link href="/" aria-label="Exclusive Auto — početna" onClick={() => setOpen(false)}>
+          <LogoMark className="h-7 w-auto text-white md:h-9" />
+        </Link>
+
+        {/* Desno: KM/EUR i sačuvana vozila */}
+        <div className="flex items-center justify-end gap-5 md:gap-7">
+          <CurrencyToggle className="hidden sm:flex" />
+          <Link
+            href="/sacuvana-vozila"
+            aria-label="Sačuvana vozila"
+            title="Sačuvana vozila"
+            className={`transition-colors ${sacuvana ? "text-white" : "text-white/80 hover:text-white"}`}
+          >
+            <SrceIkonica className="h-6 w-6" />
+          </Link>
+        </div>
       </div>
 
       {open && (
-        <nav className="flex flex-col gap-1 border-t border-border px-5 pb-5 md:hidden">
+        <nav className="flex flex-col gap-1 border-t border-white/10 px-5 pb-5 lg:hidden">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="py-3 text-sm uppercase tracking-wider text-foreground/85 hover:text-accent"
+              className="py-3 text-base text-white/85 hover:text-white"
             >
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/sacuvana-vozila"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-2 py-3 text-sm uppercase tracking-wider text-foreground/85 hover:text-accent"
-          >
-            <SrceIkonica className="h-4 w-4" />
-            Sačuvana vozila
-          </Link>
-          <div className="flex items-center justify-between py-3">
-            <span className="text-sm uppercase tracking-wider text-foreground/85">
-              Prikaz cijena
-            </span>
+          <div className="flex items-center justify-between py-3 sm:hidden">
+            <span className="text-sm text-white/70">Prikaz cijena</span>
             <CurrencyToggle />
           </div>
-          <Link
-            href="/probna-voznja"
-            onClick={() => setOpen(false)}
-            className="btn-primary mt-2 justify-center"
-          >
-            Zakaži vožnju
-          </Link>
         </nav>
       )}
     </header>
