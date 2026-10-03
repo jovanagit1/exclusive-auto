@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatKubikaza, formatSnaga, razdvojiBrojSasije, kategorijaVozila } from "@/lib/vehicles";
+import { formatKubikaza, formatSnaga, formatPrice, razdvojiBrojSasije, kategorijaVozila } from "@/lib/vehicles";
+import { voziloJsonLd } from "@/lib/structured-data";
 import { imaPristupSalonu } from "@/lib/salon";
 import PremiumSignupForm from "@/components/PremiumSignupForm";
 import VipZnak from "@/components/VipZnak";
@@ -42,9 +43,18 @@ export async function generateMetadata({
   if (kategorijaVozila(vehicle) === "dolazak") {
     return { title: "Vozilo u dolasku — Exclusive Auto VIP", robots: { index: false, follow: false } };
   }
+  const naslov = `${vehicle.marka} ${vehicle.model} (${vehicle.godiste})`;
+  const opis = `${vehicle.marka} ${vehicle.model}, ${vehicle.godiste}. godište, ${vehicle.km.toLocaleString("de-DE")} km, ${vehicle.gorivo}, ${vehicle.mjenjac}. Cijena ${formatPrice(vehicle.cijena, vehicle.valuta)}. Prodaja auta u Banjoj Luci uz garanciju na porijeklo i kilometražu — lizing, kredit i registracija.`;
   return {
-    title: `${vehicle.marka} ${vehicle.model}`,
-    description: vehicle.opis,
+    title: `${naslov} — prodaja, Banja Luka`,
+    description: opis,
+    alternates: { canonical: `/vozila/${vehicle.slug}` },
+    openGraph: {
+      title: `${naslov} | Exclusive Auto`,
+      description: opis,
+      url: `/vozila/${vehicle.slug}`,
+      ...(vehicle.slike?.[0] ? { images: [{ url: vehicle.slike[0] }] } : {}),
+    },
   };
 }
 
@@ -132,6 +142,13 @@ export default async function VehicleDetailPage({
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
+      {/* Podaci o vozilu za Google (cijena, godište, kilometraža…) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(voziloJsonLd(vehicle)).replace(/</g, "\\u003c"),
+        }}
+      />
       <Link
         href={
           kategorija === "dolazak"
@@ -175,7 +192,10 @@ export default async function VehicleDetailPage({
             </div>
             <FavoriteButton slug={vehicle.slug} />
           </div>
-          <h1 className="font-display mt-2 text-3xl">{vehicle.model}</h1>
+          <h1 className="font-display mt-2 text-3xl">
+            <span className="sr-only">{vehicle.marka} </span>
+            {vehicle.model}
+          </h1>
           {naAkciji ? (
             <div className="mt-4 flex flex-wrap items-baseline gap-3">
               <PriceTag

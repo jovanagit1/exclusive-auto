@@ -6,8 +6,10 @@ import { kategorijaVozila } from "@/lib/vehicles";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Probna vožnja",
-  description: "Zakažite probnu vožnju vozila iz ponude Exclusive Auto.",
+  title: "Probna vožnja — zakažite termin",
+  description:
+    "Zakažite probnu vožnju vozila iz ponude auto salona Exclusive Auto u Banjoj Luci.",
+  alternates: { canonical: "/probna-voznja" },
 };
 
 export default async function ProbnaVoznjaPage() {

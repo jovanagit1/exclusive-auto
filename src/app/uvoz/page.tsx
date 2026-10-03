@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import InquiryForm from "@/components/InquiryForm";
 
 export const metadata: Metadata = {
-  title: "Uvoz vozila",
+  title: "Uvoz automobila iz Njemačke, Austrije i EU — ključ u ruke",
   description:
-    "Pošaljite upit za uvoz vozila po vašoj želji — marka, model, zemlja porijekla i budžet.",
+    "Uvoz vozila po narudžbi iz Njemačke, Austrije, Francuske, Italije i Švajcarske. Pretraga, provjera, carina i registracija u BiH — ključ u ruke, uz dostavu na kućnu adresu.",
+  alternates: { canonical: "/uvoz" },
 };
 
 export default function UvozPage() {

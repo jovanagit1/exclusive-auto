@@ -6,9 +6,10 @@ import ProdajVoziloForm from "@/components/ProdajVoziloForm";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Prodaj ili zamijeni vozilo",
+  title: "Prodaj ili zamijeni auto — otkup vozila Banja Luka",
   description:
-    "Prodajte svoje vozilo Exclusive Auto-u ili ga zamijenite za jedno iz naše ponude — bez obzira gdje živite, sve možete dogovoriti online.",
+    "Prodajte ili zamijenite svoje vozilo za auto iz naše ponude. Pošaljite podatke i fotografije, a Exclusive Auto vam se javlja sa procjenom.",
+  alternates: { canonical: "/prodaj-vozilo" },
 };
 
 const prednosti = [

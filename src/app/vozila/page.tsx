@@ -8,9 +8,10 @@ import VozilaTabs from "@/components/VozilaTabs";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Polovna auta u ponudi",
+  title: "Prodaja auta Banja Luka — nova i polovna vozila u ponudi",
   description:
-    "Pregledajte trenutnu ponudu polovnih auta i automobila Exclusive Auto u Banjoj Luci — sortiranje po cijeni i godištu.",
+    "Prodaja novih i polovnih automobila u Banjoj Luci. Provjerena auta iz Evrope uz pismenu garanciju na porijeklo i kilometražu, lizing, kredit i registraciju.",
+  alternates: { canonical: "/vozila" },
 };
 
 export default async function VozilaPage() {
@@ -22,8 +23,9 @@ export default async function VozilaPage() {
       <p className="section-label">Ponuda</p>
       <h1 className="font-display mt-3 text-4xl">Vozila u ponudi</h1>
       <p className="mt-4 max-w-2xl text-sm text-foreground/70">
-        Ne vidite vozilo koje tražite? Pošaljite nam upit za uvoz i
-        pronaći ćemo ga po vašoj želji.
+        Nova i polovna auta u Banjoj Luci — provjerena, uz pismenu garanciju
+        na porijeklo i kilometražu. Ne vidite vozilo koje tražite? Pošaljite
+        nam upit za uvoz i pronaći ćemo ga po vašoj želji.
       </p>
 
       <VozilaTabs aktivna="ponuda" vozila={vehicles} otkljucano={otkljucano} />

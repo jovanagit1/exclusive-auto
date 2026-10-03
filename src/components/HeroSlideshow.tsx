@@ -96,7 +96,12 @@ export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
       {/* Sadržaj */}
       <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-center px-5 pt-20 pb-12 md:px-8">
         <div className="hero-ulaz max-w-2xl">
-          <LogoFull className="h-28 w-auto text-white sm:h-36 md:h-52" />
+          <h1>
+            <span className="sr-only">
+              Exclusive Auto — prodaja novih i polovnih automobila, Banja Luka
+            </span>
+            <LogoFull className="h-28 w-auto text-white sm:h-36 md:h-52" />
+          </h1>
           <span className="mt-8 block h-px w-16 bg-white/60" />
           <p className="mt-6 max-w-md text-sm leading-relaxed text-foreground/70 md:text-base">
             Uvoz i prodaja novih i korištenih automobila iz Evrope — sa

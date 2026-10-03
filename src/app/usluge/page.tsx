@@ -3,9 +3,10 @@ import Link from "next/link";
 import PlaceholderImage from "@/components/PlaceholderImage";
 
 export const metadata: Metadata = {
-  title: "Usluge",
+  title: "Usluge — uvoz, registracija, detailing, lizing",
   description:
-    "Uvoz vozila, registracija, detailing, poliranje i zatamnjenje stakala — sve usluge Exclusive Auto na jednom mjestu.",
+    "Sve za vaše vozilo na jednom mjestu u Banjoj Luci: uvoz automobila, registracija, detailing, poliranje, zatamnjenje stakala, lizing i kredit.",
+  alternates: { canonical: "/usluge" },
 };
 
 const services = [

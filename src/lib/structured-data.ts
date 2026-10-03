@@ -39,10 +39,12 @@ export const autoDealerJsonLd = {
     postalCode: "78000",
     addressCountry: "BA",
   },
-  areaServed: {
-    "@type": "City",
-    name: "Banja Luka",
-  },
+  areaServed: [
+    { "@type": "City", name: "Banja Luka" },
+    { "@type": "AdministrativeArea", name: "Republika Srpska" },
+    { "@type": "Country", name: "Bosna i Hercegovina" },
+  ],
+  knowsLanguage: ["bs", "sr", "hr", "de", "en"],
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
@@ -64,3 +66,49 @@ export const autoDealerJsonLd = {
     },
   ],
 };
+
+/**
+ * Podaci o jednom vozilu za Google (schema.org "Car" sa ponudom/cijenom).
+ * Google tako zna da je stranica auto na prodaju, sa cijenom, godištem i
+ * kilometražom — i može ga prikazati u rezultatima pretrage.
+ */
+export function voziloJsonLd(v: {
+  marka: string;
+  model: string;
+  godiste: number;
+  km: number;
+  gorivo: string;
+  mjenjac: string;
+  boja?: string;
+  cijena: number;
+  valuta: string;
+  slug: string;
+  opis?: string;
+  slike?: string[];
+}) {
+  const url = `${SITE_URL}/vozila/${v.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Car",
+    name: `${v.marka} ${v.model}`,
+    brand: { "@type": "Brand", name: v.marka },
+    model: v.model,
+    vehicleModelDate: String(v.godiste),
+    mileageFromOdometer: { "@type": "QuantitativeValue", value: v.km, unitCode: "KMT" },
+    fuelType: v.gorivo,
+    vehicleTransmission: v.mjenjac,
+    ...(v.boja ? { color: v.boja } : {}),
+    ...(v.opis ? { description: v.opis } : {}),
+    ...(v.slike?.length ? { image: v.slike } : {}),
+    url,
+    offers: {
+      "@type": "Offer",
+      price: v.cijena,
+      priceCurrency: v.valuta === "EUR" ? "EUR" : "BAM",
+      availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/UsedCondition",
+      url,
+      seller: { "@type": "AutoDealer", name: "Exclusive Auto", url: SITE_URL },
+    },
+  };
+}

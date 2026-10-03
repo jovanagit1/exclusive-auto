@@ -9,9 +9,10 @@ import VozilaTabs from "@/components/VozilaTabs";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Vozila u posredovanju",
+  title: "Vozila u posredovanju — prodaja auta Banja Luka",
   description:
-    "Vozila privatnih vlasnika koja Exclusive Auto prodaje posredstvom — provjerena i prezentovana na jednom mjestu.",
+    "Vozila privatnih vlasnika koja Exclusive Auto prodaje posredstvom — provjerena i prezentovana na jednom mjestu, u Banjoj Luci.",
+  alternates: { canonical: "/posredovanje" },
 };
 
 export default async function PosredovanjePage() {

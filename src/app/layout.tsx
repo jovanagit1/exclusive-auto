@@ -15,23 +15,33 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: "EXCLUSIVE AUTO Banja Luka — Prodaja novih i polovnih automobila",
-    template: "%s | Exclusive Auto Banja Luka",
+    template: "%s | Exclusive Auto",
   },
   description:
     "Uvoz vozila iz Evrope, priprema i prodaja uz garanciju na porijeklo i kilometražu.",
+  // Napomena: Google danas skoro ne gleda "keywords" (gleda tekst na
+  // stranici, naslove i opise). Lista ostaje jer je koriste neki drugi
+  // pretraživači i alati — pravi posao rade naslovi, opisi i tekst ispod.
   keywords: [
-    "polovna auta",
-    "prodaja auta",
     "auta banja luka",
+    "automobili banja luka",
+    "prodaja auta",
     "prodaja auta banja luka",
-    "polovna auta banja luka",
     "prodaja automobila banja luka",
     "prodaja polovnih auta banja luka",
-    "prodaja polovnih automobila banja luka",
+    "polovna auta banja luka",
+    "prodaja novih automobila banja luka",
+    "auto salon banja luka",
+    "auto saloni banja luka",
+    "auta bih",
+    "prodaja auta bih",
+    "uvoz auta iz njemačke",
+    "uvoz auta iz austrije",
+    "uvoz automobila iz eu",
+    "lizing auta banja luka",
   ],
-  alternates: {
-    canonical: "/",
-  },
+  // Kanonski link (canonical) svaka stranica postavlja za sebe — ovdje ga
+  // namjerno nema, jer bi se inače naslijedio na sve stranice.
   openGraph: {
     type: "website",
     locale: "bs_BA",

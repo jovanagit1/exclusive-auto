@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import InquiryForm from "@/components/InquiryForm";
 
 export const metadata: Metadata = {
-  title: "Registracija vozila",
+  title: "Registracija i prepis vozila Banja Luka",
   description:
-    "Zatražite kompletnu registraciju i carinjenje vozila preko Exclusive Auto.",
+    "Kompletna registracija, carinjenje i prepis vozila u Banjoj Luci, bez čekanja u redovima — Exclusive Auto završava sve umjesto vas.",
+  alternates: { canonical: "/registracija" },
 };
 
 export default function RegistracijaPage() {

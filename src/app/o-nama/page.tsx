@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "O nama",
+  title: "O nama — auto salon sa bonitetnom ocjenom A+",
   description:
-    "Exclusive Auto Banja Luka — bonitetna ocjena A+, pismene garancije na porijeklo i kilometražu. Uvoz i prodaja novih i korištenih auta iz Evrope, lizing, registracija.",
+    "Exclusive Auto Banja Luka — bonitetna ocjena A+, pismene garancije na porijeklo i kilometražu. Uvoz i prodaja novih i korištenih automobila iz Evrope.",
+  alternates: { canonical: "/o-nama" },
 };
 
 const brojke = [

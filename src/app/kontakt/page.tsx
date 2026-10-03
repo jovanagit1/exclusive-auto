@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import InquiryForm from "@/components/InquiryForm";
 
 export const metadata: Metadata = {
-  title: "Kontakt",
-  description: "Kontaktirajte Exclusive Auto — pošaljite upit ili nas posjetite.",
+  title: "Kontakt — auto salon Banja Luka",
+  description:
+    "Auto salon Exclusive Auto, Jaroslava Plecitija 17, Banja Luka. Pon–Pet 09–17 h, Sub 09–15 h. Telefon 065 063 063 i 066 888 555.",
+  alternates: { canonical: "/kontakt" },
 };
 
 export default function KontaktPage() {

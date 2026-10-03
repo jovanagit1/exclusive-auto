@@ -5,7 +5,9 @@ import { GALERIJA_OTVORENA } from "@/lib/galerija";
 
 export const metadata: Metadata = {
   title: "Galerija",
-  description: "Fotografije i video sadržaj Exclusive Auto showroom-a i vozila.",
+  description:
+    "Fotografije auto salona Exclusive Auto u Banjoj Luci i vozila iz ponude.",
+  alternates: { canonical: "/galerija" },
 };
 
 const items = [

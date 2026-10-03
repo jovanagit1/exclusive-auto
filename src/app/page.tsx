@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getVehicles } from "@/lib/store";
 import { kategorijaVozila } from "@/lib/vehicles";
@@ -6,6 +7,11 @@ import HeroSlideshow, { type HeroSlajd } from "@/components/HeroSlideshow";
 import VipZnak from "@/components/VipZnak";
 
 export const dynamic = "force-dynamic";
+
+// Naslov i opis početne dolaze iz layout.tsx; ovdje samo kanonski link.
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const services = [
   {
@@ -143,27 +149,35 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* SEO — prirodan tekst o ponudi, pomaže Google-u da poveže sajt sa
-          pretragama poput "polovna auta banja luka", "prodaja auta banja
-          luka" i sličnim, bez neprirodnog nabijanja ključnih riječi. */}
+      {/* SEO — prirodan tekst koji Google čita i povezuje sa pretragama
+          poput "auta banja luka", "prodaja automobila banja luka", "auto
+          salon banja luka", "prodaja polovnih auta", "uvoz auta iz
+          austrije"… Pisano za ljude, bez nabijanja ključnih riječi. */}
       <section className="border-t border-border">
         <div className="mx-auto max-w-7xl *:max-w-3xl px-5 py-16 md:px-8">
-          <p className="section-label">Prodaja polovnih vozila u Banjoj Luci</p>
+          <p className="section-label">Auto salon Banja Luka</p>
           <h2 className="font-display mt-2 text-2xl">
-            Vaš izbor za polovna auta u Banjoj Luci
+            Prodaja novih i polovnih automobila u Banjoj Luci
           </h2>
           <p className="mt-5 text-sm leading-relaxed text-foreground/70">
-            Exclusive Auto je adresa za prodaju polovnih automobila u Banjoj
-            Luci — od reprezentativnih limuzina do porodičnih i poslovnih
-            vozila. Svako vozilo iz naše ponude prolazi provjeru tehničkog
-            stanja i porijekla prije nego što uđe u prodaju, tako da kupovinu
-            polovnog auta u Banjoj Luci možete obaviti sigurno i bez brige.
+            Exclusive Auto je auto salon u Banjoj Luci za prodaju novih i
+            polovnih automobila iz Evrope. U ponudi su provjerena auta — od
+            porodičnih modela kao što su Kia, Peugeot i Citroën, do premium
+            vozila marki Mercedes-Benz, BMW, Audi i Volvo. Uz svako auto
+            dobijate pismenu garanciju na porijeklo i tačnost pređenih
+            kilometara.
           </p>
           <p className="mt-4 text-sm leading-relaxed text-foreground/70">
-            Osim prodaje automobila iz vlastite ponude, bavimo se i uvozom
-            vozila po narudžbi iz Njemačke, Austrije i Švicarske, kompletnom
-            registracijom i pripremom vozila. Posjetite nas u Banjoj Luci ili
-            pregledajte ponudu polovnih auta online, u svakom trenutku.
+            Kupcima iz Banje Luke i cijele Bosne i Hercegovine nudimo lizing i
+            kredit, kompletnu registraciju i prepis vozila, kao i dostavu auta
+            na kućnu adresu. Ako živite u Austriji, Njemačkoj ili drugoj zemlji
+            EU, ponudu automobila možete pregledati online i sve dogovoriti
+            telefonom ili mejlom.
+          </p>
+          <p className="mt-4 text-sm leading-relaxed text-foreground/70">
+            Tražite konkretan model? Uvozimo automobile po narudžbi iz
+            Njemačke, Austrije, Francuske, Italije i Švajcarske — ključ u
+            ruke, od pretrage i provjere do carine i registracije.
           </p>
         </div>
       </section>

@@ -6,7 +6,9 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Sačuvana vozila",
-  description: "Vozila koja ste sačuvali za kasnije razgledanje.",
+  description:
+    "Vozila koja ste sačuvali za kasnije razgledanje.",
+  robots: { index: false, follow: false },
 };
 
 export default async function SacuvanaVozilaPage() {

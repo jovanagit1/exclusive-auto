@@ -7,9 +7,10 @@ import CjenovnikTabela from "@/components/CjenovnikTabela";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Cjenovnik",
+  title: "Cjenovnik — cijene automobila u ponudi",
   description:
-    "Cjenovnik polovnih vozila Exclusive Auto Banja Luka — sva vozila i cijene na jednom mjestu.",
+    "Aktuelne cijene novih i polovnih automobila u ponudi auto salona Exclusive Auto u Banjoj Luci, na jednom mjestu.",
+  alternates: { canonical: "/cjenovnik" },
 };
 
 export default async function CjenovnikPage() {
