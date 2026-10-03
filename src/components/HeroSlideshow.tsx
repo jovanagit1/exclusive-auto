@@ -18,6 +18,18 @@ export type HeroSlajd = {
 const TRAJANJE = 7000;
 
 /**
+ * Početni video (Kling spot). Dok postoji, ide preko cijelog ekrana umjesto
+ * fotografija, a dole desno se i dalje smjenjuju vozila iz ponude (naziv,
+ * cijena, link). Za novi spot: zamijenite fajlove u public/video.
+ * Postavite na null da se vrati slajd šou fotografija.
+ */
+const VIDEO: { mp4: string; mp4Mobilni: string; poster: string } | null = {
+  mp4: "/video/hero-1080.mp4",
+  mp4Mobilni: "/video/hero-720.mp4",
+  poster: "/video/hero-poster.jpg",
+};
+
+/**
  * Početni ekran preko cijele visine: izmjenjuju se prve fotografije SVIH
  * vozila iz salonske ponude (lagano zamućene, sa sporim "Ken Burns"
  * približavanjem i mekim pretapanjem). Lista dolazi direktno iz baze, pa
@@ -60,12 +72,34 @@ export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
     return () => clearTimeout(tajmer);
   }, [aktivni, ukupno]);
 
+  // Telefon dobija lakšu (720p) verziju videa, kompjuter Full HD.
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  useEffect(() => {
+    if (!VIDEO) return;
+    const mobilni = window.matchMedia("(max-width: 767px)").matches;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setVideoSrc(mobilni ? VIDEO.mp4Mobilni : VIDEO.mp4);
+  }, []);
+
   const trenutno = slajdovi[aktivni];
 
   return (
     <section className="hero tamno relative h-[calc(100svh-4rem)] min-h-[560px] w-full overflow-hidden bg-background md:h-[calc(100svh-5rem)]">
-      {/* Fotografije */}
-      {ukupno > 0 ? (
+      {VIDEO ? (
+        /* Video: nijem, u petlji, bez kontrola; telefon dobija lakšu verziju */
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster={VIDEO.poster}
+          src={videoSrc ?? undefined}
+          aria-hidden="true"
+        />
+      ) : ukupno > 0 ? (
+        /* Fotografije vozila (kad nema videa) */
         slajdovi.map((s, i) => (
           <div
             key={s.slug}
@@ -87,8 +121,8 @@ export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
       )}
 
       {/* Zatamnjenja — tekst uvijek čitljiv, a donja ivica se stapa sa stranicom */}
-      <div className="pointer-events-none absolute inset-0 bg-background/25" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/85 via-background/30 to-transparent" />
+      <div className={`pointer-events-none absolute inset-0 ${VIDEO ? "bg-background/10" : "bg-background/25"}`} />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/80 via-background/20 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
       <div className="hero-vinjeta pointer-events-none absolute inset-0" />
 
