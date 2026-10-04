@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LogoTekst } from "./Logo";
 import PriceTag from "./PriceTag";
 
@@ -17,17 +17,37 @@ export type HeroSlajd = {
 /** Koliko dugo jedno vozilo ostaje na ekranu (ms). */
 const TRAJANJE = 7000;
 
-/**
- * Početni video (Kling spot). Dok postoji, ide preko cijelog ekrana umjesto
- * fotografija, a dole desno se i dalje smjenjuju vozila iz ponude (naziv,
- * cijena, link). Za novi spot: zamijenite fajlove u public/video.
- * Postavite na null da se vrati slajd šou fotografija.
- */
-const VIDEO: { mp4: string; mp4Mobilni: string; poster: string } | null = {
-  mp4: "/video/hero-1080.mp4",
-  mp4Mobilni: "/video/hero-720.mp4",
-  poster: "/video/hero-poster.jpg",
+type HeroVideo = {
+  mp4: string;
+  mp4Mobilni: string;
+  poster: string;
+  /** Riječ iz naziva vozila (npr. "audi a6") — dok ide ovaj video, dole desno stoji to vozilo. */
+  vozilo?: string;
 };
+
+/**
+ * Početni videi (Kling spotovi). Svaka nova posjeta počinje sljedećim videom
+ * (Kia, pa Audi, pa ukrug), a dok je posjetilac na stranici, svaki video se
+ * odvrti PONAVLJANJA puta pa ide sljedeći. Za novi spot: dodajte fajlove u
+ * public/video i novi red ovdje. Prazna lista vraća slajd šou fotografija.
+ */
+const VIDEI: HeroVideo[] = [
+  {
+    mp4: "/video/hero-1080.mp4",
+    mp4Mobilni: "/video/hero-720.mp4",
+    poster: "/video/hero-poster.jpg",
+    vozilo: "kia",
+  },
+  {
+    mp4: "/video/audi-1080.mp4",
+    mp4Mobilni: "/video/audi-720.mp4",
+    poster: "/video/audi-poster.jpg",
+    vozilo: "audi a6",
+  },
+];
+
+/** Koliko puta se jedan video odvrti prije nego krene sljedeći. */
+const PONAVLJANJA = 2;
 
 /**
  * Početni ekran preko cijele visine: izmjenjuju se prve fotografije SVIH
@@ -72,30 +92,64 @@ export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
     return () => clearTimeout(tajmer);
   }, [aktivni, ukupno]);
 
+  // Koji video ide: svaka nova posjeta kreće od sljedećeg (pamti se u pregledaču).
+  const [videoIdx, setVideoIdx] = useState(0);
+  const [prviVideo, setPrviVideo] = useState(true);
+  const odvrceno = useRef(0);
   // Telefon dobija lakšu (720p) verziju videa, kompjuter Full HD.
-  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const [mobilni, setMobilni] = useState<boolean | null>(null);
   useEffect(() => {
-    if (!VIDEO) return;
-    const mobilni = window.matchMedia("(max-width: 767px)").matches;
+    if (!VIDEI.length) return;
+    let start = 0;
+    try {
+      const zapamceno = localStorage.getItem("ea_hero_video");
+      const prosli = zapamceno === null ? NaN : Number(zapamceno);
+      if (Number.isInteger(prosli) && prosli >= 0) start = (prosli + 1) % VIDEI.length;
+      localStorage.setItem("ea_hero_video", String(start));
+    } catch {}
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setVideoSrc(mobilni ? VIDEO.mp4Mobilni : VIDEO.mp4);
+    setVideoIdx(start);
+    setMobilni(window.matchMedia("(max-width: 767px)").matches);
   }, []);
 
-  const trenutno = slajdovi[aktivni];
+  const video = VIDEI[videoIdx];
+  const videoSrc = video && mobilni !== null ? (mobilni ? video.mp4Mobilni : video.mp4) : undefined;
+
+  // Kraj videa: ponovi ga, ili poslije PONAVLJANJA puta pređi na sljedeći.
+  // Svaki spot se na kraju utapa u crno, pa je prelaz mekan.
+  const naKrajVidea = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    odvrceno.current += 1;
+    if (odvrceno.current < PONAVLJANJA || VIDEI.length < 2) {
+      e.currentTarget.currentTime = 0;
+      void e.currentTarget.play().catch(() => {});
+      return;
+    }
+    odvrceno.current = 0;
+    setPrviVideo(false);
+    setVideoIdx((i) => (i + 1) % VIDEI.length);
+  };
+
+  // Vozilo iz videa (ako je u ponudi) stoji dole desno dok taj video ide.
+  const voziloIzVidea = video?.vozilo
+    ? slajdovi.find((s) => s.naziv.toLowerCase().includes(video.vozilo!.toLowerCase()))
+    : undefined;
+
+  const trenutno = voziloIzVidea ?? slajdovi[aktivni];
 
   return (
     <section className="hero tamno relative h-[calc(100svh-4rem)] min-h-[560px] w-full overflow-hidden bg-background md:h-[calc(100svh-5rem)]">
-      {VIDEO ? (
-        /* Video: nijem, u petlji, bez kontrola; telefon dobija lakšu verziju */
+      {video ? (
+        /* Video: nijem, bez kontrola; telefon dobija lakšu verziju */
         <video
+          key={videoIdx}
           className="absolute inset-0 h-full w-full object-cover"
           autoPlay
           muted
-          loop
           playsInline
           preload="auto"
-          poster={VIDEO.poster}
-          src={videoSrc ?? undefined}
+          poster={prviVideo ? video.poster : undefined}
+          src={videoSrc}
+          onEnded={naKrajVidea}
           aria-hidden="true"
         />
       ) : ukupno > 0 ? (
@@ -121,7 +175,7 @@ export default function HeroSlideshow({ slajdovi }: { slajdovi: HeroSlajd[] }) {
       )}
 
       {/* Zatamnjenja — tekst uvijek čitljiv, a donja ivica se stapa sa stranicom */}
-      <div className={`pointer-events-none absolute inset-0 ${VIDEO ? "bg-background/10" : "bg-background/25"}`} />
+      <div className={`pointer-events-none absolute inset-0 ${video ? "bg-background/10" : "bg-background/25"}`} />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/80 via-background/20 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
       <div className="hero-vinjeta pointer-events-none absolute inset-0" />
