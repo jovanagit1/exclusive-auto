@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import PlaceholderImage from "@/components/PlaceholderImage";
 
 export const metadata: Metadata = {
   title: "Usluge — uvoz, registracija, detailing, lizing",
@@ -98,7 +97,17 @@ export default function UslugePage() {
         </div>
 
         <div className="mt-14 grid gap-10 border-t border-border pt-14 md:grid-cols-2 md:items-center">
-          <PlaceholderImage label="Detailing i priprema vozila" ratio="aspect-[4/3]" />
+          <div className="aspect-[4/3] overflow-hidden bg-surface">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/slike/detailing.webp"
+              alt="Poliranje karoserije crvenog automobila u detailing studiju"
+              width={1600}
+              height={1064}
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+          </div>
           <div>
             <h2 className="font-display text-2xl">
               Priprema vozila do izložbenog sjaja
