@@ -27,8 +27,8 @@ export default async function PosredovanjePage() {
         Vozila privatnih vlasnika koja prodajemo u njihovo ime. Nisu dio
         naše salonske ponude, ali ih pregledamo i predstavljamo jednako
         pažljivo. Želite i vi da prodate svoje vozilo preko nas?{" "}
-        <Link href="/prodaj-vozilo" className="text-accent underline underline-offset-4">
-          Pošaljite ga na procjenu
+        <Link href="/kontakt" className="text-accent underline underline-offset-4">
+          Javite nam se
         </Link>
         .
       </p>

@@ -247,6 +247,17 @@ export default async function VehicleDetailPage({
               Pošalji upit
             </Link>
           </div>
+          {kategorija === "ponuda" && (
+            <p className="mt-5 text-sm text-foreground/70">
+              Imate auto za zamjenu?{" "}
+              <Link
+                href={`/zamjena-vozila?vozilo=${encodeURIComponent(vehicle.slug)}`}
+                className="text-foreground underline underline-offset-4 hover:text-accent"
+              >
+                Zamijenite ga za ovo vozilo uz doplatu
+              </Link>
+            </p>
+          )}
         </div>
       </div>
 

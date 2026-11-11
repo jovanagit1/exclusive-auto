@@ -13,11 +13,12 @@ export default async function OtkupAdminPage() {
       <AdminNav />
       <p className="section-label">Admin panel</p>
       <h1 className="font-display mt-2 text-3xl">
-        Otkup/zamjena vozila ({zahtjevi.length})
+        Zamjena vozila ({zahtjevi.length})
       </h1>
       <p className="mt-3 max-w-xl text-sm text-foreground/70">
-        Zahtjevi koje posjetioci šalju preko stranice &ldquo;/prodaj-vozilo&rdquo;
-        — nude vozilo na prodaju ili traže zamjenu za nešto iz naše ponude.
+        Zahtjevi koje posjetioci šalju preko stranice &ldquo;Zamjena vozila&rdquo;
+        — nude svoje vozilo u zamjenu za auto iz naše ponude, uz doplatu.
+        Stariji zahtjevi označeni sa &ldquo;Prodaja&rdquo; su iz vremena kad je postojao otkup.
       </p>
 
       {!blobOk && (

@@ -22,7 +22,7 @@ const STATICNE_STRANICE = [
   { path: "/usluge", priority: 0.7, ucestalost: "monthly" as const },
   { path: "/uvoz", priority: 0.6, ucestalost: "monthly" as const },
   { path: "/posredovanje", priority: 0.6, ucestalost: "weekly" as const },
-  { path: "/prodaj-vozilo", priority: 0.7, ucestalost: "monthly" as const },
+  { path: "/zamjena-vozila", priority: 0.7, ucestalost: "monthly" as const },
   { path: "/registracija", priority: 0.5, ucestalost: "monthly" as const },
   { path: "/probna-voznja", priority: 0.5, ucestalost: "monthly" as const },
   { path: "/o-nama", priority: 0.5, ucestalost: "monthly" as const },

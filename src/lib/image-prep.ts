@@ -6,7 +6,7 @@
  * (obično ispod 500KB po slici), uz poštovanje EXIF rotacije sa telefona.
  * Ako iz nekog razloga obrada ne uspije, vraća originalni fajl.
  *
- * Zajednička za admin panel (VehicleForm) i javnu formu "Prodaj vozilo".
+ * Zajednička za admin panel (VehicleForm) i javnu formu "Zamjena vozila".
  */
 export async function pripremiSlikuZaUpload(
   file: File,

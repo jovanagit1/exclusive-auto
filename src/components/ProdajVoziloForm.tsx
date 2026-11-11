@@ -7,13 +7,18 @@ import { pripremiSlikuZaUpload } from "@/lib/image-prep";
 const GORIVO_OPCIJE = ["Dizel", "Benzin", "Hibrid", "Električni", "Plin (LPG/CNG)"];
 const MJENJAC_OPCIJE = ["Automatik", "Manuelni"];
 
+/**
+ * Forma za zamjenu vozila: posjetilac nudi svoje vozilo kao dio cijene
+ * vozila iz naše ponude, uz doplatu razlike. (Otkup vozila je ukinut.)
+ */
 export default function ProdajVoziloForm({
   vozilaZaZamjenu,
+  pocetnoVozilo = "",
 }: {
   vozilaZaZamjenu: { slug: string; naziv: string }[];
+  pocetnoVozilo?: string;
 }) {
-  const [tip, setTip] = useState<"prodaja" | "zamjena">("prodaja");
-  const [zamjenaZaSlug, setZamjenaZaSlug] = useState("");
+  const [zamjenaZaSlug, setZamjenaZaSlug] = useState(pocetnoVozilo);
 
   const [ime, setIme] = useState("");
   const [telefon, setTelefon] = useState("");
@@ -78,19 +83,13 @@ export default function ProdajVoziloForm({
     setStatus("sending");
     setError("");
 
-    if (tip === "zamjena" && !zamjenaZaSlug) {
-      setError("Izaberite vozilo iz naše ponude za koje želite zamjenu.");
-      setStatus("error");
-      return;
-    }
-
     try {
       const res = await fetch("/api/prodaj-vozilo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          tip,
-          zamjenaZaSlug: tip === "zamjena" ? zamjenaZaSlug : undefined,
+          tip: "zamjena",
+          zamjenaZaSlug: zamjenaZaSlug || undefined,
           ime,
           telefon,
           email: email || undefined,
@@ -120,8 +119,8 @@ export default function ProdajVoziloForm({
       <div className="card p-8 text-center">
         <p className="font-display text-xl text-accent">Hvala vam!</p>
         <p className="mt-3 text-sm text-foreground/75">
-          Primili smo vaš zahtjev i javićemo vam se u najkraćem roku na
-          navedeni broj telefona ili email.
+          Primili smo vaš zahtjev za zamjenu. Javićemo vam se u najkraćem
+          roku sa procjenom i iznosom doplate.
         </p>
       </div>
     );
@@ -130,54 +129,24 @@ export default function ProdajVoziloForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       <div>
-        <p className="mb-2 text-xs uppercase tracking-wider text-muted">
-          Šta vas zanima?
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => setTip("prodaja")}
-            className={`rounded-sm border px-4 py-2 text-sm transition-colors ${
-              tip === "prodaja"
-                ? "border-accent bg-accent text-background"
-                : "border-border text-foreground/80 hover:border-accent"
-            }`}
+        <p className="section-label">Auto koje želite</p>
+        <div className="mt-4 max-w-md">
+          <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
+            Vozilo iz naše ponude
+          </label>
+          <select
+            value={zamjenaZaSlug}
+            onChange={(e) => setZamjenaZaSlug(e.target.value)}
+            className="input-field"
           >
-            Prodajem svoje vozilo
-          </button>
-          <button
-            type="button"
-            onClick={() => setTip("zamjena")}
-            className={`rounded-sm border px-4 py-2 text-sm transition-colors ${
-              tip === "zamjena"
-                ? "border-accent bg-accent text-background"
-                : "border-border text-foreground/80 hover:border-accent"
-            }`}
-          >
-            Mijenjam za vozilo iz vaše ponude
-          </button>
+            <option value="">Još biram — predložite mi</option>
+            {vozilaZaZamjenu.map((v) => (
+              <option key={v.slug} value={v.slug}>
+                {v.naziv}
+              </option>
+            ))}
+          </select>
         </div>
-
-        {tip === "zamjena" && (
-          <div className="mt-4 max-w-md">
-            <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
-              Vozilo iz naše ponude koje vas zanima *
-            </label>
-            <select
-              required
-              value={zamjenaZaSlug}
-              onChange={(e) => setZamjenaZaSlug(e.target.value)}
-              className="input-field"
-            >
-              <option value="">— izaberite vozilo —</option>
-              {vozilaZaZamjenu.map((v) => (
-                <option key={v.slug} value={v.slug}>
-                  {v.naziv}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
       </div>
 
       <div className="grid gap-5 border-t border-border pt-6 sm:grid-cols-2">
@@ -310,7 +279,7 @@ export default function ProdajVoziloForm({
         </div>
         <div>
           <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
-            Vaša procijenjena cijena (opciono)
+            Koliko očekujete za svoje vozilo? (opciono)
           </label>
           <input
             value={procijenjenaCijena}
@@ -377,7 +346,7 @@ export default function ProdajVoziloForm({
         disabled={status === "sending" || uploading}
         className="btn-primary disabled:opacity-60"
       >
-        {status === "sending" ? "Slanje..." : "Pošalji zahtjev"}
+        {status === "sending" ? "Slanje..." : "Pošalji zahtjev za zamjenu"}
       </button>
     </form>
   );

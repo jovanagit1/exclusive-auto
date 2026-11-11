@@ -30,7 +30,6 @@ export default function Footer() {
             {GALERIJA_OTVORENA && (
               <li><Link href="/galerija" className="hover:text-accent">Galerija</Link></li>
             )}
-            <li><Link href="/prodaj-vozilo" className="hover:text-accent">Prodaj vozilo</Link></li>
             <li><Link href="/o-nama" className="hover:text-accent">O nama</Link></li>
           </ul>
         </div>
@@ -39,6 +38,7 @@ export default function Footer() {
           <h3 className="section-label mb-4">Usluge</h3>
           <ul className="space-y-2 text-sm text-foreground/80">
             <li><Link href="/uvoz" className="hover:text-accent">Uvoz vozila</Link></li>
+            <li><Link href="/zamjena-vozila" className="hover:text-accent">Zamjena vozila</Link></li>
             <li><Link href="/registracija" className="hover:text-accent">Registracija vozila</Link></li>
             <li><Link href="/probna-voznja" className="hover:text-accent">Probna vožnja</Link></li>
             <li><Link href="/usluge" className="hover:text-accent">Detailing i priprema</Link></li>

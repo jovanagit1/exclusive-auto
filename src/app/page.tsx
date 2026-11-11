@@ -136,19 +136,19 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* PRODAJ/ZAMIJENI VOZILO */}
+      {/* ZAMJENA VOZILA — staro za novo uz doplatu */}
       <section className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-14 md:flex-row md:items-center md:justify-between md:px-8">
           <div className="max-w-xl">
             <p className="section-label">Za vlasnike vozila</p>
-            <h2 className="font-display mt-3 text-2xl md:text-3xl">Prodaj ili zamijeni svoje vozilo</h2>
+            <h2 className="font-display mt-3 text-2xl md:text-3xl">Zamijenite svoje auto za novo</h2>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              Pošaljite podatke i fotografije vašeg vozila — javljamo se sa procjenom, a vi
-              birate prodaju ili zamjenu za vozilo iz naše ponude.
+              Vaše vozilo može biti dio cijene auta iz naše ponude. Pošaljite podatke i
+              fotografije, a mi vam javljamo procjenu i koliko je doplata.
             </p>
           </div>
-          <Link href="/prodaj-vozilo" className="btn-primary shrink-0">
-            Prodaj ili zamijeni
+          <Link href="/zamjena-vozila" className="btn-primary shrink-0">
+            Zamijeni svoje vozilo
           </Link>
         </div>
       </section>

@@ -17,6 +17,12 @@ const services = [
     cta: "Pogledaj ponudu",
   },
   {
+    title: "Zamjena vozila",
+    desc: "Vaše sadašnje vozilo ulazi u cijenu novog iz naše ponude, a vi doplaćujete samo razliku. Procjena je brza, papirologiju završavamo mi.",
+    href: "/zamjena-vozila",
+    cta: "Zatraži procjenu",
+  },
+  {
     title: "Uvoz vozila po narudžbi",
     desc: "Recite nam šta tražite — marku, model, budžet — a mi pronalazimo i uvozimo vozilo iz Njemačke, Austrije, Švicarske i drugih tržišta.",
     href: "/uvoz",

@@ -31,10 +31,11 @@ export type Subscriber = {
 };
 
 /**
- * Zahtjev poslat preko javne stranice "/prodaj-vozilo" — posjetilac (često
- * neko ko ne živi u Banjoj Luci) nudi svoje vozilo na prodaju, ili traži
- * zamjenu za jedno od vozila iz naše ponude. Admin ih pregleda u
- * Admin panel → Otkup/zamjena (dok mejl obavještenja nije uključeno preko
+ * Zahtjev poslat preko javne stranice "/zamjena-vozila" — posjetilac (često
+ * neko ko ne živi u Banjoj Luci) nudi svoje vozilo u zamjenu za jedno od
+ * vozila iz naše ponude, uz doplatu. Tip "prodaja" (otkup) je ukinut, ali
+ * ostaje u tipu da bi se stari zahtjevi i dalje prikazivali. Admin ih pregleda u
+ * Admin panel → Zamjena vozila (dok mejl obavještenja nije uključeno preko
  * Resend-a, ovo je JEDINI način da admin vidi ove zahtjeve).
  */
 export type OtkupZahtjev = {

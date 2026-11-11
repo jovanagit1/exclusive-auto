@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 
 /**
  * Generiše siguran, kratkotrajan token da bi posjetioci sajta (BEZ prijave)
- * mogli da otpreme fotografije svog vozila preko javne forme "Prodaj/
- * zamijeni vozilo" ("/prodaj-vozilo"). Namjerno odvojeno od
+ * mogli da otpreme fotografije svog vozila preko javne forme "Zamjena
+ * vozila" ("/zamjena-vozila"). Namjerno odvojeno od
  * /api/admin/blob-upload (koji je zaštićen i traži admin sesiju) — ova ruta
  * je javno dostupna, ali sa strožim ograničenjima (manje slika, manja
  * veličina) nego admin upload.
