@@ -8,7 +8,17 @@ export const metadata: Metadata = {
   alternates: { canonical: "/uvoz" },
 };
 
-export default function UvozPage() {
+export default async function UvozPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  // Kad kupac dođe sa prodanog vozila ("Naručite ovakvo auto"), forma je
+  // već popunjena tim autom.
+  const { auto, detalji } = await searchParams;
+  const zeljenoAuto = typeof auto === "string" ? auto.slice(0, 120) : "";
+  const zeljeniDetalji = typeof detalji === "string" ? detalji.slice(0, 300) : "";
+
   return (
     <div className="mx-auto max-w-7xl *:max-w-3xl px-5 py-20 md:px-8 md:py-24">
       <p className="section-label">Uvoz vozila</p>
@@ -69,7 +79,13 @@ export default function UvozPage() {
         </p>
       </div>
 
-      <div className="mt-10">
+      <div id="upit" className="mt-10 scroll-mt-28">
+        {zeljenoAuto && (
+          <p className="mb-6 border-l-2 border-foreground pl-4 text-sm text-foreground/80">
+            Tražite auto kao <b>{zeljenoAuto}</b>? Pošaljite upit — pronaći ćemo
+            isto ili slično vozilo za vas.
+          </p>
+        )}
         <InquiryForm
           formType="uvoz"
           submitLabel="Pošalji upit za uvoz"
@@ -82,6 +98,7 @@ export default function UvozPage() {
               label: "Marka i model (željeni)",
               required: true,
               placeholder: "npr. BMW X5, Audi A6...",
+              defaultValue: zeljenoAuto || undefined,
             },
             {
               name: "odakle",
@@ -112,6 +129,7 @@ export default function UvozPage() {
               type: "textarea",
               colSpan2: true,
               placeholder: "Gorivo, mjenjač, boja, oprema...",
+              defaultValue: zeljeniDetalji || undefined,
             },
           ]}
         />

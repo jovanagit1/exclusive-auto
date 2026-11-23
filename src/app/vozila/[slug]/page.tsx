@@ -250,15 +250,21 @@ export default async function VehicleDetailPage({
           {prodano ? (
             <div className="mt-8 border border-border bg-surface p-5">
               <p className="text-sm text-foreground/80">
-                Ovo vozilo je prodano. Pogledajte šta trenutno imamo u ponudi, ili
-                nam pošaljite upit pa ćemo pronaći slično auto za vas.
+                Ovo vozilo je prodano. Sviđa vam se baš ovakvo? Naručite ga —
+                pronaći ćemo i dovesti isto ili slično auto po vašoj želji.
               </p>
               <div className="mt-4 flex flex-wrap gap-4">
-                <Link href="/vozila" className="btn-primary">
-                  Vozila u ponudi
+                <Link
+                  href={`/uvoz?${new URLSearchParams({
+                    auto: `${vehicle.marka} ${vehicle.model}`,
+                    detalji: `Kao prodano vozilo sa sajta: ${vehicle.marka} ${vehicle.model}, ${vehicle.godiste}., ${vehicle.gorivo}, ${vehicle.mjenjac}${vehicle.boja ? `, ${vehicle.boja}` : ""}.`,
+                  }).toString()}#upit`}
+                  className="btn-primary"
+                >
+                  Naručite ovakvo auto
                 </Link>
-                <Link href="/uvoz" className="btn-outline">
-                  Pronađite mi slično
+                <Link href="/vozila" className="btn-outline">
+                  Vozila u ponudi
                 </Link>
               </div>
             </div>

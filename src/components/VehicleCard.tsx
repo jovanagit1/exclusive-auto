@@ -18,11 +18,12 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
           className={`transition-transform duration-700 group-hover:scale-[1.03] ${prodano ? "grayscale-[60%]" : ""}`}
         />
         {prodano && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/35">
-            <span className="border border-white/80 bg-black/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.3em] text-white">
+          <>
+            <div className="absolute inset-0 bg-black/20" />
+            <span className="absolute left-3 top-3 bg-black px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-white">
               Prodano
             </span>
-          </div>
+          </>
         )}
         {kategorijaVozila(vehicle) !== "ponuda" && (
           <span className="absolute bottom-3 left-3 bg-white/90 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-foreground">
@@ -44,7 +45,7 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
         </p>
         <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
           {prodano ? (
-            <span className="text-sm font-semibold uppercase tracking-[0.14em] text-muted">Prodano</span>
+            <span className="text-sm font-semibold uppercase tracking-[0.14em] text-muted">Prodano · naruči slično</span>
           ) : naAkciji ? (
             <span className="flex flex-wrap items-baseline gap-2">
               <PriceTag

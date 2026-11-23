@@ -10,6 +10,8 @@ export type FormField = {
   placeholder?: string;
   options?: string[];
   colSpan2?: boolean;
+  /** Unaprijed popunjena vrijednost (npr. auto koje je kupac vidio na sajtu). */
+  defaultValue?: string;
 };
 
 export default function InquiryForm({
@@ -82,6 +84,7 @@ export default function InquiryForm({
               name={field.name}
               required={field.required}
               placeholder={field.placeholder}
+              defaultValue={field.defaultValue}
               rows={4}
               className="input-field resize-none"
             />
@@ -109,6 +112,7 @@ export default function InquiryForm({
               type={field.type ?? "text"}
               required={field.required}
               placeholder={field.placeholder}
+              defaultValue={field.defaultValue}
               className="input-field"
             />
           )}
