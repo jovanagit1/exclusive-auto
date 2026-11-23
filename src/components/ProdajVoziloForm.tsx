@@ -11,6 +11,9 @@ const MJENJAC_OPCIJE = ["Automatik", "Manuelni"];
  * Forma za zamjenu vozila: posjetilac nudi svoje vozilo kao dio cijene
  * vozila iz naše ponude, uz doplatu razlike. (Otkup vozila je ukinut.)
  */
+/** Posebna vrijednost u padajućem meniju: posjetilac još bira, pa mu predlažemo auto. */
+const PREDLOG = "__predlog";
+
 export default function ProdajVoziloForm({
   vozilaZaZamjenu,
   pocetnoVozilo = "",
@@ -89,7 +92,7 @@ export default function ProdajVoziloForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           tip: "zamjena",
-          zamjenaZaSlug: zamjenaZaSlug || undefined,
+          zamjenaZaSlug: zamjenaZaSlug && zamjenaZaSlug !== PREDLOG ? zamjenaZaSlug : undefined,
           ime,
           telefon,
           email: email || undefined,
@@ -131,21 +134,45 @@ export default function ProdajVoziloForm({
       <div>
         <p className="section-label">Auto koje želite</p>
         <div className="mt-4 max-w-md">
-          <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted">
-            Vozilo iz naše ponude
-          </label>
-          <select
-            value={zamjenaZaSlug}
-            onChange={(e) => setZamjenaZaSlug(e.target.value)}
-            className="input-field"
+          <label
+            htmlFor="zamjena-za"
+            className="mb-1.5 block text-xs uppercase tracking-wider text-muted"
           >
-            <option value="">Još biram — predložite mi</option>
-            {vozilaZaZamjenu.map((v) => (
-              <option key={v.slug} value={v.slug}>
-                {v.naziv}
+            Za koje auto iz naše ponude mijenjate svoje? *
+          </label>
+          <div className="relative">
+            <select
+              id="zamjena-za"
+              required
+              value={zamjenaZaSlug}
+              onChange={(e) => setZamjenaZaSlug(e.target.value)}
+              className={`input-field ${zamjenaZaSlug ? "" : "zamjena-izbor-prazno"}`}
+            >
+              <option value="" disabled>
+                — izaberite auto —
               </option>
-            ))}
-          </select>
+              {vozilaZaZamjenu.map((v) => (
+                <option key={v.slug} value={v.slug}>
+                  {v.naziv}
+                </option>
+              ))}
+              <option value={PREDLOG}>Još biram — predložite mi</option>
+            </select>
+            {/* Strelica koja trepće dok posjetilac ne izabere auto */}
+            {!zamjenaZaSlug && (
+              <span
+                aria-hidden="true"
+                className="zamjena-strelica pointer-events-none absolute -right-9 top-1/2 hidden text-xl text-foreground sm:block"
+              >
+                ←
+              </span>
+            )}
+          </div>
+          {!zamjenaZaSlug && (
+            <p className="zamjena-podsjetnik mt-2 text-xs text-foreground/70">
+              Izaberite auto iz ponude, ili &bdquo;Još biram&ldquo; ako želite da vam predložimo.
+            </p>
+          )}
         </div>
       </div>
 

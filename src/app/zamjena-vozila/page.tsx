@@ -38,7 +38,7 @@ export default async function ZamjenaVozilaPage({
   const { vozilo } = await searchParams;
   const vehicles = await getVehicles();
   const vozilaZaZamjenu = vehicles
-    .filter((v) => kategorijaVozila(v) === "ponuda")
+    .filter((v) => kategorijaVozila(v) === "ponuda" && !v.prodano)
     .map((v) => ({ slug: v.slug, naziv: `${v.marka} ${v.model} (${v.godiste})` }));
   const pocetno =
     typeof vozilo === "string" && vozilaZaZamjenu.some((v) => v.slug === vozilo) ? vozilo : "";

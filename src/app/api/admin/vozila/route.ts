@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { addOrUpdateVehicle, deleteVehicle } from "@/lib/store";
+import { addOrUpdateVehicle, deleteVehicle, setVehicleProdano } from "@/lib/store";
 import { posaljiObavjestenjeONovomVozilu } from "@/lib/newsletter";
 import type { Vehicle } from "@/lib/vehicles";
 
@@ -31,6 +31,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, newsletter });
   } catch (err) {
     console.error("[admin/vozila] greška:", err);
+    const message = err instanceof Error ? err.message : "Nepoznata greška.";
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+  }
+}
+
+/** Brzo označavanje vozila kao prodanog (ili vraćanje u ponudu) sa liste u adminu. */
+export async function PATCH(request: Request) {
+  try {
+    const { slug, prodano } = (await request.json()) as { slug?: string; prodano?: boolean };
+    if (!slug || typeof prodano !== "boolean") {
+      return NextResponse.json({ ok: false, error: "Nedostaju podaci." }, { status: 400 });
+    }
+    await setVehicleProdano(slug, prodano);
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("[admin/vozila] greška (prodano):", err);
     const message = err instanceof Error ? err.message : "Nepoznata greška.";
     return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }

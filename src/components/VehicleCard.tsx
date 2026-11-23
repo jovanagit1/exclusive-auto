@@ -6,7 +6,8 @@ import PriceTag from "./PriceTag";
 
 /** Kartica vozila — čist, svijetao stil: slika, marka, model, podaci, cijena. */
 export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
-  const naAkciji = Boolean(vehicle.akcija && vehicle.regularnaCijena);
+  const prodano = Boolean(vehicle.prodano);
+  const naAkciji = !prodano && Boolean(vehicle.akcija && vehicle.regularnaCijena);
 
   return (
     <Link href={`/vozila/${vehicle.slug}`} className="group block">
@@ -14,8 +15,15 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
         <VehicleImage
           slike={vehicle.slike}
           label={`${vehicle.marka} ${vehicle.model}`}
-          className="transition-transform duration-700 group-hover:scale-[1.03]"
+          className={`transition-transform duration-700 group-hover:scale-[1.03] ${prodano ? "grayscale-[60%]" : ""}`}
         />
+        {prodano && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/35">
+            <span className="border border-white/80 bg-black/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.3em] text-white">
+              Prodano
+            </span>
+          </div>
+        )}
         {kategorijaVozila(vehicle) !== "ponuda" && (
           <span className="absolute bottom-3 left-3 bg-white/90 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-foreground">
             {kategorijaVozila(vehicle) === "dolazak" ? "U dolasku" : "Posredovanje"}
@@ -35,7 +43,9 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
           {vehicle.godiste} · {vehicle.km.toLocaleString("de-DE")} km · {vehicle.gorivo} · {vehicle.mjenjac}
         </p>
         <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-          {naAkciji ? (
+          {prodano ? (
+            <span className="text-sm font-semibold uppercase tracking-[0.14em] text-muted">Prodano</span>
+          ) : naAkciji ? (
             <span className="flex flex-wrap items-baseline gap-2">
               <PriceTag
                 cijena={vehicle.regularnaCijena!}

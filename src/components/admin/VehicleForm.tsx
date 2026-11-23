@@ -333,6 +333,8 @@ export default function VehicleForm({ initial }: { initial?: Vehicle }) {
     }
 
     const vehicle: Vehicle = {
+      // Oznaka "prodano" se mijenja sa liste vozila — izmjena ostalih podataka je zadržava.
+      prodano: initial?.prodano,
       slug,
       marka,
       model,

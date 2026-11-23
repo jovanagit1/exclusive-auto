@@ -121,6 +121,14 @@ export async function addOrUpdateVehicle(vehicle: Vehicle): Promise<void> {
   await saveVehicles(all);
 }
 
+export async function setVehicleProdano(slug: string, prodano: boolean): Promise<void> {
+  const all = await getVehicles();
+  const v = all.find((x) => x.slug === slug);
+  if (!v) throw new Error("Vozilo nije pronađeno.");
+  v.prodano = prodano || undefined;
+  await saveVehicles(all);
+}
+
 export async function deleteVehicle(slug: string): Promise<void> {
   const all = await getVehicles();
   await saveVehicles(all.filter((v) => v.slug !== slug));

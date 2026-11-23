@@ -69,24 +69,29 @@ export default function VozilaGrid({ vehicles }: { vehicles: Vehicle[] }) {
         : vehicles.filter((v) => kljucMarke(v.marka) === marka);
     switch (sortiranje) {
       case "cijena-rastuce":
-        return kopija.sort((a, b) => a.cijena - b.cijena);
+        kopija.sort((a, b) => a.cijena - b.cijena);
+        break;
       case "cijena-opadajuce":
-        return kopija.sort((a, b) => b.cijena - a.cijena);
+        kopija.sort((a, b) => b.cijena - a.cijena);
+        break;
       case "godiste-najnovije":
-        return kopija.sort((a, b) => b.godiste - a.godiste);
+        kopija.sort((a, b) => b.godiste - a.godiste);
+        break;
       case "godiste-najstarije":
-        return kopija.sort((a, b) => a.godiste - b.godiste);
-      default:
-        return kopija;
+        kopija.sort((a, b) => a.godiste - b.godiste);
+        break;
     }
+    // Prodana vozila uvijek idu na kraj liste.
+    return kopija.sort((a, b) => Number(Boolean(a.prodano)) - Number(Boolean(b.prodano)));
   }, [vehicles, sortiranje, marka]);
+  const dostupno = vehicles.filter((v) => !v.prodano).length;
 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-5">
         <p className="text-xs text-muted">
           {sortirana.length === vehicles.length
-            ? `${vehicles.length} ${vehicles.length === 1 ? "vozilo" : "vozila"} u ponudi`
+            ? `${dostupno} ${dostupno === 1 ? "vozilo" : "vozila"} u ponudi`
             : `Prikazano ${sortirana.length} od ${vehicles.length} vozila`}
         </p>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">

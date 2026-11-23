@@ -140,7 +140,8 @@ export default async function VehicleDetailPage({
     new Set([...vehicle.oprema, ...(vehicle.dodatnaOprema ?? [])])
   ).sort((a, b) => a.localeCompare(b, "bs"));
 
-  const naAkciji = Boolean(vehicle.akcija && vehicle.regularnaCijena);
+  const prodano = Boolean(vehicle.prodano);
+  const naAkciji = !prodano && Boolean(vehicle.akcija && vehicle.regularnaCijena);
   const { opis: opisBezVin, brojSasije } = razdvojiBrojSasije(vehicle);
 
   return (
@@ -187,6 +188,11 @@ export default async function VehicleDetailPage({
                   Posredovanje
                 </span>
               )}
+              {prodano && (
+                <span className="rounded-sm bg-foreground px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-background">
+                  Prodano
+                </span>
+              )}
               {naAkciji && (
                 <span className="rounded-sm bg-red-500/15 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-red-600">
                   Akcija
@@ -199,7 +205,9 @@ export default async function VehicleDetailPage({
             <span className="sr-only">{vehicle.marka} </span>
             {vehicle.model}
           </h1>
-          {naAkciji ? (
+          {prodano ? (
+            <p className="mt-4 text-2xl font-semibold uppercase tracking-[0.12em] text-muted">Prodano</p>
+          ) : naAkciji ? (
             <div className="mt-4 flex flex-wrap items-baseline gap-3">
               <PriceTag
                 cijena={vehicle.regularnaCijena!}
@@ -239,15 +247,32 @@ export default async function VehicleDetailPage({
 
           {brojSasije && <BrojSasije vin={brojSasije} />}
 
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link href="/probna-voznja" className="btn-primary">
-              Zakaži probnu vožnju
-            </Link>
-            <Link href="/kontakt" className="btn-outline">
-              Pošalji upit
-            </Link>
-          </div>
-          {kategorija === "ponuda" && (
+          {prodano ? (
+            <div className="mt-8 border border-border bg-surface p-5">
+              <p className="text-sm text-foreground/80">
+                Ovo vozilo je prodano. Pogledajte šta trenutno imamo u ponudi, ili
+                nam pošaljite upit pa ćemo pronaći slično auto za vas.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-4">
+                <Link href="/vozila" className="btn-primary">
+                  Vozila u ponudi
+                </Link>
+                <Link href="/uvoz" className="btn-outline">
+                  Pronađite mi slično
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link href="/probna-voznja" className="btn-primary">
+                Zakaži probnu vožnju
+              </Link>
+              <Link href="/kontakt" className="btn-outline">
+                Pošalji upit
+              </Link>
+            </div>
+          )}
+          {kategorija === "ponuda" && !prodano && (
             <p className="mt-5 text-sm text-foreground/70">
               Imate auto za zamjenu?{" "}
               <Link
@@ -323,14 +348,16 @@ export default async function VehicleDetailPage({
         </div>
       )}
 
-      <div className="mt-14">
-        <KalkulatorRate
-          cijena={vehicle.cijena}
-          valuta={vehicle.valuta}
-          vozilo={`${vehicle.marka} ${vehicle.model} (${vehicle.godiste})`}
-          godiste={vehicle.godiste}
-        />
-      </div>
+      {!prodano && (
+        <div className="mt-14">
+          <KalkulatorRate
+            cijena={vehicle.cijena}
+            valuta={vehicle.valuta}
+            vozilo={`${vehicle.marka} ${vehicle.model} (${vehicle.godiste})`}
+            godiste={vehicle.godiste}
+          />
+        </div>
+      )}
     </div>
   );
 }

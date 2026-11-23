@@ -36,6 +36,8 @@ export type Vehicle = {
   brojSasije?: string;
   oprema: string[];
   istaknuto?: boolean;
+  /** Vozilo je prodano — ostaje na sajtu sa oznakom "Prodano", bez upita i kalkulatora. */
+  prodano?: boolean;
   /**
    * Gdje se vozilo prikazuje na sajtu:
    *  - "ponuda" (ili prazno): salonska ponuda, stranica /vozila

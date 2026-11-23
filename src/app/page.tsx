@@ -49,11 +49,12 @@ const brojke = [
 
 export default async function HomePage() {
   const vehicles = (await getVehicles()).filter((v) => kategorijaVozila(v) === "ponuda");
-  const featured = vehicles.filter((v) => v.istaknuto);
+  const dostupna = vehicles.filter((v) => !v.prodano);
+  const featured = dostupna.filter((v) => v.istaknuto);
   // Na početnoj samo nekoliko vozila (izdvojena, a ako ih nema — najnovija).
-  const izdvojena = (featured.length ? featured : vehicles).slice(0, 3);
+  const izdvojena = (featured.length ? featured : dostupna).slice(0, 3);
   // Sva vozila iz ponude koja imaju bar jednu fotografiju — najnovija prva.
-  const slajdovi: HeroSlajd[] = vehicles
+  const slajdovi: HeroSlajd[] = dostupna
     .filter((v) => v.slike?.[0])
     .map((v) => ({
       slika: v.slike![0],

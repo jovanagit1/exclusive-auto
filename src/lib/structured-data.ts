@@ -85,6 +85,7 @@ export function voziloJsonLd(v: {
   slug: string;
   opis?: string;
   slike?: string[];
+  prodano?: boolean;
 }) {
   const url = `${SITE_URL}/vozila/${v.slug}`;
   return {
@@ -105,7 +106,7 @@ export function voziloJsonLd(v: {
       "@type": "Offer",
       price: v.cijena,
       priceCurrency: v.valuta === "EUR" ? "EUR" : "BAM",
-      availability: "https://schema.org/InStock",
+      availability: v.prodano ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
       itemCondition: "https://schema.org/UsedCondition",
       url,
       seller: { "@type": "AutoDealer", name: "Exclusive Auto", url: SITE_URL },

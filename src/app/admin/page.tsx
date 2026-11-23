@@ -4,6 +4,7 @@ import { isBlobConfigured } from "@/lib/store";
 import { formatPrice } from "@/lib/vehicles";
 import AdminNav from "@/components/admin/AdminNav";
 import DeleteVehicleButton from "@/components/admin/DeleteVehicleButton";
+import ProdanoToggle from "@/components/admin/ProdanoToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -61,6 +62,9 @@ export default async function AdminDashboardPage() {
                   {v.kategorija === "dolazak" && (
                     <span className="ml-2 rounded-sm border border-accent px-1.5 py-0.5 text-[0.6rem] uppercase tracking-wider text-accent">U dolasku</span>
                   )}
+                  {v.prodano && (
+                    <span className="ml-2 rounded-sm bg-foreground px-1.5 py-0.5 text-[0.6rem] uppercase tracking-wider text-background">Prodano</span>
+                  )}
                   {v.kategorija === "posredovanje" && (
                     <span className="ml-2 rounded-sm border border-border px-1.5 py-0.5 text-[0.6rem] uppercase tracking-wider text-muted">Posredovanje</span>
                   )}
@@ -72,6 +76,7 @@ export default async function AdminDashboardPage() {
               </div>
             </div>
             <div className="flex items-center gap-4">
+              <ProdanoToggle slug={v.slug} prodano={Boolean(v.prodano)} />
               <Link
                 href={`/admin/vozila/${v.slug}`}
                 className="text-xs uppercase tracking-wider text-muted hover:text-accent"
