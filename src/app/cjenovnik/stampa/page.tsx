@@ -31,7 +31,9 @@ export default async function StampaPage({
   const sva = await getVehicles();
   const vozila = slugovi
     .map((s) => sva.find((x) => x.slug === s))
-    .filter((x): x is NonNullable<typeof x> => Boolean(x));
+    .filter((x): x is NonNullable<typeof x> => Boolean(x))
+    // Prodana vozila nikad ne ulaze u PDF, čak ni preko starog linka.
+    .filter((x) => !x.prodano);
 
   const datum = new Date().toLocaleDateString("bs-BA", {
     day: "2-digit",

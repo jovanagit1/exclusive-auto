@@ -14,7 +14,10 @@ export const metadata: Metadata = {
 };
 
 export default async function CjenovnikPage() {
-  const vehicles = (await getVehicles()).filter((v) => kategorijaVozila(v) !== "dolazak");
+  // Cjenovnik i PDF prikazuju samo vozila na stanju — bez onih u dolasku i bez prodanih.
+  const vehicles = (await getVehicles()).filter(
+    (v) => kategorijaVozila(v) !== "dolazak" && !v.prodano
+  );
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
